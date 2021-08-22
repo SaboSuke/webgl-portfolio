@@ -1,0 +1,21 @@
+{
+  "name": "webgl-portfolio",
+  "version": "1.0.0",
+  "description": "WebGL and three.js portfolio",
+  "main": "src/index.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaboSuke/webgl-portfolio.git"
+  },
+  "keywords": [
+    "webgl",
+    "threejs",
+    "portfolio"
+  ],
+  "author": "Essam Abed",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SaboSuke/webgl-portfolio/issues"
+  },
+  "homepage": "https://github.com/SaboSuke/webgl-portfolio#readme"
+}
