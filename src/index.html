@@ -6,17 +6,70 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>ThreeJS Starter Template</title>
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+            integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
 
-    <body>
+    <body class="loading">
         <div class="container"></div>
+        <div class="videos">
+            <video class="vid1 d_none" loop src="./vid/WebGL Slider And Card Effects.mp4"> Video not supported! </video>
+            <video class="vid2 d_none" loop src="./vid/Design Agency Webgl LandingPage.mp4"> Video not
+                supported!</video>
+            <video class="vid3 d_none" loop src="./vid/WebGL Ripple Effect.mp4"> Video not supported! </video>
+            <video class="vid4 d_none" loop src="./vid/webgl-pointlights-animation-LowEnd.mp4"> Video not supported! </video>
+        </div>
+
+        <div class="btn-wrap">
+            <div class="btn-set" id="reset">
+                <i class="fas fa-sync-alt"></i>
+            </div>
+            <!-- <div class="btn-set" id="toggleSettings">
+                <i class="fas fa-cog"></i>
+            </div> -->
+        </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
         <script src="../dist/three.js"></script>
         <script src="../dist/GLTFLoader.js"></script>
+        <script src="../dist/threex.domevents.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
 
-        <script src="js/main.js" type="module"></script>
+        <script type="module">
+
+            import { EVENT, Sketch } from './js/main.js';
+
+            const sketch = new Sketch();
+
+            EVENT.on('loaded', () => {
+                document.body.classList.remove('loading');
+
+                sketch.LOAD();
+            });
+
+            const reset = document.querySelector("#reset");
+            reset.addEventListener("click", () => {
+                if (reset.classList.contains('load')) reset.classList.remove('load');
+                else {
+                    reset.classList.add('load');
+
+                    setTimeout(() => {
+                        reset.classList.remove('load');
+                    }, 1000);
+                }
+            })
+            // const settings = document.querySelector("#toggleSettings");
+            // settings.addEventListener("click", () => {
+            //     if (settings.classList.contains('toggled')) {
+            //         settings.classList.remove('toggled');
+            //         sketch.toggleSettings(false);
+            //     } else {
+            //         settings.classList.add('toggled');
+            //         sketch.toggleSettings(true);
+            //     }
+            // })
+        </script>
     </body>
 
 </html>
