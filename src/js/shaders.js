@@ -1,3 +1,9 @@
+/**
+ * @desc Creates the vertex and fragment shaders
+ * 
+ * @constructor
+ * @return {Object}
+ */
 export default class Shader {
     constructor() {
         return {
