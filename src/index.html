@@ -11,24 +11,42 @@
             crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
 
-    <body class="loading">
-        <div class="container"></div>
-        <div class="videos">
-            <video class="vid1 d_none" loop src="./vid/WebGL Slider And Card Effects.mp4"> Video not supported! </video>
-            <video class="vid2 d_none" loop src="./vid/Design Agency Webgl LandingPage.mp4"> Video not
-                supported!</video>
-            <video class="vid3 d_none" loop src="./vid/WebGL Ripple Effect.mp4"> Video not supported! </video>
-            <video class="vid4 d_none" loop src="./vid/webgl-pointlights-animation-LowEnd.mp4"> Video not supported! </video>
-        </div>
-
-        <div class="btn-wrap">
-            <div class="btn-set" id="reset">
-                <i class="fas fa-sync-alt"></i>
+    <body class="loading single">
+        <main>
+            <div class="container"></div>
+            <div class="videos" id="tv">
+                <video class="vid1 d_none" loop src="./vid/WebGL Slider And Card Effects.mp4"> Video not supported!
+                </video>
+                <video class="vid2 d_none" loop src="./vid/Design Agency Webgl LandingPage.mp4"> Video not
+                    supported!</video>
+                <video class="vid3 d_none" loop src="./vid/WebGL Ripple Effect.mp4"> Video not supported! </video>
+                <video class="vid4 d_none" loop src="./vid/webgl-pointlights-animation-LowEnd.mp4"> Video not supported!
+                </video>
             </div>
-            <!-- <div class="btn-set" id="toggleSettings">
-                <i class="fas fa-cog"></i>
-            </div> -->
-        </div>
+            <div class="btn-wrap center" id="tv_contrls">
+                <div class="btn-set" id="power">
+                    <i class="fas fa-power-off"></i>
+                </div>
+                <div class="btn-set left-fix" id="prev">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="btn-set right-fix" id="next">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="btn-set expand-fix" id="expand">
+                    <i class="fas fa-expand"></i>
+                </div>
+            </div>
+
+            <div class="btn-wrap">
+                <div class="btn-set" id="reset">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <!-- <div class="btn-set" id="toggleSettings">
+                            <i class="fas fa-cog"></i>
+                        </div> -->
+            </div>
+        </main>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
         <script src="../dist/three.js"></script>

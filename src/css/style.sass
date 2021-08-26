@@ -1,5 +1,5 @@
-$primary: blue
-$secondary: red
+$primary: #ff2a03
+$secondary: #ff050d
 
 *
     margin: 0
@@ -9,6 +9,14 @@ $secondary: red
 body
     font-family: 'Poppins', sans-serif
     overflow-x: hidden
+
+    &.single
+        overflow: hidden
+
+main
+    width: 100vw
+    height: 100vh
+    overflow: hidden
 
 .container
     position: fixed
@@ -25,26 +33,54 @@ body
     align-items: flex-start
     justify-content: flex-start
 
-    .btn-set
-        padding: 7px 12px
-        margin-right: 20px
-        background: $primary
-        border: 1px solid transparent
-        border-radius: 50%
+    &.start
+        left: 20px
+        right: unset
+    
+    &.center
+        left: 50%;
+        right: unset
+        transform: translateX(-50%)
+    &.center>div
+        transform: translateY(150px)
+        opacity: 0
+
+
+.btn-set
+    font-size: 18px
+    width: 50px
+    height: 50px
+    padding: 12px 15px
+    margin-right: 20px
+    background: $primary
+    border: 1px solid transparent
+    border-radius: 50%
+    color: white
+    cursor: pointer
+    transition: .3s color ease-in-out, 
+    .3s background ease-in-out, 
+    .3s transform ease-in-out
+
+    &.left-fix
+        padding: 12px 17px
+
+    &.right-fix
+        padding: 12px 19px
+
+    &.expand-fix
+        padding: 11px 16px
+
+    &:last-child
+        marigin-right: 0
+
+    &:hover
+        background: $secondary
+        border: 1px solid $secondary
         color: white
-        cursor: pointer
-        transition: .3s all ease-in-out
+        transform: scale(1.1)
 
-        &:last-child
-            marigin-right: 0
-
-        &:hover
-            background: white
-            border: 1px solid $primary
-            color: $primary
-
-        &.load
-            animation: loadAnimation .3s linear infinite
+    &.load i
+        animation: loadAnimation .3s linear infinite
 
 @keyframes loadAnimation 
     0% 
