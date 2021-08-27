@@ -7,37 +7,35 @@
  */
 export default class Settings {
 
-    opts = {};
+    opts = { };
     sketch = null;
     gui = null;
 
-    constructor(sketch, options = {}) {
+    constructor(sketch, options = { }) {
         this.INIT(sketch, options);
 
         this.opts.camera ? this.camera() : 0;
         this.opts.lights ? this.lights() : 0;
         this.opts.lightHelper ? this.lightHelper() : 0;
-        this.opts.isometricRoom ? this.isometricRoom() : 0;
+        this.opts.livingRoom ? this.livingRoom() : 0;
+        this.opts.bedRoom ? this.bedRoom() : 0;
         this.opts.planeHolder ? this.planeHolder() : 0;
-        this.opts.room ? this.room() : 0;
-        this.opts.table ? this.table() : 0;
-        this.opts.rack ? this.rack() : 0;
-        this.opts.planesSettings ? this.planes() : 0;
         this.opts.tvSettings ? this.tv() : 0;
+        this.opts.socials ? this.socials() : 0;
+        this.opts.cat ? this.cat() : 0;
     }
 
     INIT(sketch, options) {
         this.opts = {
-            isometricRoom: options.isometricRoom || false,
+            livingRoom: options.livingRoom || false,
+            bedRoom: options.bedRoom || false,
             camera: options.camera || false,
             lights: options.lights || false,
             planeHolder: options.planeHolder || false,
             lightHelper: options.lightHelper || false,
             tvSettings: options.tvSettings || false,
-            rack: options.rack || false,
-            table: options.table || false,
-            room: options.room || false,
-            planesSettings: options.planesSettings || false,
+            socials: options.socials || false,
+            cat: options.cat || false,
         }
         this.sketch = sketch;
         this.gui = new dat.GUI();
@@ -45,31 +43,32 @@ export default class Settings {
         let that = this;
         this.settings = {
             cameraPos: that.sketch.camera.position,
-            // light1: that.sketch.light1.position,
+            lightBalls: that.opts.lights ? that.sketch.lightBalls : null,
             planeHolderPos: that.opts.planeHolder ? that.sketch.planeHolder.position : null,
-            isometricPos: that.opts.isometricRoom ? that.sketch.isometric_room.position : null,
-            isometricDeg: that.opts.isometricRoom ? that.sketch.isometric_room.rotation : null,
-
-            roomPos: that.opts.room ? that.sketch.room.position : null,
-            tablePos: that.opts.table ? that.sketch.table.position : null,
-            rackPos: that.opts.rack ? that.sketch.rack.position : null,
-            planePos: that.opts.planesSettings ? [
-                that.sketch.plane1.position,
-                that.sketch.plane2.position,
-                that.sketch.plane3.position,
-                that.sketch.plane4.position,
-            ] : null,
-            planeDeg: that.opts.planesSettings ? [
-                that.sketch.plane1.rotation,
-                that.sketch.plane2.rotation,
-                that.sketch.plane3.rotation,
-                that.sketch.plane4.rotation,
-            ] : null,
+            livingRoomPos: that.opts.livingRoom ? that.sketch.livingRoom.position : null,
+            livingRoomDeg: that.opts.livingRoom ? that.sketch.livingRoom.rotation : null,
+            bedRoom: that.opts.bedRoom ? that.sketch.bedRoom : null,
             tvScreen: that.opts.tvSettings ? [
-                that.sketch.plane5.position,
-                that.sketch.plane5.rotation,
+                that.sketch.tvScreen.position,
+                that.sketch.tvScreen.rotation,
             ] : null,
+            socials: that.opts.socials ? that.sketch.socials : null,
+            cat: that.opts.cat ? that.sketch.cat : null,
         };
+    }
+
+    socials() {
+        this.settings.socials.forEach((item, index) => {
+            const pos = this.gui.addFolder('social ' + (index + 1) + ' position');
+            pos.add(item.circle.position, 'x');
+            pos.add(item.circle.position, 'y');
+            pos.add(item.circle.position, 'z');
+
+            const deg = this.gui.addFolder('social ' + (index + 1) + ' rotation');
+            deg.add(item.circle.rotation, 'x');
+            deg.add(item.circle.rotation, 'y');
+            deg.add(item.circle.rotation, 'z');
+        })
     }
 
     planeHolder() {
@@ -81,52 +80,60 @@ export default class Settings {
 
     tv() {
         // screen
-        const plane5Pos = this.gui.addFolder('tv screen Position');
-        plane5Pos.add(this.settings.tvScreen[0], 'x');
-        plane5Pos.add(this.settings.tvScreen[0], 'y');
-        plane5Pos.add(this.settings.tvScreen[0], 'z');
+        const tvScreenPos = this.gui.addFolder('tv screen Position');
+        tvScreenPos.add(this.settings.tvScreen[0], 'x');
+        tvScreenPos.add(this.settings.tvScreen[0], 'y');
+        tvScreenPos.add(this.settings.tvScreen[0], 'z');
 
-        const plane5Deg = this.gui.addFolder('tv screen Rotation');
-        plane5Deg.add(this.settings.tvScreen[1], 'x');
-        plane5Deg.add(this.settings.tvScreen[1], 'y');
-        plane5Deg.add(this.settings.tvScreen[1], 'z');
+        const tvScreenDeg = this.gui.addFolder('tv screen Rotation');
+        tvScreenDeg.add(this.settings.tvScreen[1], 'x');
+        tvScreenDeg.add(this.settings.tvScreen[1], 'y');
+        tvScreenDeg.add(this.settings.tvScreen[1], 'z');
     }
 
-    rack() {
-        const rack = this.gui.addFolder('rack position');
-        rack.add(this.settings.rackPos, 'x');
-        rack.add(this.settings.rackPos, 'y');
-        rack.add(this.settings.rackPos, 'z');
+    bedRoom() {
+        const bedRoomPos = this.gui.addFolder('bedRoom position');
+        bedRoomPos.add(this.settings.bedRoom.position, 'x');
+        bedRoomPos.add(this.settings.bedRoom.position, 'y');
+        bedRoomPos.add(this.settings.bedRoom.position, 'z');
+
+        const bedRoomDeg = this.gui.addFolder('bedRoom rotation');
+        bedRoomDeg.add(this.settings.bedRoom.rotation, 'x');
+        bedRoomDeg.add(this.settings.bedRoom.rotation, 'y');
+        bedRoomDeg.add(this.settings.bedRoom.rotation, 'z');
     }
 
-    table() {
-        const table = this.gui.addFolder('table position');
-        table.add(this.settings.tablePos, 'x');
-        table.add(this.settings.tablePos, 'y');
-        table.add(this.settings.tablePos, 'z');
+    livingRoom() {
+        const livingRoomPos = this.gui.addFolder('isometric-room position');
+        livingRoomPos.add(this.settings.livingRoomPos, 'x');
+        livingRoomPos.add(this.settings.livingRoomPos, 'y');
+        livingRoomPos.add(this.settings.livingRoomPos, 'z');
+
+        const livingRoomDeg = this.gui.addFolder('isometric-room rotation');
+        livingRoomDeg.add(this.settings.livingRoomDeg, 'x');
+        livingRoomDeg.add(this.settings.livingRoomDeg, 'y');
+        livingRoomDeg.add(this.settings.livingRoomDeg, 'z');
     }
 
-    room() {
-        const room = this.gui.addFolder('room position');
-        room.add(this.settings.roomPos, 'x');
-        room.add(this.settings.roomPos, 'y');
-        room.add(this.settings.roomPos, 'z');
-    }
+    cat() {
+        const catPos = this.gui.addFolder('cat position');
+        catPos.add(this.settings.cat.position, 'x');
+        catPos.add(this.settings.cat.position, 'y');
+        catPos.add(this.settings.cat.position, 'z');
 
-    isometricRoom() {
-        const isometricPos = this.gui.addFolder('isometric-room position');
-        isometricPos.add(this.settings.isometricPos, 'x');
-        isometricPos.add(this.settings.isometricPos, 'y');
-        isometricPos.add(this.settings.isometricPos, 'z');
-
-        const isometricDeg = this.gui.addFolder('isometric-room rotation');
-        isometricDeg.add(this.settings.isometricDeg, 'x');
-        isometricDeg.add(this.settings.isometricDeg, 'y');
-        isometricDeg.add(this.settings.isometricDeg, 'z');
+        const catDeg = this.gui.addFolder('cat rotation');
+        catDeg.add(this.settings.cat.rotation, 'x');
+        catDeg.add(this.settings.cat.rotation, 'y');
+        catDeg.add(this.settings.cat.rotation, 'z');
     }
 
     lights() {
-
+        this.settings.lightBalls.forEach((item, index) => {
+            const light = this.gui.addFolder(`lightball ${index + 1} position`);
+            light.add(item.lightBall.position, 'x');
+            light.add(item.lightBall.position, 'y');
+            light.add(item.lightBall.position, 'z');
+        })
     }
 
     lightHelper() {
@@ -140,53 +147,13 @@ export default class Settings {
         cameraPos.add(this.settings.cameraPos, 'y');
         cameraPos.add(this.settings.cameraPos, 'z');
 
+        const cameraContPos = this.gui.addFolder('camera control target');
+        cameraContPos.add(this.sketch.controls.target, 'x');
+        cameraContPos.add(this.sketch.controls.target, 'y');
+        cameraContPos.add(this.sketch.controls.target, 'z');
+
+
         // const cameraHelper = new THREE.CameraHelper(this.sketch.camera);
         // this.sketch.scene.add(cameraHelper);
-    }
-
-    planes() {
-        // 01 plane
-        const plane1Pos = this.gui.addFolder('Plane 1 Position');
-        plane1Pos.add(this.settings.planePos[0], 'x').min(1);
-        plane1Pos.add(this.settings.planePos[0], 'y').min(0);
-        plane1Pos.add(this.settings.planePos[0], 'z').min(1);
-
-        const plane1Deg = this.gui.addFolder('Plane 1 Rotation');
-        plane1Deg.add(this.settings.planeDeg[0], 'x');
-        plane1Deg.add(this.settings.planeDeg[0], 'y');
-        plane1Deg.add(this.settings.planeDeg[0], 'z');
-
-        // 02 plane
-        const plane2Pos = this.gui.addFolder('Plane 2 Position');
-        plane2Pos.add(this.settings.planePos[1], 'x');
-        plane2Pos.add(this.settings.planePos[1], 'y');
-        plane2Pos.add(this.settings.planePos[1], 'z');
-
-        const plane2Deg = this.gui.addFolder('Plane 2 Rotation');
-        plane2Deg.add(this.settings.planeDeg[1], 'x');
-        plane2Deg.add(this.settings.planeDeg[1], 'y');
-        plane2Deg.add(this.settings.planeDeg[1], 'z');
-
-        // 03 plane
-        const plane3Pos = this.gui.addFolder('Plane 3 Position');
-        plane3Pos.add(this.settings.planePos[2], 'x');
-        plane3Pos.add(this.settings.planePos[2], 'y');
-        plane3Pos.add(this.settings.planePos[2], 'z');
-
-        const plane3Deg = this.gui.addFolder('Plane 3 Rotation');
-        plane3Deg.add(this.settings.planeDeg[2], 'x');
-        plane3Deg.add(this.settings.planeDeg[2], 'y');
-        plane3Deg.add(this.settings.planeDeg[2], 'z');
-
-        // 04 plane
-        const plane4Pos = this.gui.addFolder('Plane 4 Position');
-        plane4Pos.add(this.settings.planePos[3], 'x');
-        plane4Pos.add(this.settings.planePos[3], 'y');
-        plane4Pos.add(this.settings.planePos[3], 'z');
-
-        const plane4Deg = this.gui.addFolder('Plane 4 Rotation');
-        plane4Deg.add(this.settings.planeDeg[3], 'x');
-        plane4Deg.add(this.settings.planeDeg[3], 'y');
-        plane4Deg.add(this.settings.planeDeg[3], 'z');
     }
 }

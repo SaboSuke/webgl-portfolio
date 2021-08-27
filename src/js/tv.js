@@ -1,3 +1,9 @@
+import {
+    COLORS,
+    CHANNEL_ELEMENTS,
+    CHANNEL_SOURCES
+} from './constants.js';
+
 /**
  * @desc Hanldes all the tv logic
  * 
@@ -8,15 +14,9 @@
 export default class Tv {
 
     play = true;
-    channelElements = [
-        document.querySelector('#tv video.vid1'),
-        document.querySelector('#tv video.vid2'),
-        document.querySelector('#tv video.vid3'),
-        document.querySelector('#tv video.vid4'),
-    ];
     isFullscreen = false;
 
-    constructor(sketch, options = {}) {
+    constructor(sketch, options = { }) {
         this.sketch = sketch;
         this.initTv();
         this.initTvEvents();
@@ -27,16 +27,15 @@ export default class Tv {
     initTvCover() {
         const geometry = new THREE.PlaneGeometry(1.27, 0.8);
         const material = new THREE.MeshStandardMaterial({
-            color: this.sketch.colors.black,
+            color: COLORS.black,
             transparent: true,
             depthTest: false,
             depthWrite: false,
         });
 
         this.tvCover = new THREE.Mesh(geometry, material);
-        this.tvCover.position.set(-1.61, -1.76, -2.65);
+        this.tvCover.position.set(-1.598, -1.77, -2.65);
         this.tvCover.rotation.set(0, 0.58, 0);
-        this.tvCover.translateX(0.01);
         this.sketch.scene.add(this.tvCover);
     }
 
@@ -44,19 +43,18 @@ export default class Tv {
         this.initTvCover();
         this.channels = this.loadChannels();
 
-        this.geometry = new THREE.PlaneGeometry(1.27, 0.8);
+        this.geometry = new THREE.PlaneGeometry(1.25, 0.78);
         this.material = new THREE.MeshBasicMaterial({
-            color: this.sketch.colors.white,
+            color: COLORS.white,
             transparent: true,
-            depthTest: false,
-            depthWrite: false,
+            depthTest: true,
+            depthWrite: true,
             map: this.channels[0].video
         });
 
         this.tv = new THREE.Mesh(this.geometry, this.material);
-        this.tv.position.set(-1.61, -1.76, -2.65);
+        this.tv.position.set(-1.598, -1.77, -2.65);
         this.tv.rotation.set(0, 0.58, 0);
-        this.tv.translateX(0.01);
 
         if (this.play) {
             this.channels[0].opts.play();
@@ -81,14 +79,15 @@ export default class Tv {
     loadChannels() {
         let channels = [];
 
-        for (let i = 0; i < this.channelElements.length; i++) {
-            const video = new THREE.VideoTexture(this.channelElements[i]);
+        for (let i = 0; i < CHANNEL_ELEMENTS.length; i++) {
+            const video = new THREE.VideoTexture(CHANNEL_ELEMENTS[i]);
             video.minFilter = THREE.LinearFilter;
             video.magFilter = THREE.LinearFilter;
+            video.src = CHANNEL_SOURCES[i];
 
             channels.push({
                 video: video,
-                opts: this.channelElements[i]
+                opts: CHANNEL_ELEMENTS[i]
             });
         }
 
@@ -96,7 +95,7 @@ export default class Tv {
     }
 
     addChannel(videoElement) {
-        this.channelElements.push(document.querySelector(videoElement));
+        CHANNEL_ELEMENTS.push(document.querySelector(videoElement));
 
         return this;
     }
@@ -112,7 +111,7 @@ export default class Tv {
         this.channels[this.previousChannel].opts.currentTime = 0;
 
         // play next
-        this.sketch.plane5.material.map = this.channels[value].video;
+        this.sketch.tvScreen.material.map = this.channels[value].video;
         this.channels[value].opts.play();
 
         // set prev
@@ -130,7 +129,7 @@ export default class Tv {
         this.channels[this.previousChannel].opts.currentTime = 0;
 
         // play next
-        this.sketch.plane5.material.map = this.channels[value].video;
+        this.sketch.tvScreen.material.map = this.channels[value].video;
         this.channels[value].opts.play();
 
         // set prev
@@ -144,6 +143,13 @@ export default class Tv {
             expand = document.querySelector('#expand');
 
         power.addEventListener('click', () => {
+            if (power.classList.contains('on')) {
+                power.classList.remove('on')
+                power.classList.add('off')
+            } else {
+                power.classList.add('on')
+                power.classList.remove('off')
+            }
             this.triggerTv();
         });
 
@@ -167,30 +173,37 @@ export default class Tv {
                 expand.classList.add('expand')
                 expand.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
 
+                gsap.to(this.sketch.controls.target, {
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                    ease: 'Expo.easeInOut'
+                });
                 gsap.to(this.sketch.camera.position, {
                     x: 0,
                     y: 0,
                     z: 2,
+                    ease: 'Expo.easeInOut'
                 });
-                this.sketch.camera.zoom = 1;
                 this.sketch.camera.updateProjectionMatrix();
 
-                this.tv.translateX(0);
-                this.tvCover.translateX(0);
                 gsap.to([this.tv.position, this.tvCover.position], {
                     x: 0,
                     y: 0,
                     z: 0,
+                    ease: 'Expo.easeInOut'
                 });
                 gsap.to([this.tv.scale, this.tvCover.scale], {
                     x: 1.2,
                     y: 1,
                     z: 1.2,
+                    ease: 'Expo.easeInOut'
                 });
                 gsap.to([this.tv.rotation, , this.tvCover.rotation], {
                     x: 0,
                     y: 0,
                     z: 0,
+                    ease: 'Expo.easeInOut'
                 });
             }
         });
@@ -200,32 +213,31 @@ export default class Tv {
         const timeline = gsap.timeline();
         let that = this;
 
-        this.tv.translateX(0.01);
-        this.tvCover.translateX(0.01);
         gsap.to([this.tv.scale, this.tvCover.scale], {
             x: 1,
             y: 1,
             z: 1,
+            ease: 'Expo.easeInOut',
         });
         gsap.to([this.tv.rotation, , this.tvCover.rotation], {
             x: 0,
             y: 0.58,
             z: 0,
+            ease: 'Expo.easeInOut',
         });
 
         timeline.to([this.tv.position, this.tvCover.position], {
             duration: 1,
-            x: -1.61,
-            y: -1.76,
+            x: -1.598,
+            y: -1.77,
             z: -2.65,
-        }).to(this.sketch.camera, {
-            duration: 0.01,
-            zoom: 1
-        }, '-=1').to(this.sketch.camera.position, {
+            ease: 'Expo.easeInOut',
+        }).to(this.sketch.camera.position, {
             duration: 1,
-            x: 0,
-            y: 5,
-            z: 15,
+            x: -1,
+            y: 3,
+            z: 14,
+            ease: 'Expo.easeInOut',
             onComplete() {
                 that.sketch.camera.updateProjectionMatrix();
             }

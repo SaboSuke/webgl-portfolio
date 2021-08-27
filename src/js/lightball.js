@@ -1,4 +1,4 @@
-import { rand } from './base.js';
+import { RAND } from './constants.js';
 
 /**
  * @desc Creates a light ball
@@ -9,8 +9,9 @@ import { rand } from './base.js';
  * @return {Object} - { lightBall, shadowLight, ballMaterial }
  */
 export default class LightBall {
-    constructor(sketch, positions = {}, color = 0xffffff, intensity = 1) {
+    constructor(sketch, positions = { }, color = 0xffffff, intensity = 1, stage = 1) {
         this.sketch = sketch;
+        this.stage = stage;
         this.positions = {
             x: positions.x || 0,
             y: positions.y || 0,
@@ -79,13 +80,18 @@ export default class LightBall {
     }
 
     animate(time) {
-        gsap.to(this.pointLight.position, {
-            duration: 5,
-            y: rand(2, 3),
-            z: Math.sin(time * 0.8) * -2,
-            ease: 'Power0.easeInOut'
-        })
-        this.pointLight.rotation.x = time * 0.5;
-        this.pointLight.rotation.z = time * 0.5;
+        let that = this;
+        if (this.stage == 1) {
+            gsap.to(this.pointLight.position, {
+                duration: 50,
+                y: Math.sin(Math.PI) - that.pointLight.position.y,
+                z: Math.sin(time * RAND(0, 1)) - that.pointLight.position.z,
+                ease: 'Power0.easeInOut'
+            })
+            this.pointLight.rotation.x = time * 150;
+            this.pointLight.rotation.z = time * 140;
+        } else {
+
+        }
     }
 }
