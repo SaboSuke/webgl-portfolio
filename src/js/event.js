@@ -1,3 +1,8 @@
+/**
+ * @desc Handles emitting custom events
+ * 
+ * @constructor
+ */
 export default class EventEmitter {
     constructor() { }
 

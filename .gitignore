@@ -1,3 +1,6 @@
 .command
 
-doc.md
+doc.*
+todo.md
+
+**/backup

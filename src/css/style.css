@@ -10,10 +10,143 @@ body {
   overflow-x: hidden;
 }
 
-.container {
+body.single {
+  overflow: hidden;
+}
+
+main {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.scene {
   position: fixed;
   width: 100vw;
   height: 100vh;
+}
+
+.stage-intro {
+  font-family: 'Poppins', sans-serif;
+}
+
+.stage-intro > div {
+  letter-spacing: 1px;
+  word-spacing: 2px;
+  line-height: 2rem;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  display: none;
+}
+
+.stage-intro h1, .stage-intro p {
+  opacity: 0;
+  display: none;
+  -webkit-transform: translateY(20%);
+          transform: translateY(20%);
+}
+
+.stage-intro h1 {
+  font-size: 40px;
+  color: white;
+  opacity: .8;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.stage-intro .stage-1 {
+  position: absolute;
+  top: 30%;
+  padding-left: 50px;
+  width: 43vw;
+}
+
+.stage-intro .stage-2 {
+  position: absolute;
+  top: 20%;
+  right: 0;
+  padding-right: 50px;
+  width: 43vw;
+}
+
+.stage-intro p {
+  opacity: 1;
+  color: white;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.helper {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+}
+
+.helper .helper-element {
+  display: none;
+  margin-bottom: 10px;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  background: transparent;
+  color: white;
+  border-left: 4px solid white;
+  padding: 10px 15px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  opacity: 0;
+}
+
+.helper .helper-element .helper-details {
+  position: relative;
+  z-index: 100;
+}
+
+.helper .helper-element .helper-details h1 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.helper .helper-element .helper-details p {
+  font-size: 15px;
+}
+
+.helper .helper-element .helper-details small {
+  font-size: 12px;
+}
+
+.helper .helper-element .helper-details p, .helper .helper-element .helper-details small {
+  margin-left: 10px;
+}
+
+.helper .helper-element.current {
+  display: inherit;
+}
+
+.helper .helper-element.current:after {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, white 100%);
+  content: '';
+  height: 100%;
+  width: 100%;
+  opacity: 0.32;
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
 }
 
 .btn-wrap {
@@ -32,31 +165,116 @@ body {
           justify-content: flex-start;
 }
 
-.btn-wrap .btn-set {
-  padding: 7px 12px;
+.btn-wrap.start {
+  top: 60%;
+  left: 5%;
+  right: unset;
+  bottom: unset;
+  display: none;
+  opacity: 0;
+}
+
+.btn-wrap.end {
+  top: 50%;
+  right: 5%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  opacity: 1;
+}
+
+.btn-wrap.center {
+  right: unset;
+}
+
+.btn-wrap#tv_contrls.center > div {
+  -webkit-transform: translateY(150px);
+          transform: translateY(150px);
+  opacity: 0;
+}
+
+.btn-set {
+  font-size: 16px;
+  width: 35px;
+  height: 35px;
+  padding: 4px 9px;
   margin-right: 20px;
-  background: blue;
-  border: 1px solid transparent;
+  background: transparent;
+  border: 1px solid white;
   border-radius: 50%;
   color: white;
   cursor: pointer;
+  -webkit-transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out;
+  transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out;
+}
+
+.btn-set:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.btn-set:last-child {
+  marigin-right: 0;
+}
+
+.btn-set.load i {
+  -webkit-animation: loadAnimation .3s linear infinite;
+          animation: loadAnimation .3s linear infinite;
+}
+
+.btn-set.active, .btn-set.expand {
+  background: #0ed105;
+  border: 1px solid #0ed105;
+  color: white;
+}
+
+.btn-set.on {
+  background: #0ed105;
+  border: 1px solid #0ed105;
+  color: white;
+}
+
+.btn-set.off {
+  background: #ff050d;
+  border: 1px solid #ff050d;
+  color: white;
+}
+
+.wrap_center {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+}
+
+#tv_contrls {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 25px;
+  border-radius: 20px;
+  display: none;
+  opacity: 0;
+  -webkit-transform: translateY(20%);
+          transform: translateY(20%);
   -webkit-transition: .3s all ease-in-out;
   transition: .3s all ease-in-out;
 }
 
-.btn-wrap .btn-set:last-child {
-  marigin-right: 0;
+#tv_contrls .btn-set:nth-child(2) {
+  padding: 5px 10px;
 }
 
-.btn-wrap .btn-set:hover {
-  background: white;
-  border: 1px solid blue;
-  color: blue;
+#tv_contrls .btn-set:nth-child(3) {
+  padding: 4px 12px;
 }
 
-.btn-wrap .btn-set.load {
-  -webkit-animation: loadAnimation .3s linear infinite;
-          animation: loadAnimation .3s linear infinite;
+#tv_contrls .btn-set:nth-child(4) {
+  padding: 4px 9.5px;
+  margin-right: 0;
 }
 
 @-webkit-keyframes loadAnimation {
@@ -142,5 +360,118 @@ video {
 .d_none {
   dislpay: none;
   visibility: hidden;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    opacity: 0;
+    background-position: center top;
+    background-size: 0 auto;
+  }
+  10% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    background-size: 75% auto;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    background-position: center bottom;
+    background-size: 0 auto;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+    background-position: center top;
+    background-size: 0 auto;
+  }
+  10% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    background-size: 75% auto;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    background-position: center bottom;
+    background-size: 0 auto;
+  }
+}
+
+.scroll-down {
+  cursor: pointer;
+  margin: 0;
+  border: 1px solid #fff;
+  border-radius: 100px;
+  width: 80px;
+  height: 100px;
+  -webkit-transition: .3s background ease-in-out;
+  transition: .3s background ease-in-out;
+}
+
+.scroll-down.reverse {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.scroll-down:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: black;
+}
+
+.scroll-down a {
+  display: block;
+  opacity: 0;
+  border-radius: 100px;
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
+  line-height: 0;
+  font-size: 0;
+  color: transparent;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: 100%;
+  background-size: 0 auto;
+  -webkit-animation: pulse 1.5s 0s infinite normal ease forwards;
+          animation: pulse 1.5s 0s infinite normal ease forwards;
+  background-image: url("https://jamesmuspratt.com/codepen/img/arrow-down.svg");
+  background-repeat: no-repeat;
+}
+
+.scroll-down a:before, .scroll-down a:after {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url("https://jamesmuspratt.com/codepen/img/arrow-down.svg") no-repeat center top;
+  background-size: 100% auto;
+}
+
+.scroll-down a:before {
+  -webkit-animation: pulse 1.5s 0.25s infinite normal ease forwards;
+          animation: pulse 1.5s 0.25s infinite normal ease forwards;
+}
+
+.scroll-down a:after {
+  -webkit-animation: pulse 1.5s 0.5s infinite normal ease forwards;
+          animation: pulse 1.5s 0.5s infinite normal ease forwards;
+}
+
+.scroll-down a:hover {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 /*# sourceMappingURL=style.css.map */

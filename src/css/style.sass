@@ -1,5 +1,8 @@
-$primary: blue
-$secondary: red
+$primary: #ff2a03
+$secondary: #ff050d
+$teriary: #022d36;
+$green: #0ed105;
+$button_bg: rgba(255, 255, 255, 0.1);
 
 *
     margin: 0
@@ -10,12 +13,120 @@ body
     font-family: 'Poppins', sans-serif
     overflow-x: hidden
 
-.container
+    &.single
+        overflow: hidden
+
+main
+    position: relative
+    width: 100vw
+    height: 100vh
+    overflow: hidden
+
+.scene
     position: fixed
     width: 100vw
     height: 100vh
 
+// stage intros
+.stage-intro
+    font-family: 'Poppins', sans-serif
 
+    &>div
+        letter-spacing: 1px;
+        word-spacing: 2px;
+        line-height: 2rem;
+        height: 100vh
+        display: flex
+        flex-direction: column
+        justify-content: start
+
+        //disable to prevent movement
+        display: none 
+
+    h1, p
+        opacity: 0
+        display: none
+        transform: translateY(20%)
+    
+    h1
+        font-size: 40px
+        color: white
+        opacity: .8
+        font-weight: 900
+        margin-bottom: 20px
+
+    .stage-1
+        position: absolute
+        top: 30%
+        padding-left: 50px
+        width: 43vw
+
+    .stage-2
+        position: absolute
+        top: 20%
+        right: 0
+        padding-right: 50px
+        width: 43vw
+
+    p
+        opacity: 1
+        color: white
+        font-size: 15px
+        font-weight: 400
+
+// stage helpers
+.helper
+    position: absolute
+    bottom: 10px
+    left: 20px;
+
+    .helper-element
+        display: none
+        margin-bottom: 10px
+        position: relative
+        font-family: 'Poppins', sans-serif
+        font-weight: 400
+        background: transparent
+        color: white
+        border-left: 4px solid white
+        padding: 10px 15px
+        border-top-right-radius: 10px
+        border-bottom-right-radius: 10px
+        transform: translateX(-50%)
+        opacity: 0
+
+        .helper-details
+            position: relative
+            z-index: 100
+
+            h1
+                font-size: 18px
+                margin-bottom: 5px
+            p
+                font-size: 15px
+            
+            small
+                font-size: 12px
+
+            p, small
+                margin-left: 10px
+
+        &.current
+            display: inherit
+
+        &.current:after
+            position: absolute
+            z-index: 1
+            left: 0
+            bottom: 0
+            background-image: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,1) 100%)
+            content: ''
+            height: 100%
+            width: 100%
+            opacity: 0.32
+            transform: rotate(180deg)
+
+// btn & controls
 .btn-wrap
     position: absolute
     bottom: 20px
@@ -25,26 +136,87 @@ body
     align-items: flex-start
     justify-content: flex-start
 
-    .btn-set
-        padding: 7px 12px
-        margin-right: 20px
-        background: $primary
-        border: 1px solid transparent
-        border-radius: 50%
+    &.start
+        top: 60%
+        left: 5%
+        right: unset
+        bottom: unset
+        display: none
+        opacity: 0
+
+    &.end
+        top: 50%
+        right: 5%
+        transform: translateY(-50%)
+        opacity: 1
+
+    &.center
+        right: unset
+
+    &#tv_contrls.center>div
+        transform: translateY(150px)
+        opacity: 0
+
+.btn-set
+    font-size: 16px
+    width: 35px
+    height: 35px
+    padding: 4px 9px
+    margin-right: 20px
+    background: transparent
+    border: 1px solid white
+    border-radius: 50%
+    color: white
+    cursor: pointer
+    transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out
+
+    &:hover
+        background: rgba(255, 255, 255, 0.1);
         color: white
-        cursor: pointer
-        transition: .3s all ease-in-out
+    
+    &:last-child
+        marigin-right: 0
 
-        &:last-child
-            marigin-right: 0
+    &.load i
+        animation: loadAnimation .3s linear infinite
 
-        &:hover
-            background: white
-            border: 1px solid $primary
-            color: $primary
+    &.active, &.expand
+        background: $green
+        border: 1px solid $green
+        color: white
+    &.on
+        background: $green
+        border: 1px solid $green
+        color: white
+    &.off
+        background: $secondary
+        border: 1px solid $secondary
+        color: white
 
-        &.load
-            animation: loadAnimation .3s linear infinite
+.wrap_center
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 100%
+
+#tv_contrls
+    background: $button_bg
+    padding: 15px 25px
+    border-radius: 20px
+    display: none
+    opacity: 0
+    transform: translateY(20%)
+    transition: .3s all ease-in-out
+        
+    .btn-set:nth-child(2)
+        padding: 5px 10px
+
+    .btn-set:nth-child(3)
+        padding: 4px 12px
+
+    .btn-set:nth-child(4)
+        padding: 4px 9.5px
+        margin-right: 0
 
 @keyframes loadAnimation 
     0% 
@@ -55,30 +227,31 @@ body
         transform: rotate(90deg)
         transition: .1s all ease-in-out
 
-.loading::before 
-	content: ''
-	position: absolute
-	z-index: 100000
-	top: 0
-	left: 0
-	width: 100%
-	height: 100%
-	background: #EAF0FE
-
-.loading::after 
-	content: ''
-	position: fixed
-	z-index: 100000
-	top: 50%
-	left: 50%
-	width: 60px
-	height: 60px
-	margin: -30px 0 0 -30px
-	pointer-events: none
-	border-radius: 50%
-	opacity: 0.4
-	background: #121212
-	animation: loaderAnimation 0.7s linear infinite alternate forwards
+// loading animation
+.loading
+    &::before 
+        content: ''
+        position: absolute
+        z-index: 100000
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        background: #EAF0FE
+    &::after 
+        content: ''
+        position: fixed
+        z-index: 100000
+        top: 50%
+        left: 50%
+        width: 60px
+        height: 60px
+        margin: -30px 0 0 -30px
+        pointer-events: none
+        border-radius: 50%
+        opacity: 0.4
+        background: #121212
+        animation: loaderAnimation 0.7s linear infinite alternate forwards
 
 @keyframes loaderAnimation 
 	to 
@@ -93,3 +266,78 @@ video
 .d_none
     dislpay: none
     visibility: hidden
+
+// stage changer
+@keyframes pulse
+    0%
+        opacity: 0
+        background-position: center top
+        background-size: 0 auto
+    
+    10% 
+        opacity: 0
+    
+    50% 
+        opacity: 1
+        background-size: 75% auto
+    
+    90% 
+        opacity: 0
+    
+    100% 
+        opacity: 0
+        background-position: center bottom
+        background-size: 0 auto
+
+.scroll-down
+    cursor: pointer
+    margin: 0
+    border: 1px solid #fff
+    border-radius: 100px
+    width: 80px
+    height: 100px
+    transition: .3s background ease-in-out
+
+    &.reverse
+        transform: rotate(180deg)
+    
+    &:hover
+        background: rgba(255, 255, 255, 0.1)
+        color: black
+    a 
+        display: block
+        opacity: 0
+        border-radius: 100px
+        transition: all 1s ease
+        line-height: 0
+        font-size: 0
+        color: transparent
+        margin-left: auto
+        margin-right: auto
+        width: 100%
+        height: 100%
+        background-size: 0 auto
+        animation: pulse 1.5s 0s infinite normal ease forwards
+        background-image: url("https://jamesmuspratt.com/codepen/img/arrow-down.svg")
+        background-repeat: no-repeat
+
+        &:before, &:after 
+            content: " "
+            position: absolute
+            top: 0
+            left: 0
+            display: block
+            width: 100%
+            height: 100%
+            background: url("https://jamesmuspratt.com/codepen/img/arrow-down.svg") no-repeat center top
+            background-size: 100% auto
+
+        &:before 
+            animation: pulse 1.5s 0.25s infinite normal ease forwards
+
+        &:after 
+            animation: pulse 1.5s 0.5s infinite normal ease forwards
+
+        &:hover 
+            background-color: rgba(0, 0, 0, 0.3)
+
