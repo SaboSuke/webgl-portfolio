@@ -3,20 +3,19 @@ import {
     CHANNEL_ELEMENTS,
     CHANNEL_SOURCES
 } from './constants.js';
-
-/**
- * @desc Hanldes all the tv logic
- * 
- * @param {Class} sketch
- * @constructor
- * @returns {Tv}
- */
 export default class Tv {
 
     play = true;
     paused = false;
     isFullscreen = false;
 
+    /**
+     * @desc Hanldes all the tv logic
+     * 
+     * @param {Class} sketch
+     * @constructor
+     * @returns {Tv}
+     */
     constructor(sketch, options = { }) {
         this.sketch = sketch;
         this.initTv();
@@ -278,5 +277,9 @@ export default class Tv {
 
     isFullScreen() {
         return this.isFullscreen;
+    }
+
+    setFullScreen(value) {
+        this.isFullscreen = value;
     }
 }

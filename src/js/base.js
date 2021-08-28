@@ -177,10 +177,30 @@ function hideStageControls() {
  * helpers
  */
 // message helpers
-import { HELPER_MESSAGES } from './constants.js';
+import { HELPER_MESSAGES, HELPER_TIPS_1, HELPER_TIPS_2 } from './constants.js';
+function typeHelperMessage(currentStage = 1) {
+    new Typewriter('.helper-element.current .helper-details p', {
+        strings: [HELPER_MESSAGES[currentStage - 1]],
+        autoStart: true,
+        pause: 10000,
+        loop: true,
+        delay: 15,
+        deleteSpeed: 30,
+    });
+}
+function typeTipMessage(array = HELPER_TIPS_1) {
+    new Typewriter('.helper-element.current .helper-details small', {
+        strings: array,
+        autoStart: true,
+        pause: 10000,
+        loop: true,
+        delay: 15,
+        deleteSpeed: 30,
+    });
+}
 function shiftHelperMessage(currentStage, action) {
     const helpers = document.querySelectorAll('.helper-element'),
-        current = helpers[action === 'up' ? currentStage - 1 : currentStage - 1],
+        current = helpers[currentStage - 1],
         prev = helpers[action === 'up' ? currentStage - 2 : currentStage];
 
     gsap.to(prev, {
@@ -201,14 +221,13 @@ function shiftHelperMessage(currentStage, action) {
             x: '50%',
             ease: 'Expo.easeInOut',
         });
-        new Typewriter('.helper-element.current .helper-details p', {
-            strings: [HELPER_MESSAGES[currentStage - 1]],
-            autoStart: true,
-            pause: 10000,
-            loop: true,
-            delay: 15,
-            deleteSpeed: 30,
-        });
+
+        // typeHelperMessage(currentStage);
+
+        if (currentStage === 1) {
+            typeTipMessage(HELPER_TIPS_1);
+        } else
+            typeTipMessage(HELPER_TIPS_2);
     }, 500);
 }
 
@@ -218,6 +237,44 @@ function initHelper() {
         opacity: 1,
         x: '50%',
         ease: 'Expo.easeInOut',
+    });
+}
+
+/**
+ * stage 2
+ */
+var pulseTimes = 0;
+function pulseBack() {
+    pulseTimes++;
+    const tl = gsap.timeline();
+    tl.to('.btn-set#back', {
+        duration: 0.8,
+        scale: 1.8,
+        ease: 'Expo.easeInOut',
+    }).to('.btn-set#back', {
+        duration: 0.8,
+        scale: 1,
+        ease: 'Expo.easeInOut',
+        onComplete: () => {
+            if (pulseTimes < 3) pulseBack();
+        }
+    });
+}
+function showStageBackButton() {
+    gsap.to('.btn-set#back', {
+        duration: 0.8,
+        opacity: 1,
+        ease: 'Expo.easeInOut',
+    });
+
+    pulseBack();
+}
+
+function hideStageBackButton() {
+    gsap.to('.btn-set#back', {
+        duration: 0.5,
+        opacity: 0,
+        ease: 'Expo.easeOut',
     });
 }
 
@@ -240,6 +297,13 @@ export {
     showDownArrow,
 
     /** helper **/
+    typeHelperMessage,
+    typeTipMessage,
     shiftHelperMessage,
     initHelper,
+
+
+    /** stage 2 **/
+    showStageBackButton,
+    hideStageBackButton,
 };

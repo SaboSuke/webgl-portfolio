@@ -58,6 +58,9 @@
                 </div>
 
                 <div class="btn-wrap">
+                    <div class="btn-set sanitize" id="back">
+                        <i class="fas fa-long-arrow-alt-left"></i>
+                    </div>
                     <div class="btn-set sanitize" id="reset">
                         <i class="fas fa-sync-alt"></i>
                     </div>
@@ -85,15 +88,15 @@
                 <div class="helper-element current" id="living-room">
                     <div class="helper-details">
                         <h1>Tip :</h1>
-                        <p></p>
-                        <small> >> Hover on the TV</small>
+                        <p>Explore the living room</p>
+                        <small></small>
                     </div>
                 </div>
                 <div class="helper-element" id="bed-room">
                     <div class="helper-details">
                         <h1>Tip :</h1>
-                        <p></p>
-                        <small> >> Hover on the TV</small>
+                        <p>Explore the bed room</p>
+                        <small></small>
                     </div>
                 </div>
             </section>
@@ -111,7 +114,7 @@
 
         <script type="module">
             import { EVENT, Sketch } from './js/main.js';
-            import { animateStageIntro } from './js/base.js';
+            import { animateStageIntro, typeHelperMessage, typeTipMessage } from './js/base.js';
             import { HELPER_MESSAGES } from './js/constants.js';
             const sketch = new Sketch();
 
@@ -121,15 +124,9 @@
                 sketch.LOAD();
                 animateStageIntro(1);
 
-                // type stage helper
-                new Typewriter('.helper-element.current .helper-details p', {
-                    strings: [HELPER_MESSAGES[0]],
-                    autoStart: true,
-                    loop: true,
-                    pause: 10000,
-                    delay: 15,
-                    deleteSpeed: 30,
-                });
+                // type stage helpers
+                // typeHelperMessage();
+                typeTipMessage();
             });
 
             const reset = document.querySelector("#reset");

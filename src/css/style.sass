@@ -168,7 +168,15 @@ main
     border-radius: 50%
     color: white
     cursor: pointer
-    transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out
+    transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out
+
+    &#back
+        background: $green
+        border-color: $green
+        opacity: 0
+        &:hover
+            background: $secondary
+            border-color: $secondary
 
     &.disabled
         background: $secondary

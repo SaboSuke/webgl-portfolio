@@ -11,6 +11,16 @@ const HELPER_MESSAGES = [
     'Explore the bed room'
 ];
 
+const HELPER_TIPS_1 = [
+    '>> Hover on the TV!',
+    '>> Click on the icons!'
+];
+
+const HELPER_TIPS_2 = [
+    '>> Click on a table!',
+    '>> Hover on a picture frame!'
+];
+
 const COLORS = {
     green: 0x0ed105,
     red: 0xff050d,
@@ -45,12 +55,12 @@ const CHANNEL_SOURCES = [
 
 const STAGE_1_VEC = {
     position: {
-        x: -2.5,
-        y: 3,
+        x: -2,//-2.5
+        y: 2.5,//3
         z: 14,
     },
     target: {
-        x: -2,
+        x: -2.5, //-2
         y: 0,
         z: 0,
     }
@@ -63,8 +73,8 @@ const STAGE_2_VEC = {
         z: 14,
     },
     target: {
-        x: 7,
-        y: 2.5,
+        x: 7.5,//7
+        y: 3,//2.5
         z: -5,
     }
 };
@@ -73,6 +83,8 @@ export {
     RAND,
     RAND_FLOOR,
     HELPER_MESSAGES,
+    HELPER_TIPS_1,
+    HELPER_TIPS_2,
     COLORS,
     SOCIAL_LINKS,
     CHANNEL_ELEMENTS,

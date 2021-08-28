@@ -1,16 +1,16 @@
-/**
- * @desc Hanlders the gui controls settings
- * 
- * @param {Sketch} sketch
- * @param {Object} options
- * @constructor
- */
 export default class Settings {
 
     opts = { };
     sketch = null;
     gui = null;
 
+    /**
+     * @desc Hanlders the gui controls settings
+     * 
+     * @param {Sketch} sketch
+     * @param {Object} options
+     * @constructor
+     */
     constructor(sketch, options = { }) {
         this.INIT(sketch, options);
 
@@ -23,6 +23,7 @@ export default class Settings {
         this.opts.tvSettings ? this.tv() : 0;
         this.opts.socials ? this.socials() : 0;
         this.opts.cat ? this.cat() : 0;
+        this.opts.initStage2Interface ? this.initStage2Interface() : 0;
     }
 
     INIT(sketch, options) {
@@ -36,6 +37,7 @@ export default class Settings {
             tvSettings: options.tvSettings || false,
             socials: options.socials || false,
             cat: options.cat || false,
+            initStage2Interface: options.initStage2Interface || false,
         }
         this.sketch = sketch;
         this.gui = new dat.GUI();
@@ -54,7 +56,27 @@ export default class Settings {
             ] : null,
             socials: that.opts.socials ? that.sketch.socials : null,
             cat: that.opts.cat ? that.sketch.cat : null,
+            initStage2Interface: that.opts.initStage2Interface ? that.sketch.second_stage_objects : null,
         };
+    }
+
+    initStage2Interface() {
+        this.settings.initStage2Interface.forEach((item, index) => {
+            const pos = this.gui.addFolder('stage2 - ' + item.name + ' position');
+            pos.add(item.element.position, 'x');
+            pos.add(item.element.position, 'y');
+            pos.add(item.element.position, 'z');
+
+            const rot = this.gui.addFolder('stage2 - ' + item.name + ' rotation');
+            rot.add(item.element.rotation, 'x');
+            rot.add(item.element.rotation, 'y');
+            rot.add(item.element.rotation, 'z');
+
+            const helper1 = this.gui.addFolder('stage2 - ' + item.name + ' helper pos');
+            helper1.add(item.helper.object.position, 'x');
+            helper1.add(item.helper.object.position, 'y');
+            helper1.add(item.helper.object.position, 'z');
+        })
     }
 
     socials() {

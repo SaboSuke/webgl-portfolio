@@ -5,12 +5,11 @@ import Shader from './shaders.js';
 import Tv from './tv.js';
 import Settings from './settings.js';
 import LightBall from './lightball.js';
+import Blink from './blink.js';
 
 import {
-    // tv
     hideTvControls,
     showTvControls,
-    // stage
     hideStageIntros,
     showStageIntros,
     animateStageIntro,
@@ -20,9 +19,10 @@ import {
     hideDownArrow,
     showUpArrow,
     showDownArrow,
-    // helper
     shiftHelperMessage,
-    initHelper
+    initHelper,
+    showStageBackButton,
+    hideStageBackButton,
 } from './base.js';
 import {
     RAND, COLORS, SOCIAL_LINKS,
@@ -33,14 +33,6 @@ import EventEmitter from './event.js';
 export const EVENT = new EventEmitter();
 const NB_STAGES = 2;
 
-/**
- * 
- * @param {Object} options
- * @param {Boolean} [options.eSettings=false] - enable gui settings
- * @param {Boolean} [options.eStats=false] - enable performance stats
- * @param {Boolean} [options.eDevMod=false] - enable developer mode
- * @constructor
- */
 export class Sketch {
 
     opts = { };
@@ -55,7 +47,16 @@ export class Sketch {
     clock = new THREE.Clock();
     mouse = new THREE.Vector2();
     currentStage = 1;
+    resettingStarted = false;
 
+    /**
+     * 
+     * @param {Object} options
+     * @param {Boolean} [options.eSettings=false] - enable gui settings
+     * @param {Boolean} [options.eStats=false] - enable performance stats
+     * @param {Boolean} [options.eDevMod=false] - enable developer mode
+     * @constructor
+     */
     constructor(options = { }) {
         this.INIT(options);
 
@@ -79,6 +80,7 @@ export class Sketch {
         this.domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
 
         this.initHolder();
+        this.initStage2Interface();
     }
 
     LOAD() {
@@ -133,6 +135,9 @@ export class Sketch {
     }
 
     resetPositions() {
+        this.resettingStarted = true;
+        let that = this;
+
         gsap.to(this.controls.target, {
             x: STAGE_1_VEC.target.x,
             y: STAGE_1_VEC.target.y,
@@ -144,13 +149,22 @@ export class Sketch {
             x: STAGE_1_VEC.position.x,
             y: STAGE_1_VEC.position.y,
             z: STAGE_1_VEC.position.z,
-            ease: 'Expo.easeInOut'
+            ease: 'Expo.easeInOut',
+            onComplete() {
+                setTimeout(() => {
+                    that.resettingStarted = false;
+                }, 100);
+            }
         });
         this.camera.updateProjectionMatrix();
 
         this.resetControls();
         this.tv.resetTv();
         this.tv.resetControls();
+        this.tv.setFullScreen(false);
+        const expand = document.querySelector('#expand');
+        expand.innerHTML = '<i class="fas fa-expand"></i>';
+        expand.classList.remove('expand');
 
         // fix twitter icon
         gsap.to(this.twitter.position, { y: -1.24 });
@@ -201,6 +215,8 @@ export class Sketch {
         // camera redirect
         this.viewOnTv = false;
         this.domEvents.addEventListener(this.tvScreen, 'mouseover', () => {
+            if (this.resettingStarted) return;
+
             // icon fix
             if (!this.viewOnTv)
                 gsap.to(this.twitter.position, { y: this.twitter.position.y + 0.04 });
@@ -254,6 +270,17 @@ export class Sketch {
             if (this.currentStage < NB_STAGES)
                 showUpArrow();
         })
+
+        // stage 2 helpers
+        this.second_stage_objects.forEach(item => {
+            this.domEvents.addEventListener(item.helper.object, 'mouseover', () => {
+                this.triggerCursor('pointer');
+            });
+
+            this.domEvents.addEventListener(item.helper.object, 'mouseout', () => {
+                this.triggerCursor('default');
+            });
+        });
     }
 
     initLights() {
@@ -276,6 +303,143 @@ export class Sketch {
         })
     }
 
+    resetStage2() {
+        gsap.to(this.skillsClipboard.position, {
+            x: 3, y: 2.7, z: -2.5,
+            ease: 'Expo.easeInOut',
+        });
+        gsap.to(this.skillsClipboard.rotation, {
+            x: -1.55, y: 0, z: 0,
+            ease: 'Expo.easeInOut',
+        });
+        gsap.to(this.achievementsClipboard.position, {
+            x: 5.6, y: 3.09, z: -4.2,
+            ease: 'Expo.easeInOut',
+        });
+        gsap.to(this.achievementsClipboard.rotation, {
+            x: -1.55, y: 0, z: -1.5,
+            ease: 'Expo.easeInOut',
+        });
+        this.controls.enabled = true;
+        hideStageBackButton();
+    }
+
+    initStage2Events() {
+        // skill helper
+        let that = this;
+        this.domEvents.addEventListener(this.skillsBlinker.object, 'click', () => {
+            this.controls.enabled = false;
+            showStageBackButton();
+
+            gsap.to(that.skillsClipboard.position, {
+                x: -1.15, y: 5.8, z: 13,
+                ease: 'Expo.easeInOut',
+            });
+            gsap.to(that.skillsClipboard.rotation, {
+                x: -0.3, y: -0.2, z: 0,
+                ease: 'Expo.easeInOut',
+            });
+        });
+
+        document.querySelector('.btn-set#back')
+            .addEventListener('click', this.resetStage2.bind(this));
+
+        this.domEvents.addEventListener(this.achievementsBlinker.object, 'click', () => {
+            this.controls.enabled = false;
+            showStageBackButton();
+
+            gsap.to(that.achievementsClipboard.position, {
+                x: -1.15, y: 5.8, z: 13,
+                ease: 'Expo.easeInOut',
+            });
+            gsap.to(that.achievementsClipboard.rotation, {
+                x: -0.3, y: -0.2, z: 0,
+                ease: 'Expo.easeInOut',
+            });
+        });
+
+        document.querySelector('.btn-set#back')
+            .addEventListener('click', this.resetStage2.bind(this));
+    }
+
+    initStage2Interface() {
+        this.second_stage_objects = [];
+        let loader = new THREE.TextureLoader();
+        let geometry = new THREE.PlaneGeometry(0.35, 0.5, 10, 10);
+
+        // init clipboards
+        this.createSkillsClipboard(loader, geometry);
+        this.createAchievementsClipboard(loader, geometry);
+
+        this.initStage2Events();
+    }
+
+    resumeStage2BlinkHeplers() {
+        this.skillsBlinker.self.togggleBlink(true);
+        this.achievementsBlinker.self.togggleBlink(true);
+        this.skillsBlinker.self.blinkStart();
+        this.achievementsBlinker.self.blinkStart(1000);
+    }
+
+    pauseStage2BlinkHeplers() {
+        this.skillsBlinker.self.togggleBlink(false);
+        this.achievementsBlinker.self.togggleBlink(false);
+    }
+
+    createSkillsClipboard(loader, geometry) {
+        let material = new THREE.MeshBasicMaterial({
+            color: COLORS.white,
+            side: THREE.DoubleSide,
+            map: loader.load('/src/img/skills.png'),
+            transparent: true,
+        });
+
+        this.skillsClipboard = new THREE.Mesh(geometry, material);
+        this.skillsClipboard.position.set(3, 2.7, -2.5);
+        this.skillsClipboard.rotation.set(-1.55, 0, 0);
+        this.scene.add(this.skillsClipboard);
+
+        // skill helper
+        this.skillsBlinker = new Blink({
+            x: 3, y: 2.9, z: -2.5
+        });
+        this.skillsBlinker.self.blinkStart();
+        this.scene.add(this.skillsBlinker.object);
+
+        this.second_stage_objects.push({
+            name: 'skillsClipboard',
+            element: this.skillsClipboard,
+            helper: this.skillsBlinker,
+        });
+    }
+
+    createAchievementsClipboard(loader, geometry) {
+        let material = new THREE.MeshBasicMaterial({
+            color: COLORS.white,
+            side: THREE.DoubleSide,
+            map: loader.load('/src/img/achievements.png'),
+            transparent: true,
+        });
+
+        this.achievementsClipboard = new THREE.Mesh(geometry, material);
+        this.achievementsClipboard.position.set(5.6, 3.09, -4.2);
+        this.achievementsClipboard.rotation.set(-1.55, 0, -1.5);
+        this.scene.add(this.achievementsClipboard);
+
+        // skill helper
+        this.achievementsBlinker = new Blink({
+            x: 5.6, y: 3.3, z: -4.2
+        });
+        this.achievementsBlinker.self.blinkStart(1000);
+        this.scene.add(this.achievementsBlinker.object);
+
+        this.second_stage_objects.push({
+            name: 'achievementsClipboard',
+            element: this.achievementsClipboard,
+            helper: this.achievementsBlinker,
+        });
+    }
+
     initHolder() {
         let geometry = new THREE.BoxGeometry(40, 30, 30);
         let material = new THREE.MeshPhongMaterial({
@@ -286,7 +450,7 @@ export class Sketch {
         });
 
         this.planeHolder = new THREE.Mesh(geometry, material);
-        this.planeHolder.scale.set(1.3, 1.3, 1.3)
+        this.planeHolder.scale.set(1.3, 1.3, 1.3);
         this.planeHolder.position.set(2, 15.9, -10);
         this.planeHolder.receiveShadow = true;
 
@@ -485,6 +649,10 @@ export class Sketch {
         this.triggerLights();
         this.changeHolderColor();
 
+        this.resetStage2();
+        if (this.currentStage === 2) this.resumeStage2BlinkHeplers();
+        else this.pauseStage2BlinkHeplers();
+
         let stage_vec = STAGE_2_VEC;
         if (direction === 'down')
             stage_vec = STAGE_1_VEC;
@@ -516,6 +684,7 @@ export class Sketch {
     initSettings() {
         new Settings(this, {
             camera: true,
+            initStage2Interface: true,
             lights: false,
             bedRoom: false,
             livingRoom: false,
@@ -562,6 +731,10 @@ export class Sketch {
 
     stop() {
         this.isPlaying = false;
+    }
+
+    triggerCursor(cursor) {
+        document.body.style.cursor = cursor;
     }
 }
 

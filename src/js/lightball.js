@@ -1,14 +1,13 @@
 import { RAND } from './constants.js';
-
-/**
- * @desc Creates a light ball
- * 
- * @param {Sketch} sketch
- * @param {Object} positions - lightBall position(default: { x: 0, y: 0, z: 0 })
- * @param {String} color - lightball color
- * @return {Object} - { lightBall, shadowLight, ballMaterial }
- */
 export default class LightBall {
+    /**
+     * @desc Creates a light ball
+     * 
+     * @param {Sketch} sketch
+     * @param {Object} positions - lightBall position(default: { x: 0, y: 0, z: 0 })
+     * @param {String} color - lightball color
+     * @return {Object} - { lightBall, shadowLight, ballMaterial }
+     */
     constructor(sketch, positions = { }, color = 0xffffff, intensity = 1, stage = 1, textureRepeat = {
         x: 20,
         y: 8
