@@ -19,7 +19,7 @@ export default class Tv {
     constructor(sketch, options = { }) {
         this.sketch = sketch;
         this.initTv();
-        this.initTvEvents();
+        this.initTvEvents()
 
         return this;
     }

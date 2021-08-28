@@ -532,4 +532,4 @@ EVENT.on('loaded', () => {
         initHelper();
 
     }, 100);
-})
+});

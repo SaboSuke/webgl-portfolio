@@ -58,7 +58,7 @@ function clearStageIntro(stage) {
             gsap.set(st + ' p', {
                 delay: 0.5,
                 display: 'none',
-            })
+            });
         }
     }).to(st + ' h1', {
         duration: .6,
@@ -114,14 +114,14 @@ function hideStageIntros() {
     gsap.to('.stage-intro', {
         opacity: 0,
         ease: 'Expo.easeInOut',
-    })
+    });
 }
 
 function showStageIntros() {
     gsap.to('.stage-intro', {
         opacity: 1,
         ease: 'Expo.easeInOut',
-    })
+    });
 }
 
 // stage controls
