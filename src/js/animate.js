@@ -1,5 +1,5 @@
 // btn click animation
-document.querySelectorAll('.btn-set').forEach(btn => {
+document.querySelectorAll('.btn-set:not(.disabled)').forEach(btn => {
     btn.addEventListener('click', () => {
         const timeline = gsap.timeline();
         timeline.to(btn, {
@@ -10,5 +10,5 @@ document.querySelectorAll('.btn-set').forEach(btn => {
             duration: .1,
             scale: 1,
         }, '-=.05');
-    })
+    });
 });

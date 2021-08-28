@@ -46,14 +46,14 @@ main {
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: start;
+  -webkit-transform: translateX(-5%);
+          transform: translateX(-5%);
   display: none;
 }
 
 .stage-intro h1, .stage-intro p {
   opacity: 0;
   display: none;
-  -webkit-transform: translateY(20%);
-          transform: translateY(20%);
 }
 
 .stage-intro h1 {
@@ -207,7 +207,12 @@ main {
   transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out;
 }
 
-.btn-set:hover {
+.btn-set.disabled {
+  background: #ff050d;
+  border-color: #ff050d;
+}
+
+.btn-set:not(.disabled):hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }

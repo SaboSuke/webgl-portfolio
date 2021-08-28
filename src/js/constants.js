@@ -19,6 +19,8 @@ const COLORS = {
     black: 0x000000,
     bgLight: 0x260402,
     bgDark: 0x50110c,
+    bgPink: 0xa7547e,
+    bgPinkDark: 0x2d0d1e,
 };
 
 const SOCIAL_LINKS = {

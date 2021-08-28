@@ -14,6 +14,7 @@ import {
 export default class Tv {
 
     play = true;
+    paused = false;
     isFullscreen = false;
 
     constructor(sketch, options = { }) {
@@ -144,21 +145,31 @@ export default class Tv {
 
         power.addEventListener('click', () => {
             if (power.classList.contains('on')) {
-                power.classList.remove('on')
-                power.classList.add('off')
+                power.classList.remove('on');
+                power.classList.add('off');
+
+                prev.classList.add('disabled');
+                next.classList.add('disabled');
+                this.paused = true;
             } else {
-                power.classList.add('on')
-                power.classList.remove('off')
+                power.classList.add('on');
+                power.classList.remove('off');
+
+                prev.classList.remove('disabled');
+                next.classList.remove('disabled');
+                this.paused = false;
             }
             this.triggerTv();
         });
 
         prev.addEventListener('click', () => {
-            this.prevChannel();
+            if (!this.paused)
+                this.prevChannel();
         });
 
         next.addEventListener('click', () => {
-            this.nextChannel();
+            if (!this.paused)
+                this.nextChannel();
         });
 
         expand.addEventListener('click', () => {

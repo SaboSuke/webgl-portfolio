@@ -51,8 +51,8 @@ function clearStageIntro(stage) {
     const st = `.stage-${stage}`;
 
     tl.to(st + ' p', {
-        duration: .6,
-        y: '20%',
+        duration: .5,
+        x: '-5%',
         opacity: 0,
         onComplete: () => {
             gsap.set(st + ' p', {
@@ -61,8 +61,8 @@ function clearStageIntro(stage) {
             });
         }
     }).to(st + ' h1', {
-        duration: .6,
-        y: '20%',
+        duration: .5,
+        x: '-5%',
         opacity: 0,
         onComplete: () => {
             gsap.set(st + ' h1', {
@@ -76,7 +76,7 @@ function clearStageIntro(stage) {
                 display: 'none'
             });
         }
-    }, '-=.5');
+    }, '-=.45');
 }
 
 function animateStageIntro(stage, cache = null) {
@@ -98,20 +98,21 @@ function animateStageIntro(stage, cache = null) {
 
     tl.to(st + ' h1', {
         delay: 1,
-        duration: .6,
-        y: 0,
+        duration: .5,
+        x: '5%',
         opacity: 1,
         display: 'initial',
     }).to(st + ' p', {
-        duration: .6,
-        y: 0,
+        duration: .5,
+        x: '5%',
         display: 'initial',
         opacity: 1,
-    }, '-=.5');
+    }, '-=.45');
 }
 
 function hideStageIntros() {
     gsap.to('.stage-intro', {
+        delay: 0.4,
         opacity: 0,
         ease: 'Expo.easeInOut',
     });
@@ -119,6 +120,7 @@ function hideStageIntros() {
 
 function showStageIntros() {
     gsap.to('.stage-intro', {
+        delay: 0.5,
         opacity: 1,
         ease: 'Expo.easeInOut',
     });

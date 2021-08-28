@@ -160,7 +160,10 @@ export class Sketch {
         showStageControls();
         showStageIntros();
         animateStageIntro(1, this.currentStage);
+
         this.currentStage = 1;
+        this.changeHolderColor();
+        this.triggerLights();
     }
 
     resetControls() {
@@ -277,14 +280,14 @@ export class Sketch {
         let geometry = new THREE.BoxGeometry(40, 30, 30);
         let material = new THREE.MeshPhongMaterial({
             color: COLORS.bgLight,
-            shininess: 10,
+            shininess: 15,
             specular: COLORS.bgDark,
             side: THREE.BackSide,
         });
 
         this.planeHolder = new THREE.Mesh(geometry, material);
         this.planeHolder.scale.set(1.3, 1.3, 1.3)
-        this.planeHolder.position.set(2, 15.9, 0);
+        this.planeHolder.position.set(2, 15.9, -10);
         this.planeHolder.receiveShadow = true;
 
         this.scene.add(this.planeHolder);
@@ -440,14 +443,51 @@ export class Sketch {
         );
     }
 
+    changeHolderColor() {
+        if (this.currentStage === 1) {
+            const col = new THREE.Color(COLORS.bgLight);
+            gsap.to(this.planeHolder.material.color, {
+                duration: 1.5,
+                r: col.r,
+                g: col.g,
+                b: col.b,
+                ease: 'Expo.easeInOut'
+            });
+            gsap.to(this.planeHolder.material.specular, {
+                duration: 1.5,
+                r: col.r,
+                g: col.g,
+                b: col.b,
+                ease: 'Expo.easeInOut'
+            });
+        } else if (this.currentStage === 2) {
+            const col1 = new THREE.Color(COLORS.bgPinkDark);
+            const col2 = new THREE.Color(COLORS.bgPink);
+            gsap.to(this.planeHolder.material.color, {
+                duration: 1.5,
+                r: col1.r,
+                g: col1.g,
+                b: col1.b,
+                ease: 'Expo.easeInOut'
+            });
+            gsap.to(this.planeHolder.material.specular, {
+                duration: 1.5,
+                r: col2.r,
+                g: col2.g,
+                b: col2.b,
+                ease: 'Expo.easeInOut'
+            });
+        }
+    }
+
     changeStage(direction) {
         animateStageIntro(this.currentStage);
         this.triggerLights();
+        this.changeHolderColor();
 
         let stage_vec = STAGE_2_VEC;
-        if (direction === 'down') {
+        if (direction === 'down')
             stage_vec = STAGE_1_VEC;
-        }
 
         gsap.to(this.controls.target, {
             duration: 1,
@@ -476,7 +516,7 @@ export class Sketch {
     initSettings() {
         new Settings(this, {
             camera: true,
-            lights: true,
+            lights: false,
             bedRoom: false,
             livingRoom: false,
             cat: false,

@@ -56,7 +56,7 @@ export default class LightBall {
         let sphere = new THREE.Mesh(geometry, material);
         light.add(sphere);
 
-        const texture = new THREE.TextureLoader().load('/src/maps/RoadMap.png')
+        const texture = new THREE.TextureLoader().load('/src/maps/RoadMap.png');
         texture.magFilter = THREE.NearestFilter;
         texture.wrapT = THREE.RepeatWrapping;
         texture.wrapS = THREE.RepeatWrapping;
@@ -106,7 +106,7 @@ export default class LightBall {
                 y: Math.sin(Math.PI) - that.pointLight.position.y,
                 z: Math.sin(time * RAND(0, 1)) - that.pointLight.position.z,
                 ease: 'Power0.easeInOut'
-            })
+            });
             this.pointLight.rotation.x = time * 150;
             this.pointLight.rotation.z = time * 140;
         } else if (this.stage === 2) {
