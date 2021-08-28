@@ -2,6 +2,7 @@ $primary: #ff2a03
 $secondary: #ff050d
 $teriary: #022d36;
 $green: #0ed105;
+$button_bg: rgba(255, 255, 255, 0.1);
 
 *
     margin: 0
@@ -26,6 +27,54 @@ main
     width: 100vw
     height: 100vh
 
+// stage intros
+.stage-intro
+    font-family: 'Poppins', sans-serif
+
+    &>div
+        letter-spacing: 1px;
+        word-spacing: 2px;
+        line-height: 2rem;
+        height: 100vh
+        display: flex
+        flex-direction: column
+        justify-content: start
+
+        //disable to prevent movement
+        display: none 
+
+    h1, p
+        opacity: 0
+        display: none
+        transform: translateY(20%)
+    
+    h1
+        font-size: 40px
+        color: white
+        opacity: .8
+        font-weight: 900
+        margin-bottom: 20px
+
+    .stage-1
+        position: absolute
+        top: 30%
+        padding-left: 50px
+        width: 43vw
+
+    .stage-2
+        position: absolute
+        top: 20%
+        right: 0
+        padding-right: 50px
+        width: 43vw
+
+    p
+        opacity: 1
+        color: white
+        font-size: 15px
+        font-weight: 400
+
+// stage helpers
 .helper
     position: absolute
     bottom: 10px
@@ -36,7 +85,6 @@ main
         margin-bottom: 10px
         position: relative
         font-family: 'Poppins', sans-serif
-        font-size: 16px
         font-weight: 400
         background: transparent
         color: white
@@ -47,21 +95,38 @@ main
         transform: translateX(-50%)
         opacity: 0
 
+        .helper-details
+            position: relative
+            z-index: 100
+
+            h1
+                font-size: 18px
+                margin-bottom: 5px
+            p
+                font-size: 15px
+            
+            small
+                font-size: 12px
+
+            p, small
+                margin-left: 10px
+
         &.current
             display: inherit
 
         &.current:after
+            position: absolute
+            z-index: 1
+            left: 0
+            bottom: 0
             background-image: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,1) 100%)
             content: ''
             height: 100%
             width: 100%
-            position: absolute
-            left: 0
-            bottom: 0
             opacity: 0.32
             transform: rotate(180deg)
 
-
+// btn & controls
 .btn-wrap
     position: absolute
     bottom: 20px
@@ -72,22 +137,20 @@ main
     justify-content: flex-start
 
     &.start
-        top: 70% //70
-        left: 15%
+        top: 60%
+        left: 5%
         right: unset
         bottom: unset
         display: none
         opacity: 0
 
     &.end
-        top: 40%
-        right: 15%
+        top: 50%
+        right: 5%
         transform: translateY(-50%)
         opacity: 1
 
     &.center
-        left: 50%
-        transform: translateX(-50%)
         right: unset
 
     &#tv_contrls.center>div
@@ -100,16 +163,15 @@ main
     height: 35px
     padding: 4px 9px
     margin-right: 20px
-    background: black
-    border: 1px solid transparent
+    background: transparent
+    border: 1px solid white
     border-radius: 50%
     color: white
     cursor: pointer
     transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out
 
     &:hover
-        background: $secondary
-        border: 1px solid $secondary
+        background: rgba(255, 255, 255, 0.1);
         color: white
     
     &:last-child
@@ -119,8 +181,8 @@ main
         animation: loadAnimation .3s linear infinite
 
     &.active, &.expand
-        background: $teriary
-        border: 1px solid $teriary
+        background: $green
+        border: 1px solid $green
         color: white
     &.on
         background: $green
@@ -131,15 +193,30 @@ main
         border: 1px solid $secondary
         color: white
 
+.wrap_center
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 100%
+
 #tv_contrls
+    background: $button_bg
+    padding: 15px 25px
+    border-radius: 20px
+    display: none
+    opacity: 0
+    transform: translateY(20%)
+    transition: .3s all ease-in-out
+        
     .btn-set:nth-child(2)
-        padding: 5px 10px;
+        padding: 5px 10px
 
     .btn-set:nth-child(3)
-        padding: 4px 12px;
+        padding: 4px 12px
 
     .btn-set:nth-child(4)
-        padding: 4px 9.5px;
+        padding: 4px 9.5px
+        margin-right: 0
 
 @keyframes loadAnimation 
     0% 
@@ -150,6 +227,7 @@ main
         transform: rotate(90deg)
         transition: .1s all ease-in-out
 
+// loading animation
 .loading
     &::before 
         content: ''
@@ -189,7 +267,7 @@ video
     dislpay: none
     visibility: hidden
 
-// cursor
+// stage changer
 @keyframes pulse
     0%
         opacity: 0
@@ -216,7 +294,7 @@ video
     margin: 0
     border: 1px solid #fff
     border-radius: 100px
-    width: 100px
+    width: 80px
     height: 100px
     transition: .3s background ease-in-out
 

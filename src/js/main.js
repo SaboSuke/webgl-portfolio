@@ -1,4 +1,3 @@
-
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 import { Stats } from '../../dist/stats.module.js';
 
@@ -8,18 +7,27 @@ import Settings from './settings.js';
 import LightBall from './lightball.js';
 
 import {
+    // tv
     hideTvControls,
     showTvControls,
+    // stage
+    hideStageIntros,
+    showStageIntros,
+    animateStageIntro,
     showStageControls,
     hideStageControls,
     hideUpArrow,
     hideDownArrow,
     showUpArrow,
     showDownArrow,
+    // helper
     shiftHelperMessage,
     initHelper
 } from './base.js';
-import { RAND, RAND_FLOOR, COLORS, SOCIAL_LINKS } from './constants.js';
+import {
+    RAND, COLORS, SOCIAL_LINKS,
+    STAGE_1_VEC, STAGE_2_VEC,
+} from './constants.js';
 
 import EventEmitter from './event.js';
 export const EVENT = new EventEmitter();
@@ -28,8 +36,9 @@ const NB_STAGES = 2;
 /**
  * 
  * @param {Object} options
- * @param {Boolean} [options.eSettings=false] - gui settings
- * @param {Boolean} [options.eStats=false] - fps and performance
+ * @param {Boolean} [options.eSettings=false] - enable gui settings
+ * @param {Boolean} [options.eStats=false] - enable performance stats
+ * @param {Boolean} [options.eDevMod=false] - enable developer mode
  * @constructor
  */
 export class Sketch {
@@ -60,8 +69,10 @@ export class Sketch {
     }
 
     INIT(options) {
-        this.opts.eSettings = options.eSettings || true;
+        this.isPlaying = true;
+        this.opts.eSettings = options.eSettings || false;
         this.opts.eStats = options.eStats || false;
+        this.opts.eDevMod = options.eDevMod || true;
         this.shaders = new Shader();
         this.initMouse();
         this.initScene();
@@ -88,23 +99,30 @@ export class Sketch {
     }
 
     initCamera() {
-        this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 1, 1000); //30
-        this.camera.position.set(-1, 3, 14);
+        let that = this;
+        this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 1, 1000);
+        this.camera.position.set(STAGE_1_VEC.position.x, STAGE_1_VEC.position.y, STAGE_1_VEC.position.z);
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        // this.controls.minDistance = 0;
-        // this.controls.maxDistance = Infinity || 50;
-        // this.controls.mouseButtons = {
-        //     LEFT: THREE.MOUSE.ROTATE,
-        //     MIDDLE: null,
-        //     RIGHT: null
-        // };
-        // this.controls.touches = {
-        //     ONE: THREE.TOUCH.ROTATE,
-        //     TWO: null
-        // };
-        // this.controls.rotateSpeed = .5;
-        // this.controls.enableDamping = true;
+        this.controls.target.set(STAGE_1_VEC.target.x, STAGE_1_VEC.target.y, STAGE_1_VEC.target.z);
+        function controlAccess() {
+            that.controls.minDistance = 0;
+            that.controls.maxDistance = Infinity || 50;
+            that.controls.mouseButtons = {
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: null,
+                RIGHT: null
+            };
+            that.controls.touches = {
+                ONE: THREE.TOUCH.ROTATE,
+                TWO: null
+            };
+            that.controls.rotateSpeed = .5;
+            that.controls.enableDamping = true;
+        }
+
+        if (!this.opts.eDevMod)
+            controlAccess();
 
         this.controls.update();
     }
@@ -115,23 +133,24 @@ export class Sketch {
     }
 
     resetPositions() {
+        gsap.to(this.controls.target, {
+            x: STAGE_1_VEC.target.x,
+            y: STAGE_1_VEC.target.y,
+            z: STAGE_1_VEC.target.z,
+            ease: 'Expo.easeInOut'
+        });
+
         gsap.to(this.camera.position, {
-            x: -1,
-            y: 3,
-            z: 14,
+            x: STAGE_1_VEC.position.x,
+            y: STAGE_1_VEC.position.y,
+            z: STAGE_1_VEC.position.z,
             ease: 'Expo.easeInOut'
         });
         this.camera.updateProjectionMatrix();
 
-        gsap.to(this.controls.target, {
-            x: 0,
-            y: 0,
-            z: 0,
-            ease: 'Expo.easeInOut'
-        });
-
         this.resetControls();
         this.tv.resetTv();
+        this.tv.resetControls();
 
         // fix twitter icon
         gsap.to(this.twitter.position, { y: -1.24 });
@@ -139,6 +158,8 @@ export class Sketch {
 
         // stage
         showStageControls();
+        showStageIntros();
+        animateStageIntro(1, this.currentStage);
         this.currentStage = 1;
     }
 
@@ -183,20 +204,20 @@ export class Sketch {
 
             this.viewOnTv = true;
             hideStageControls();
+            hideStageIntros();
             if (!that.tv.isFullScreen()) {
                 showTvControls();
 
                 gsap.to(this.camera.position, {
                     duration: 1,
-                    x: 1,
+                    x: 0.6,
                     y: -1.5,
                     z: 1,
                     ease: 'Expo.easeInOut'
                 });
-
                 gsap.to(this.controls.target, {
                     duration: 1,
-                    x: 0,
+                    x: -0.3,
                     y: -1.6,
                     z: -0.5,
                     ease: 'Expo.easeInOut'
@@ -208,8 +229,8 @@ export class Sketch {
 
         // stage
         document.querySelector('.scroll-down.up').addEventListener('click', () => {
-            this.changeStage('up');
             this.currentStage++;
+            this.changeStage('up');
             shiftHelperMessage(this.currentStage, 'up');
 
             if (this.currentStage > 1) {
@@ -220,8 +241,8 @@ export class Sketch {
                 hideUpArrow();
         })
         document.querySelector('.scroll-down.down').addEventListener('click', () => {
-            this.changeStage('down');
             this.currentStage--;
+            this.changeStage('down');
             shiftHelperMessage(this.currentStage, 'down');
 
             if (this.currentStage <= 1)
@@ -241,6 +262,15 @@ export class Sketch {
 
         this.light1 = new THREE.PointLight(COLORS.white, 1);
         this.scene.add(new THREE.AmbientLight(COLORS.white, .2), this.light1);
+    }
+
+    triggerLights() {
+        this.lightBalls.forEach(light => {
+            if (light.self.stage > this.currentStage || light.self.stage < this.currentStage)
+                light.self.toggleLight(0);
+            else
+                light.self.toggleLight(1);
+        })
     }
 
     initHolder() {
@@ -302,26 +332,22 @@ export class Sketch {
         }));
         this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseover', () => {
             document.body.style.cursor = "pointer";
-
-            let y = -1.07;
-            if (item.circle === this.github) y = -1.1;
-            if (item.circle === this.twitter) y = -1.14;
-            gsap.to(item.circle.position, {
-                duration: .3,
-                y,
-                ease: 'Power1.easeInOut'
+            gsap.to(item.circle.scale, {
+                duration: 1,
+                x: 1.3,
+                y: 1.3,
+                z: 1.3,
+                ease: 'Expo.easeOut'
             })
         }));
         this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseout', () => {
             document.body.style.cursor = "inherit";
-
-            let y = -1.1;
-            if (item.circle === this.github) y = -1.13;
-            if (item.circle === this.twitter) y = -1.17;
-            gsap.to(item.circle.position, {
-                duration: .3,
-                y,
-                ease: 'Power1.easeInOut'
+            gsap.to(item.circle.scale, {
+                duration: 1,
+                x: 1,
+                y: 1,
+                z: 1,
+                ease: 'Expo.easeOut'
             })
         }));
     }
@@ -415,25 +441,26 @@ export class Sketch {
     }
 
     changeStage(direction) {
-        let x1 = 3.5, y1 = 3, z1 = -5;
-        let x2 = -1, y2 = 8, z2 = 14;
+        animateStageIntro(this.currentStage);
+        this.triggerLights();
+
+        let stage_vec = STAGE_2_VEC;
         if (direction === 'down') {
-            x1 = 0, y1 = 0, z1 = 0;
-            x2 = -1, y2 = 3, z2 = 14;
+            stage_vec = STAGE_1_VEC;
         }
 
         gsap.to(this.controls.target, {
             duration: 1,
-            x: x1,
-            y: y1,
-            z: z1,
+            x: stage_vec.target.x,
+            y: stage_vec.target.y,
+            z: stage_vec.target.z,
             ease: 'Expo.easeInOut'
         });
         gsap.to(this.camera.position, {
             duration: 1,
-            x: x2,
-            y: y2,
-            z: z2,
+            x: stage_vec.position.x,
+            y: stage_vec.position.y,
+            z: stage_vec.position.z,
             ease: 'Expo.easeInOut'
         });
         this.camera.updateProjectionMatrix();
@@ -465,6 +492,8 @@ export class Sketch {
     }
 
     render() {
+        if (!this.isPlaying) return;
+
         if (this.isLoaded) {
             const delta = this.clock.getDelta();
             if (this.bedRoomMixer) this.bedRoomMixer.update(delta);
@@ -472,7 +501,7 @@ export class Sketch {
 
             let time = performance.now() * 0.000001;
             this.lightBalls.forEach(ball => {
-                ball.animate(time);
+                ball.self.animate(time);
                 time += time;
             });
 
@@ -482,6 +511,17 @@ export class Sketch {
 
         this.renderer.render(this.scene, this.camera);
         window.requestAnimationFrame(this.render.bind(this));
+    }
+
+    play() {
+        if (!this.isPlaying) {
+            this.render()
+            this.isPlaying = true;
+        }
+    }
+
+    stop() {
+        this.isPlaying = false;
     }
 }
 

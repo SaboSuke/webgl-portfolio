@@ -9,7 +9,10 @@ import { RAND } from './constants.js';
  * @return {Object} - { lightBall, shadowLight, ballMaterial }
  */
 export default class LightBall {
-    constructor(sketch, positions = { }, color = 0xffffff, intensity = 1, stage = 1) {
+    constructor(sketch, positions = { }, color = 0xffffff, intensity = 1, stage = 1, textureRepeat = {
+        x: 20,
+        y: 8
+    }) {
         this.sketch = sketch;
         this.stage = stage;
         this.positions = {
@@ -18,10 +21,12 @@ export default class LightBall {
             z: positions.z || 0,
         };
         this.color = color;
-        this.intensity = intensity;
+        this.textureRepeat = textureRepeat || { x: 20, y: 8 };
+        this.intensity = stage > 1 ? 0 : intensity;
+        this.isActive = stage > 1 ? false : true;
 
         this.lightBall = null, this.shadowLight = null, this.ballMaterial = null;
-        this.INIT();
+        return this.INIT();
     }
 
     INIT() {
@@ -34,13 +39,14 @@ export default class LightBall {
             lightBall: this.lightBall,
             shadowLight: this.shadowLight,
             ballMaterial: this.ballMaterial,
-        }
+            self: this
+        };
     }
 
     createLight(color) {
         const light = new THREE.PointLight(color, this.intensity, 20);
         light.castShadow = true;
-        light.shadow.bias = - 0.0005; // reduces self-shadowing on double-sided objects
+        light.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
         this.shadowLight = light;
 
         let geometry = new THREE.SphereGeometry(0.3, 16, 6);
@@ -54,7 +60,7 @@ export default class LightBall {
         texture.magFilter = THREE.NearestFilter;
         texture.wrapT = THREE.RepeatWrapping;
         texture.wrapS = THREE.RepeatWrapping;
-        texture.repeat.set(20, 8);
+        texture.repeat.set(this.textureRepeat.x, this.textureRepeat.y);
 
         geometry = new THREE.SphereGeometry(1, 32, 8);
         material = new THREE.MeshPhongMaterial({
@@ -79,9 +85,22 @@ export default class LightBall {
         return light;
     }
 
+    toggleLight(intensity = 1) {
+        gsap.to(this.pointLight, {
+            duration: 1.8,
+            intensity,
+            ease: 'Expo.easeInOut',
+        });
+
+        if (intensity === 0) this.isActive = false;
+        else this.isActive = true;
+    }
+
     animate(time) {
+        if (!this.isActive) return;
+
         let that = this;
-        if (this.stage == 1) {
+        if (this.stage === 1) {
             gsap.to(this.pointLight.position, {
                 duration: 50,
                 y: Math.sin(Math.PI) - that.pointLight.position.y,
@@ -90,8 +109,8 @@ export default class LightBall {
             })
             this.pointLight.rotation.x = time * 150;
             this.pointLight.rotation.z = time * 140;
-        } else {
-
+        } else if (this.stage === 2) {
+            this.pointLight.rotation.y = time * 100;
         }
     }
 }

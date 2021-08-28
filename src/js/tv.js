@@ -173,39 +173,58 @@ export default class Tv {
                 expand.classList.add('expand')
                 expand.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
 
-                gsap.to(this.sketch.controls.target, {
-                    x: 0,
-                    y: 0,
-                    z: 0,
-                    ease: 'Expo.easeInOut'
-                });
-                gsap.to(this.sketch.camera.position, {
-                    x: 0,
-                    y: 0,
-                    z: 2,
-                    ease: 'Expo.easeInOut'
-                });
-                this.sketch.camera.updateProjectionMatrix();
-
-                gsap.to([this.tv.position, this.tvCover.position], {
-                    x: 0,
-                    y: 0,
-                    z: 0,
-                    ease: 'Expo.easeInOut'
-                });
-                gsap.to([this.tv.scale, this.tvCover.scale], {
-                    x: 1.2,
-                    y: 1,
-                    z: 1.2,
-                    ease: 'Expo.easeInOut'
-                });
-                gsap.to([this.tv.rotation, , this.tvCover.rotation], {
-                    x: 0,
-                    y: 0,
-                    z: 0,
-                    ease: 'Expo.easeInOut'
-                });
+                this.expandTv();
+                this.clearControls();
             }
+        });
+    }
+
+    resetControls() {
+        gsap.to('.btn-set.sanitize', {
+            borderColor: '',
+            background: 'transparent'
+        })
+    }
+
+    clearControls() {
+        gsap.to('.btn-set.sanitize', {
+            borderColor: 'transparent',
+            background: 'black'
+        })
+    }
+
+    expandTv() {
+        gsap.to(this.sketch.controls.target, {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: 'Expo.easeInOut'
+        });
+        gsap.to(this.sketch.camera.position, {
+            x: 0,
+            y: 0,
+            z: 2,
+            ease: 'Expo.easeInOut'
+        });
+        this.sketch.camera.updateProjectionMatrix();
+
+        gsap.to([this.tv.position, this.tvCover.position], {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: 'Expo.easeInOut'
+        });
+        gsap.to([this.tv.scale, this.tvCover.scale], {
+            x: 1.2,
+            y: 1,
+            z: 1.2,
+            ease: 'Expo.easeInOut'
+        });
+        gsap.to([this.tv.rotation, , this.tvCover.rotation], {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: 'Expo.easeInOut'
         });
     }
 

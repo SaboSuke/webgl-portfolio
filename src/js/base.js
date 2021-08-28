@@ -1,22 +1,127 @@
+/**
+ * tv
+ */
 // tv controls
 function hideTvControls() {
-    gsap.to('#tv_contrls>div', {
-        delay: 0.1,
+    const tl = gsap.timeline();
+
+    tl.to('#tv_contrls>div', {
         stagger: 0.1,
         y: '150px',
         opacity: 0,
         ease: 'Expo.easeInOut'
-    });
+    }).to('#tv_contrls', {
+        duration: .5,
+        y: '100%',
+        opacity: 0,
+        onComplete() {
+            gsap.set('#tv_contrls', {
+                delay: 0.5,
+                display: 'none',
+            })
+        }
+    }, '-=0.5');
 }
 
 function showTvControls() {
-    gsap.to('#tv_contrls>div', {
-        delay: 0.06,
-        stagger: 0.1,
+    const tl = gsap.timeline();
+
+    tl.to('#tv_contrls', {
+        duration: 0.5,
+        display: 'flex',
+        opacity: 1,
+        y: '0',
+        x: '0',
+        ease: 'Expo.easeInOut',
+    }).to('#tv_contrls>div', {
+        stagger: 0.05,
         y: 0,
         opacity: 1,
         ease: 'Expo.easeInOut'
+    }, '-=0.4');
+}
+
+/**
+ * Stage
+ */
+// stage intros
+var prevStage = 0;
+function clearStageIntro(stage) {
+    const tl = gsap.timeline();
+    const st = `.stage-${stage}`;
+
+    tl.to(st + ' p', {
+        duration: .6,
+        y: '20%',
+        opacity: 0,
+        onComplete: () => {
+            gsap.set(st + ' p', {
+                delay: 0.5,
+                display: 'none',
+            })
+        }
+    }).to(st + ' h1', {
+        duration: .6,
+        y: '20%',
+        opacity: 0,
+        onComplete: () => {
+            gsap.set(st + ' h1', {
+                delay: 0.5,
+                display: 'none',
+            });
+
+            //disable to prevent movement
+            gsap.set(st, {
+                delay: 0.5,
+                display: 'none'
+            });
+        }
+    }, '-=.5');
+}
+
+function animateStageIntro(stage, cache = null) {
+    if (cache === 1)
+        return;
+
+    const tl = gsap.timeline();
+    const st = `.stage-${stage}`;
+
+    if (prevStage > 0) {
+        clearStageIntro(prevStage);
+    }
+    prevStage = stage;
+
+    //disable to prevent movement
+    gsap.set(st, {
+        display: 'flex'
     });
+
+    tl.to(st + ' h1', {
+        delay: 1,
+        duration: .6,
+        y: 0,
+        opacity: 1,
+        display: 'initial',
+    }).to(st + ' p', {
+        duration: .6,
+        y: 0,
+        display: 'initial',
+        opacity: 1,
+    }, '-=.5');
+}
+
+function hideStageIntros() {
+    gsap.to('.stage-intro', {
+        opacity: 0,
+        ease: 'Expo.easeInOut',
+    })
+}
+
+function showStageIntros() {
+    gsap.to('.stage-intro', {
+        opacity: 1,
+        ease: 'Expo.easeInOut',
+    })
 }
 
 // stage controls
@@ -66,7 +171,11 @@ function hideStageControls() {
     hideDownArrow();
 }
 
+/**
+ * helpers
+ */
 // message helpers
+import { HELPER_MESSAGES } from './constants.js';
 function shiftHelperMessage(currentStage, action) {
     const helpers = document.querySelectorAll('.helper-element'),
         current = helpers[action === 'up' ? currentStage - 1 : currentStage - 1],
@@ -90,6 +199,14 @@ function shiftHelperMessage(currentStage, action) {
             x: '50%',
             ease: 'Expo.easeInOut',
         });
+        new Typewriter('.helper-element.current .helper-details p', {
+            strings: [HELPER_MESSAGES[currentStage - 1]],
+            autoStart: true,
+            pause: 10000,
+            loop: true,
+            delay: 15,
+            deleteSpeed: 30,
+        });
     }, 500);
 }
 
@@ -103,14 +220,24 @@ function initHelper() {
 }
 
 export {
+    /** tv **/
     hideTvControls,
     showTvControls,
+
+    /** stage **/
+    //intro
+    animateStageIntro,
+    hideStageIntros,
+    showStageIntros,
+    // controls
     showStageControls,
     hideStageControls,
     hideUpArrow,
     hideDownArrow,
     showUpArrow,
     showDownArrow,
+
+    /** helper **/
     shiftHelperMessage,
     initHelper,
 };

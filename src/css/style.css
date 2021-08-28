@@ -27,6 +27,65 @@ main {
   height: 100vh;
 }
 
+.stage-intro {
+  font-family: 'Poppins', sans-serif;
+}
+
+.stage-intro > div {
+  letter-spacing: 1px;
+  word-spacing: 2px;
+  line-height: 2rem;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  display: none;
+}
+
+.stage-intro h1, .stage-intro p {
+  opacity: 0;
+  display: none;
+  -webkit-transform: translateY(20%);
+          transform: translateY(20%);
+}
+
+.stage-intro h1 {
+  font-size: 40px;
+  color: white;
+  opacity: .8;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.stage-intro .stage-1 {
+  position: absolute;
+  top: 30%;
+  padding-left: 50px;
+  width: 43vw;
+}
+
+.stage-intro .stage-2 {
+  position: absolute;
+  top: 20%;
+  right: 0;
+  padding-right: 50px;
+  width: 43vw;
+}
+
+.stage-intro p {
+  opacity: 1;
+  color: white;
+  font-size: 15px;
+  font-weight: 400;
+}
+
 .helper {
   position: absolute;
   bottom: 10px;
@@ -38,7 +97,6 @@ main {
   margin-bottom: 10px;
   position: relative;
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
   font-weight: 400;
   background: transparent;
   color: white;
@@ -51,18 +109,41 @@ main {
   opacity: 0;
 }
 
+.helper .helper-element .helper-details {
+  position: relative;
+  z-index: 100;
+}
+
+.helper .helper-element .helper-details h1 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.helper .helper-element .helper-details p {
+  font-size: 15px;
+}
+
+.helper .helper-element .helper-details small {
+  font-size: 12px;
+}
+
+.helper .helper-element .helper-details p, .helper .helper-element .helper-details small {
+  margin-left: 10px;
+}
+
 .helper .helper-element.current {
   display: inherit;
 }
 
 .helper .helper-element.current:after {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
   background-image: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, white 100%);
   content: '';
   height: 100%;
   width: 100%;
-  position: absolute;
-  left: 0;
-  bottom: 0;
   opacity: 0.32;
   -webkit-transform: rotate(180deg);
           transform: rotate(180deg);
@@ -85,8 +166,8 @@ main {
 }
 
 .btn-wrap.start {
-  top: 70%;
-  left: 15%;
+  top: 60%;
+  left: 5%;
   right: unset;
   bottom: unset;
   display: none;
@@ -94,17 +175,14 @@ main {
 }
 
 .btn-wrap.end {
-  top: 40%;
-  right: 15%;
+  top: 50%;
+  right: 5%;
   -webkit-transform: translateY(-50%);
           transform: translateY(-50%);
   opacity: 1;
 }
 
 .btn-wrap.center {
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
   right: unset;
 }
 
@@ -120,8 +198,8 @@ main {
   height: 35px;
   padding: 4px 9px;
   margin-right: 20px;
-  background: black;
-  border: 1px solid transparent;
+  background: transparent;
+  border: 1px solid white;
   border-radius: 50%;
   color: white;
   cursor: pointer;
@@ -130,8 +208,7 @@ main {
 }
 
 .btn-set:hover {
-  background: #ff050d;
-  border: 1px solid #ff050d;
+  background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
@@ -145,8 +222,8 @@ main {
 }
 
 .btn-set.active, .btn-set.expand {
-  background: #022d36;
-  border: 1px solid #022d36;
+  background: #0ed105;
+  border: 1px solid #0ed105;
   color: white;
 }
 
@@ -162,6 +239,31 @@ main {
   color: white;
 }
 
+.wrap_center {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+}
+
+#tv_contrls {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 25px;
+  border-radius: 20px;
+  display: none;
+  opacity: 0;
+  -webkit-transform: translateY(20%);
+          transform: translateY(20%);
+  -webkit-transition: .3s all ease-in-out;
+  transition: .3s all ease-in-out;
+}
+
 #tv_contrls .btn-set:nth-child(2) {
   padding: 5px 10px;
 }
@@ -172,6 +274,7 @@ main {
 
 #tv_contrls .btn-set:nth-child(4) {
   padding: 4px 9.5px;
+  margin-right: 0;
 }
 
 @-webkit-keyframes loadAnimation {
@@ -310,7 +413,7 @@ video {
   margin: 0;
   border: 1px solid #fff;
   border-radius: 100px;
-  width: 100px;
+  width: 80px;
   height: 100px;
   -webkit-transition: .3s background ease-in-out;
   transition: .3s background ease-in-out;
