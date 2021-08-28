@@ -1,64 +1,84 @@
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 import { Stats } from '../../dist/stats.module.js';
+
 import Shader from './shaders.js';
 import Tv from './tv.js';
-import EventEmitter from './event.js';
-import { rand, randFloor } from './base.js';
+import Settings from './settings.js';
+import LightBall from './lightball.js';
 
+import {
+    // tv
+    hideTvControls,
+    showTvControls,
+    // stage
+    hideStageIntros,
+    showStageIntros,
+    animateStageIntro,
+    showStageControls,
+    hideStageControls,
+    hideUpArrow,
+    hideDownArrow,
+    showUpArrow,
+    showDownArrow,
+    // helper
+    shiftHelperMessage,
+    initHelper
+} from './base.js';
+import {
+    RAND, COLORS, SOCIAL_LINKS,
+    STAGE_1_VEC, STAGE_2_VEC,
+} from './constants.js';
+
+import EventEmitter from './event.js';
 export const EVENT = new EventEmitter();
+const NB_STAGES = 2;
 
 /**
  * 
  * @param {Object} options
- * @param {Boolean} [options.eFlash=false] - room flash light
- * @param {Boolean} [options.eSettings=false] - gui settings
- * @param {Boolean} [options.eStats=false] - fps and performance
+ * @param {Boolean} [options.eSettings=false] - enable gui settings
+ * @param {Boolean} [options.eStats=false] - enable performance stats
+ * @param {Boolean} [options.eDevMod=false] - enable developer mode
  * @constructor
  */
 export class Sketch {
 
-    opts = {};
-    colors = {
-        green: 0x00FF00,
-        red: 0xFF0000,
-        white: 0xFFFFFF,
-        black: 0x000000
-    };
+    opts = { };
     isLoaded = false;
     time = 0;
-    playhead = rand(0, 1);
+    playhead = RAND(0, 1);
     objects = [];
     sizes = {
         width: window.innerWidth,
         height: window.innerHeight
     };
+    clock = new THREE.Clock();
     mouse = new THREE.Vector2();
-    loader = new THREE.TextureLoader();
-    material = null;
-    geometry = null;
-    mesh = null;
-    shaders = {};
+    currentStage = 1;
 
-    tv = null;
-    table = null;
+    constructor(options = { }) {
+        this.INIT(options);
 
-    constructor(options = {}) {
-        this.opts.eFlash = options.eFlash || false;
-        this.opts.eSettings = options.eSettings || true;
+        this.initTv();
+        this.initEvents();
+        this.loadLivingRoom();
+
+        this.opts.eStats ? this.initStats() : 0;
+
+        this.render();
+    }
+
+    INIT(options) {
+        this.isPlaying = true;
+        this.opts.eSettings = options.eSettings || false;
         this.opts.eStats = options.eStats || false;
+        this.opts.eDevMod = options.eDevMod || true;
         this.shaders = new Shader();
         this.initMouse();
         this.initScene();
         this.domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
 
-        this.loadRoom();
-        this.initPlanes();
-        this.initEvents();
-
-        this.opts.eStats ? this.initStats() : 0;
-        this.opts.eSettings ? this.initSettings() : 0;
-
-        this.render();
+        this.initHolder();
     }
 
     LOAD() {
@@ -72,31 +92,38 @@ export class Sketch {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setClearColor(this.scene.fog.color)
-        document.querySelector('.container').appendChild(this.renderer.domElement);
+        document.querySelector('.scene').appendChild(this.renderer.domElement);
 
         this.initCamera();
         this.initLights();
     }
 
     initCamera() {
-        this.camera = new THREE.PerspectiveCamera(60, this.sizes.width / this.sizes.height, 1, 10000);
-        this.camera.position.set(0, 0.5, 4.2);
+        let that = this;
+        this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 1, 1000);
+        this.camera.position.set(STAGE_1_VEC.position.x, STAGE_1_VEC.position.y, STAGE_1_VEC.position.z);
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.minDistance = 0;
-        this.controls.maxDistance = Infinity || 50;
-        // this.controls.mouseButtons = {
-        //     LEFT: THREE.MOUSE.ROTATE,
-        //     MIDDLE: null,
-        //     RIGHT: null
-        // };
-        // this.controls.touches = {
-        //     ONE: THREE.TOUCH.ROTATE,
-        //     TWO: null
-        // };
-        // this.controls.rotateSpeed = .5;
+        this.controls.target.set(STAGE_1_VEC.target.x, STAGE_1_VEC.target.y, STAGE_1_VEC.target.z);
+        function controlAccess() {
+            that.controls.minDistance = 0;
+            that.controls.maxDistance = Infinity || 50;
+            that.controls.mouseButtons = {
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: null,
+                RIGHT: null
+            };
+            that.controls.touches = {
+                ONE: THREE.TOUCH.ROTATE,
+                TWO: null
+            };
+            that.controls.rotateSpeed = .5;
+            that.controls.enableDamping = true;
+        }
 
-        this.controls.enableDamping = true;
+        if (!this.opts.eDevMod)
+            controlAccess();
+
         this.controls.update();
     }
 
@@ -105,8 +132,44 @@ export class Sketch {
         this.mouse.y = -(document.scrollingElement.clientWidth / this.sizes.height) * 2 + 1;
     }
 
+    resetPositions() {
+        gsap.to(this.controls.target, {
+            x: STAGE_1_VEC.target.x,
+            y: STAGE_1_VEC.target.y,
+            z: STAGE_1_VEC.target.z,
+            ease: 'Expo.easeInOut'
+        });
+
+        gsap.to(this.camera.position, {
+            x: STAGE_1_VEC.position.x,
+            y: STAGE_1_VEC.position.y,
+            z: STAGE_1_VEC.position.z,
+            ease: 'Expo.easeInOut'
+        });
+        this.camera.updateProjectionMatrix();
+
+        this.resetControls();
+        this.tv.resetTv();
+        this.tv.resetControls();
+
+        // fix twitter icon
+        gsap.to(this.twitter.position, { y: -1.24 });
+        this.viewOnTv = false;
+
+        // stage
+        showStageControls();
+        showStageIntros();
+        animateStageIntro(1, this.currentStage);
+        this.currentStage = 1;
+    }
+
+    resetControls() {
+        hideTvControls();
+    }
+
     initEvents() {
         //resize
+        let that = this;
         window.addEventListener('resize', () => {
             // Update sizes
             this.sizes.width = window.innerWidth;
@@ -127,179 +190,193 @@ export class Sketch {
             this.mouse.y = - (e.clientY / this.sizes.height) * 2 + 1
         });
 
-        // camera reset
-        document.querySelector('#reset').addEventListener('click', resetCamera)
-        let that = this;
-        function resetCamera() {
-            gsap.to(that.camera, {
-                zoom: 1,
-                onComplete() {
-                    that.camera.updateProjectionMatrix();
-                    gsap.to(that.camera.position, {
-                        x: 0,
-                        y: 0.5,
-                        z: 4.2,
-                    });
-                }
-            });
-
-            that.camera.zoom !== 1 ? that.camera.zoom = 1 : 0;
-        }
+        // camera & controls reset
+        document.querySelector('#reset').addEventListener('click', () => {
+            this.resetPositions();
+        });
 
         // camera redirect
-        this.domEvents.addEventListener(this.plane1, 'click', () => {
-            gsap.to(this.camera.position, {
-                duration: 1,
-                x: -2.5,
-                y: 0.22,
-                z: 0,
-            });
-        });
-        this.domEvents.addEventListener(this.plane2, 'click', () => {
-            gsap.to(this.camera.position, {
-                x: -0.001,
-                y: 0,
-                z: 0,
-            });
+        this.viewOnTv = false;
+        this.domEvents.addEventListener(this.tvScreen, 'mouseover', () => {
+            // icon fix
+            if (!this.viewOnTv)
+                gsap.to(this.twitter.position, { y: this.twitter.position.y + 0.04 });
 
-            gsap.to(this.camera, {
-                zoom: 1.25,
-            });
-            this.camera.updateProjectionMatrix();
-        });
-        this.domEvents.addEventListener(this.plane3, 'click', () => {
-            gsap.to(this.camera.position, {
-                x: 1,
-                y: 0,
-                z: 0,
-            });
+            this.viewOnTv = true;
+            hideStageControls();
+            hideStageIntros();
+            if (!that.tv.isFullScreen()) {
+                showTvControls();
 
-            gsap.to(this.camera, {
-                zoom: 2,
-            });
-            this.camera.updateProjectionMatrix();
-        });
-        this.domEvents.addEventListener(this.plane4, 'click', () => {
+                gsap.to(this.camera.position, {
+                    duration: 1,
+                    x: 0.6,
+                    y: -1.5,
+                    z: 1,
+                    ease: 'Expo.easeInOut'
+                });
+                gsap.to(this.controls.target, {
+                    duration: 1,
+                    x: -0.3,
+                    y: -1.6,
+                    z: -0.5,
+                    ease: 'Expo.easeInOut'
+                });
 
-        });
-        this.domEvents.addEventListener(this.plane5, 'mouseover', () => {
-            gsap.to(this.camera.position, {
-                duration: 1,
-                x: 0,
-                y: 0,
-                z: 0.1,
-            });
-
-            gsap.to(this.camera, {
-                zoom: 2,
-            });
-            this.camera.updateProjectionMatrix();
+                this.camera.updateProjectionMatrix();
+            }
         });
 
-        // cursor
-        this.domEvents.addEventListener(this.tv.btn1, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.tv.btn2, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.tv.btn3, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.tv.btn1, 'mouseout', () => document.body.style.cursor = 'inherit');
-        this.domEvents.addEventListener(this.tv.btn2, 'mouseout', () => document.body.style.cursor = 'inherit');
-        this.domEvents.addEventListener(this.tv.btn3, 'mouseout', () => document.body.style.cursor = 'inherit');
+        // stage
+        document.querySelector('.scroll-down.up').addEventListener('click', () => {
+            this.currentStage++;
+            this.changeStage('up');
+            shiftHelperMessage(this.currentStage, 'up');
 
-        this.domEvents.addEventListener(this.plane1, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.plane2, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.plane3, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.plane4, 'mouseover', () => document.body.style.cursor = 'pointer');
-        this.domEvents.addEventListener(this.plane1, 'mouseout', () => document.body.style.cursor = 'inherit');
-        this.domEvents.addEventListener(this.plane2, 'mouseout', () => document.body.style.cursor = 'inherit');
-        this.domEvents.addEventListener(this.plane3, 'mouseout', () => document.body.style.cursor = 'inherit');
-        this.domEvents.addEventListener(this.plane4, 'mouseout', () => document.body.style.cursor = 'inherit');
+            if (this.currentStage > 1) {
+                showDownArrow();
+            }
+
+            if (this.currentStage === NB_STAGES)
+                hideUpArrow();
+        })
+        document.querySelector('.scroll-down.down').addEventListener('click', () => {
+            this.currentStage--;
+            this.changeStage('down');
+            shiftHelperMessage(this.currentStage, 'down');
+
+            if (this.currentStage <= 1)
+                hideDownArrow();
+
+            if (this.currentStage < NB_STAGES)
+                showUpArrow();
+        })
     }
 
     initLights() {
-        this.light1 = new THREE.PointLight(0xffffff, 1);
-        this.light1.dispose();
-        this.light1.position.set(0, 0, 0);
-        this.scene.add(this.light1);
+        this.lightBalls = [
+            new LightBall(this, { x: -3, y: 3, z: 2 }, COLORS.red, 1, 1),
+            new LightBall(this, { x: 3, y: 2, z: 2 }, COLORS.orange, 1, 1),
+            new LightBall(this, { x: 3.75, y: 4.9, z: -4.27 }, COLORS.white, 1, 2),
+        ];
 
-        const ambient = new THREE.AmbientLight(0xffffff, .2);
-        ambient.position.set(0, 0, 0);
-        this.scene.add(ambient);
-
-        if (this.opts.enableFlash) {
-            this.flash = new THREE.PointLight(0x062d89, 30, 500, 1.7);
-            // position behind the scene
-            this.flash.position.set(200, 300, 100);
-            this.scene.add(this.flash);
-        }
+        this.light1 = new THREE.PointLight(COLORS.white, 1);
+        this.scene.add(new THREE.AmbientLight(COLORS.white, .2), this.light1);
     }
 
-    loadRoom() {
-        const loader = new THREE.GLTFLoader();
+    triggerLights() {
+        this.lightBalls.forEach(light => {
+            if (light.self.stage > this.currentStage || light.self.stage < this.currentStage)
+                light.self.toggleLight(0);
+            else
+                light.self.toggleLight(1);
+        })
+    }
+
+    initHolder() {
+        let geometry = new THREE.BoxGeometry(40, 30, 30);
+        let material = new THREE.MeshPhongMaterial({
+            color: COLORS.bgLight,
+            shininess: 10,
+            specular: COLORS.bgDark,
+            side: THREE.BackSide,
+        });
+
+        this.planeHolder = new THREE.Mesh(geometry, material);
+        this.planeHolder.scale.set(1.3, 1.3, 1.3)
+        this.planeHolder.position.set(2, 15.9, 0);
+        this.planeHolder.receiveShadow = true;
+
+        this.scene.add(this.planeHolder);
+    }
+
+    initSocial() {
+        this.socials = [];
         let that = this;
 
-        loader.load('/src/models/room/scene.gltf', function (gltf) {
-            that.room = gltf.scene || gltf.scenes[0];
-
-            that.room.scale.set(1, 1, 1);
-            that.room.position.set(0, -1.2, 1);
-            that.room.rotation.y = 9.45;
-
-            that.room.traverse(function (node) {
-                if (node.isMesh) { node.castShadow = true; }
+        function createLink(map, link, name) {
+            const geometry = new THREE.CircleGeometry(0.1, 80);
+            const material = new THREE.MeshBasicMaterial({
+                color: COLORS.white,
+                side: THREE.DoubleSide,
+                map: map,
+                transparent: true
             });
+            const circle = new THREE.Mesh(geometry, material);
 
-            that.scene.add(that.room);
-            that.loadTable();
-        },
-            function (xhr) {
-                // console.log("room: ", (xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            function (error) {
-                console.log('An error happened');
-            }
-        );
+            that.socials.push({ circle, link });
+
+            return circle
+        }
+        const loader = new THREE.TextureLoader(),
+            map1 = loader.load('/src/img/linkedin.png'),
+            map2 = loader.load('/src/img/github.png'),
+            map3 = loader.load('/src/img/twitter.png');
+
+        this.linkedin = createLink(map1, SOCIAL_LINKS.linkedin, 'linkedin');
+        this.linkedin.position.set(-2.1, -1.21, -2.5);
+        this.linkedin.rotation.set(0, 0.58, 0);
+
+        this.github = createLink(map2, SOCIAL_LINKS.github, 'github');
+        this.github.position.set(-1.69, -1.2, -2.8);
+        this.github.rotation.set(0, 0.58, 0);
+
+        this.twitter = createLink(map3, SOCIAL_LINKS.twitter, 'twitter');
+        this.twitter.position.set(-1.3, -1.24, -3.2);
+        this.twitter.rotation.set(0, 0.58, 0);
+
+        this.scene.add(this.linkedin, this.github, this.twitter);
+
+        this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'click', () => {
+            window.open(item.link);
+        }));
+        this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseover', () => {
+            document.body.style.cursor = "pointer";
+            gsap.to(item.circle.scale, {
+                duration: 1,
+                x: 1.3,
+                y: 1.3,
+                z: 1.3,
+                ease: 'Expo.easeOut'
+            })
+        }));
+        this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseout', () => {
+            document.body.style.cursor = "inherit";
+            gsap.to(item.circle.scale, {
+                duration: 1,
+                x: 1,
+                y: 1,
+                z: 1,
+                ease: 'Expo.easeOut'
+            })
+        }));
     }
 
-    loadTable() {
+    loadBedRoom() {
         const loader = new THREE.GLTFLoader();
         let that = this;
 
-        loader.load('/src/models/table/scene.gltf', function (gltf) {
-            that.table = gltf.scene || gltf.scenes[0];
+        loader.load('/src/models/bed-room/scene.gltf', function (gltf) {
+            that.bedRoom = gltf.scene || gltf.scenes[0];
+            that.bedRoomMixer = new THREE.AnimationMixer(that.bedRoom);
 
-            that.table.scale.set(0.002, 0.002, 0.002);
-            that.table.position.set(0, -1.2, 1);
+            const clip = gltf.animations.find((clip) => clip.name === 'Take 001');
+            const action = that.bedRoomMixer.clipAction(clip);
+            action.play();
 
-            that.table.traverse(function (node) { if (node.isMesh) node.castShadow = true; });
+            that.bedRoom.scale.set(0.05, 0.05, 0.05);
+            that.bedRoom.position.set(3.75, 1.6, -4.3);
+            that.bedRoom.rotation.set(0, -1, 0);
 
-            that.scene.add(that.table);
-            that.loadRack();
-        },
-            function (xhr) {
-                // console.log("table: ", (xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            function (error) {
-                console.log('An error happened');
-            }
-        );
-    }
+            that.bedRoom.traverse(function (node) { if (node.isMesh) node.castShadow = true; });
+            that.bedRoomModel = { bedRoom: that.bedRoom, action };
+            that.scene.add(that.bedRoom);
 
-    loadRack() {
-        const loader = new THREE.GLTFLoader();
-        let that = this;
-
-        loader.load('/src/models/rack/scene.gltf', function (gltf) {
-            that.rack = gltf.scene || gltf.scenes[0];
-
-            that.rack.scale.set(0.01, 0.01, 0.01);
-            that.rack.position.set(0, -1.18, -1.9);
-
-            that.rack.traverse(function (node) { if (node.isMesh) node.castShadow = true; });
-
-            that.scene.add(that.rack);
+            that.opts.eSettings ? that.initSettings() : 0;
             EVENT.dispatch('loaded');
         },
             function (xhr) {
-                // console.log("rack: ", (xhr.loaded / xhr.total * 100) + '% loaded');
+                // console.log("bedRoom: ", (xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
                 console.log('An error happened');
@@ -307,245 +384,106 @@ export class Sketch {
         );
     }
 
-    // remove if not used
-    PlaneRaycaster() {
-        this.raycaster = new THREE.Raycaster();
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        let intersects = this.raycaster.intersectObjects(this.objects);
+    loadCat() {
+        const loader = new THREE.GLTFLoader();
         let that = this;
 
-        for (const intersect of intersects) {
-            if (intersect.object === this.plane5) {
+        loader.load('/src/models/cat/scene.gltf', function (gltf) {
+            that.cat = gltf.scene || gltf.scenes[0];
+            that.catMixer = new THREE.AnimationMixer(that.cat);
 
+            const clip = gltf.animations.find((clip) => clip.name === 'Take 001');
+            const action = that.catMixer.clipAction(clip);
+            action.play();
+
+            that.cat.scale.set(0.03, 0.03, 0.03);
+            that.cat.position.set(2, -3.15, -0.8);
+            that.cat.rotation.y = 2.5;
+
+            that.cat.traverse(function (node) { if (node.isMesh) node.castShadow = true; });
+            that.catModel = { cat: that.cat, action };
+            that.scene.add(that.cat);
+        },
+            function (xhr) {
+                // console.log("cat: ", (xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function (error) {
+                console.log('An error happened');
             }
-        }
-
-        for (const object of this.objects) {
-            if (!intersects.find(intersect => intersect.object === object)) {
-
-            }
-        }
+        );
     }
 
-    initPlanes() {
-        const textures = [
-            new THREE.TextureLoader().load('/src/img/me.png'),
-            new THREE.TextureLoader().load('/src/img/about.png'),
-            new THREE.TextureLoader().load('/src/img/skills.png'),
-        ]
+    loadLivingRoom() {
+        const loader = new THREE.GLTFLoader();
+        let that = this;
 
-        // 01 plane
-        this.geometry = new THREE.PlaneGeometry(1.1, 1.1);
-        this.material = new THREE.MeshStandardMaterial({
-            color: 0xFFFFFF,
-            transparent: true,
-            depthTest: true,
-            depthWrite: true,
-            map: textures[0]
+        loader.load('/src/models/living-room/scene.gltf', function (gltf) {
+            that.livingRoom = gltf.scene || gltf.scenes[0];
+
+            that.livingRoom.scale.set(5, 5, 5);
+            that.livingRoom.position.set(0, -1.2, -1.9);
+            that.livingRoom.rotation.set(0, -1, 0);
+
+            that.livingRoom.traverse(function (node) { if (node.isMesh) node.castShadow = true; });
+            that.scene.add(that.livingRoom);
+
+            that.initSocial();
+            that.loadCat();
+            that.loadBedRoom();
+        },
+            function (xhr) {
+                // console.log("livingRoom: ", (xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function (error) {
+                console.log('An error happened');
+            }
+        );
+    }
+
+    changeStage(direction) {
+        animateStageIntro(this.currentStage);
+        this.triggerLights();
+
+        let stage_vec = STAGE_2_VEC;
+        if (direction === 'down') {
+            stage_vec = STAGE_1_VEC;
+        }
+
+        gsap.to(this.controls.target, {
+            duration: 1,
+            x: stage_vec.target.x,
+            y: stage_vec.target.y,
+            z: stage_vec.target.z,
+            ease: 'Expo.easeInOut'
         });
-
-        this.plane1 = new THREE.Mesh(this.geometry, this.material);
-        this.plane1.position.set(2.9, 0.3, 2.6);
-        this.plane1.rotation.set(0, 4.73, 0);
-        this.scene.add(this.plane1);
-
-        // 02 plane
-        this.geometry = new THREE.PlaneGeometry(1.1, 1.1);
-        this.material = new THREE.MeshStandardMaterial({
-            color: 0xFFFFFF,
-            transparent: true,
-            depthTest: true,
-            depthWrite: true,
-            map: textures[1]
+        gsap.to(this.camera.position, {
+            duration: 1,
+            x: stage_vec.position.x,
+            y: stage_vec.position.y,
+            z: stage_vec.position.z,
+            ease: 'Expo.easeInOut'
         });
+        this.camera.updateProjectionMatrix();
+    }
 
-        this.plane2 = new THREE.Mesh(this.geometry, this.material);
-        this.plane2.position.set(2.8, 0.29, -0.345);
-        this.plane2.rotation.set(0, 4.73, 0);
-        this.scene.add(this.plane2);
-
-        // 03 plane
-        this.geometry = new THREE.PlaneGeometry(1.1, 1.1);
-        this.material = new THREE.MeshStandardMaterial({
-            color: 0xFFFFFF,
-            transparent: true,
-            depthTest: true,
-            depthWrite: true,
-            map: textures[2]
-        });
-        this.plane3 = new THREE.Mesh(this.geometry, this.material);
-        this.plane3.position.set(-2.88, 0.3, 0.21);
-        this.plane3.rotation.set(0, 1.6, 0);
-        this.scene.add(this.plane3);
-
-        // 04 plane
-        this.geometry = new THREE.PlaneGeometry(1.1, 1.1);
-        this.material = new THREE.MeshStandardMaterial({
-            color: 0xFFFFFF,
-            transparent: true,
-            depthTest: true,
-            depthWrite: true,
-            map: textures[2]
-        });
-        this.plane4 = new THREE.Mesh(this.geometry, this.material);
-        this.plane4.position.set(-2.8, 0.3, 3.35);
-        this.plane4.rotation.set(0, 1.6, 0);
-        this.scene.add(this.plane4);
-
-        // 05 plane
+    initTv() {
         this.objects = [];
-        this.tv = new Tv(this, { play: false });
-        this.plane5 = this.tv.initTv();
-        this.scene.add(this.plane5);
-
-        Array.prototype.push.apply(this.objects, [
-            this.plane1,
-            this.plane2,
-            this.plane3,
-            this.plane4,
-            this.plane5,
-        ]);
+        this.tv = new Tv(this);
+        this.tvScreen = this.tv.initTv();
+        this.scene.add(this.tvScreen);
     }
 
     initSettings() {
-        let that = this;
-        this.settings = {
-            cameraPos: that.camera.position,
-            light1: that.light1.position,
-            // roomPos: that.room.position,
-            // tablePos: that.table.position,
-            // rackPos: that.rack.position,
-            planePos: [
-                that.plane1.position,
-                that.plane2.position,
-                that.plane3.position,
-                that.plane4.position,
-                // that.plane5.position,
-            ],
-            planeDeg: [
-                that.plane1.rotation,
-                that.plane2.rotation,
-                that.plane3.rotation,
-                that.plane4.rotation,
-                // that.plane5.rotation,
-            ],
-
-            // tv
-            btns: that.tv.buttons
-        };
-        this.gui = new dat.GUI();
-
-        // camera
-        {
-            const cameraPos = this.gui.addFolder('camera position');
-            cameraPos.add(this.settings.cameraPos, 'x');
-            cameraPos.add(this.settings.cameraPos, 'y');
-            cameraPos.add(this.settings.cameraPos, 'z');
-        }
-
-        // light
-        {
-            const light1 = this.gui.addFolder('room light position');
-            light1.add(this.settings.light1, 'x');
-            light1.add(this.settings.light1, 'y');
-            light1.add(this.settings.light1, 'z');
-        }
-
-        // room
-        {
-            //     const room = this.gui.addFolder('room position');
-            //     room.add(this.settings.roomPos, 'x');
-            //     room.add(this.settings.roomPos, 'y');
-            //     room.add(this.settings.roomPos, 'z');
-        }
-
-        // table
-        {
-            // const table = this.gui.addFolder('table position');
-            // table.add(this.settings.tablePos, 'x');
-            // table.add(this.settings.tablePos, 'y');
-            // table.add(this.settings.tablePos, 'z');
-        }
-
-        // rack
-        {
-            //     const rack = this.gui.addFolder('rack position');
-            //     rack.add(this.settings.rackPos, 'x');
-            //     rack.add(this.settings.rackPos, 'y');
-            //     rack.add(this.settings.rackPos, 'z');
-        }
-
-        // tv buttons
-        {
-            const tvBtn1 = this.gui.addFolder('tv button1 position');
-            tvBtn1.add(this.settings.btns[0].position, 'x');
-            tvBtn1.add(this.settings.btns[0].position, 'y');
-            tvBtn1.add(this.settings.btns[0].position, 'z');
-
-            const tvBtn1Rotate = this.gui.addFolder('tv button1 rotation');
-            tvBtn1Rotate.add(this.settings.btns[0].rotation, 'x');
-            tvBtn1Rotate.add(this.settings.btns[0].rotation, 'y');
-            tvBtn1Rotate.add(this.settings.btns[0].rotation, 'z');
-        }
-
-        // planes settings
-        const planesGeo = () => {
-            // 01 plane
-            const plane1Pos = this.gui.addFolder('Plane 1 Position');
-            plane1Pos.add(this.settings.planePos[0], 'x').min(1);
-            plane1Pos.add(this.settings.planePos[0], 'y').min(0);
-            plane1Pos.add(this.settings.planePos[0], 'z').min(1);
-
-            const plane1Deg = this.gui.addFolder('Plane 1 Rotation');
-            plane1Deg.add(this.settings.planeDeg[0], 'x');
-            plane1Deg.add(this.settings.planeDeg[0], 'y');
-            plane1Deg.add(this.settings.planeDeg[0], 'z');
-
-            // 02 plane
-            const plane2Pos = this.gui.addFolder('Plane 2 Position');
-            plane2Pos.add(this.settings.planePos[1], 'x');
-            plane2Pos.add(this.settings.planePos[1], 'y');
-            plane2Pos.add(this.settings.planePos[1], 'z');
-
-            const plane2Deg = this.gui.addFolder('Plane 2 Rotation');
-            plane2Deg.add(this.settings.planeDeg[1], 'x');
-            plane2Deg.add(this.settings.planeDeg[1], 'y');
-            plane2Deg.add(this.settings.planeDeg[1], 'z');
-
-            // 03 plane
-            const plane3Pos = this.gui.addFolder('Plane 3 Position');
-            plane3Pos.add(this.settings.planePos[2], 'x');
-            plane3Pos.add(this.settings.planePos[2], 'y');
-            plane3Pos.add(this.settings.planePos[2], 'z');
-
-            const plane3Deg = this.gui.addFolder('Plane 3 Rotation');
-            plane3Deg.add(this.settings.planeDeg[2], 'x');
-            plane3Deg.add(this.settings.planeDeg[2], 'y');
-            plane3Deg.add(this.settings.planeDeg[2], 'z');
-
-            // 04 plane
-            const plane4Pos = this.gui.addFolder('Plane 4 Position');
-            plane4Pos.add(this.settings.planePos[3], 'x');
-            plane4Pos.add(this.settings.planePos[3], 'y');
-            plane4Pos.add(this.settings.planePos[3], 'z');
-
-            const plane4Deg = this.gui.addFolder('Plane 4 Rotation');
-            plane4Deg.add(this.settings.planeDeg[3], 'x');
-            plane4Deg.add(this.settings.planeDeg[3], 'y');
-            plane4Deg.add(this.settings.planeDeg[3], 'z');
-
-            // 05 plane
-            // const plane5Pos = this.gui.addFolder('Plane 5 Position');
-            // plane5Pos.add(this.settings.planePos[4], 'x');
-            // plane5Pos.add(this.settings.planePos[4], 'y');
-            // plane5Pos.add(this.settings.planePos[4], 'z');
-
-            // const plane5Deg = this.gui.addFolder('Plane 5 Rotation');
-            // plane5Deg.add(this.settings.planeDeg[4], 'x');
-            // plane5Deg.add(this.settings.planeDeg[4], 'y');
-            // plane5Deg.add(this.settings.planeDeg[4], 'z');
-        }
-        // planesGeo();
+        new Settings(this, {
+            camera: true,
+            lights: true,
+            bedRoom: false,
+            livingRoom: false,
+            cat: false,
+            planeHolder: false,
+            tvSettings: false,
+            socials: false,
+        });
     }
 
     initStats() {
@@ -554,29 +492,44 @@ export class Sketch {
     }
 
     render() {
+        if (!this.isPlaying) return;
+
         if (this.isLoaded) {
-            this.time++;
-            this.playhead = rand(0, 1);
-            this.PlaneRaycaster();
+            const delta = this.clock.getDelta();
+            if (this.bedRoomMixer) this.bedRoomMixer.update(delta);
+            if (this.catMixer) this.catMixer.update(delta);
+
+            let time = performance.now() * 0.000001;
+            this.lightBalls.forEach(ball => {
+                ball.self.animate(time);
+                time += time;
+            });
 
             this.controls ? this.controls.update() : 0;
             this.stats ? this.stats.update() : 0;
         }
 
-        // randomize the flash light
-        if (this.flash)
-            if (Math.random() > 0.93 || this.flash.power > 100) {
-                if (this.flash.power < 100)
-                    this.flash.position.set(
-                        Math.random() * 400,
-                        300 + Math.random() * 200,
-                        100
-                    )
-
-                this.flash.power = 50 + Math.random() * 500
-            }
-
         this.renderer.render(this.scene, this.camera);
         window.requestAnimationFrame(this.render.bind(this));
     }
+
+    play() {
+        if (!this.isPlaying) {
+            this.render()
+            this.isPlaying = true;
+        }
+    }
+
+    stop() {
+        this.isPlaying = false;
+    }
 }
+
+// on load animations
+EVENT.on('loaded', () => {
+    setTimeout(() => {
+
+        initHelper();
+
+    }, 100);
+});

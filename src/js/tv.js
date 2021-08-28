@@ -1,3 +1,9 @@
+import {
+    COLORS,
+    CHANNEL_ELEMENTS,
+    CHANNEL_SOURCES
+} from './constants.js';
+
 /**
  * @desc Hanldes all the tv logic
  * 
@@ -8,41 +14,51 @@
 export default class Tv {
 
     play = true;
-    srcs = [
-        document.querySelector('.videos video.vid1'),
-        document.querySelector('.videos video.vid2'),
-        document.querySelector('.videos video.vid3'),
-        document.querySelector('.videos video.vid4'),
-    ];
+    isFullscreen = false;
 
-    constructor(sketch, options = {}) {
+    constructor(sketch, options = { }) {
         this.sketch = sketch;
-
         this.initTv();
-        this.initTvControls();
+        this.initTvEvents()
 
         return this;
     }
 
-    initTv() {
-        this.videos = this.loadChannels();
-
-        this.geometry = new THREE.PlaneGeometry(1.551, 0.79);
-        this.material = new THREE.MeshStandardMaterial({
-            color: this.sketch.colors.white,
+    initTvCover() {
+        const geometry = new THREE.PlaneGeometry(1.27, 0.8);
+        const material = new THREE.MeshStandardMaterial({
+            color: COLORS.black,
             transparent: true,
             depthTest: false,
             depthWrite: false,
-            map: this.videos[0].video
+        });
+
+        this.tvCover = new THREE.Mesh(geometry, material);
+        this.tvCover.position.set(-1.598, -1.77, -2.65);
+        this.tvCover.rotation.set(0, 0.58, 0);
+        this.sketch.scene.add(this.tvCover);
+    }
+
+    initTv() {
+        this.initTvCover();
+        this.channels = this.loadChannels();
+
+        this.geometry = new THREE.PlaneGeometry(1.25, 0.78);
+        this.material = new THREE.MeshBasicMaterial({
+            color: COLORS.white,
+            transparent: true,
+            depthTest: true,
+            depthWrite: true,
+            map: this.channels[0].video
         });
 
         this.tv = new THREE.Mesh(this.geometry, this.material);
-        this.tv.position.set(-0.159, -0.043, -2.45);
-        this.tv.rotation.set(0, 0, 0);
+        this.tv.position.set(-1.598, -1.77, -2.65);
+        this.tv.rotation.set(0, 0.58, 0);
 
         if (this.play) {
-            this.videos[0].opts.play();
-            this.previousVideo = 0;
+            this.channels[0].opts.play();
+            this.previousChannel = 0;
         }
 
         return this.tv;
@@ -50,182 +66,206 @@ export default class Tv {
 
     triggerTv() {
         if (this.play) {
-            this.videos[this.previousVideo].opts.pause();
+            this.channels[this.previousChannel].opts.pause();
             this.sketch.scene.remove(this.tv);
         } else {
             this.sketch.scene.add(this.tv);
-            this.videos[this.previousVideo].opts.play();
+            this.channels[this.previousChannel].opts.play();
         }
 
         this.play = !this.play;
     }
 
     loadChannels() {
-        let videos = [];
+        let channels = [];
 
-        for (let i = 0; i < this.srcs.length; i++) {
-            const video = new THREE.VideoTexture(this.srcs[i]);
+        for (let i = 0; i < CHANNEL_ELEMENTS.length; i++) {
+            const video = new THREE.VideoTexture(CHANNEL_ELEMENTS[i]);
             video.minFilter = THREE.LinearFilter;
             video.magFilter = THREE.LinearFilter;
+            video.src = CHANNEL_SOURCES[i];
 
-            videos.push({
+            channels.push({
                 video: video,
-                opts: this.srcs[i]
+                opts: CHANNEL_ELEMENTS[i]
             });
         }
 
-        return videos;
+        return channels;
     }
 
     addChannel(videoElement) {
-        this.srcs.push(document.querySelector(videoElement));
+        CHANNEL_ELEMENTS.push(document.querySelector(videoElement));
 
         return this;
     }
 
     prevChannel() {
-        let value = this.previousVideo + 0;
-        if (this.previousVideo > 0)
+        let value = this.previousChannel + 0;
+        if (this.previousChannel > 0)
             value--;
-        else value = this.videos.length - 1;
+        else value = this.channels.length - 1;
 
         // stop current
-        this.videos[this.previousVideo].opts.pause();
-        this.videos[this.previousVideo].opts.currentTime = 0;
+        this.channels[this.previousChannel].opts.pause();
+        this.channels[this.previousChannel].opts.currentTime = 0;
 
         // play next
-        this.sketch.plane5.material.map = this.videos[value].video;
-        this.videos[value].opts.play();
+        this.sketch.tvScreen.material.map = this.channels[value].video;
+        this.channels[value].opts.play();
 
         // set prev
-        this.previousVideo = value;
+        this.previousChannel = value;
     }
 
     nextChannel() {
-        let value = this.previousVideo + 0;
-        if (this.previousVideo < this.videos.length - 1)
+        let value = this.previousChannel + 0;
+        if (this.previousChannel < this.channels.length - 1)
             value++;
         else value = 0;
 
         // stop current
-        this.videos[this.previousVideo].opts.pause();
-        this.videos[this.previousVideo].opts.currentTime = 0;
+        this.channels[this.previousChannel].opts.pause();
+        this.channels[this.previousChannel].opts.currentTime = 0;
 
         // play next
-        this.sketch.plane5.material.map = this.videos[value].video;
-        this.videos[value].opts.play();
+        this.sketch.tvScreen.material.map = this.channels[value].video;
+        this.channels[value].opts.play();
 
         // set prev
-        this.previousVideo = value;
+        this.previousChannel = value;
     }
 
-    initButtonEvents() {
-        this.sketch.domEvents.addEventListener(this.btn1, 'click', event => {
-            let value = -2.51;
-            if (this.btn1.position.z === -2.51) {
-                value = -2.52;
+    initTvEvents() {
+        const power = document.querySelector('#power'),
+            prev = document.querySelector('#prev'),
+            next = document.querySelector('#next'),
+            expand = document.querySelector('#expand');
+
+        power.addEventListener('click', () => {
+            if (power.classList.contains('on')) {
+                power.classList.remove('on')
+                power.classList.add('off')
+            } else {
+                power.classList.add('on')
+                power.classList.remove('off')
             }
-
-            gsap.to(this.btn1.position, {
-                duration: .3,
-                z: value,
-            });
-
-            let color = this.sketch.colors.red;
-            if (!this.btn1Options.clicked) {
-                color = this.sketch.colors.green;
-                this.btn1Options.clicked = true;
-            } else
-                this.btn1Options.clicked = false;
-
-            this.btn1.material.color = new THREE.Color(color);
-
             this.triggerTv();
-        })
+        });
 
-        this.sketch.domEvents.addEventListener(this.btn2, 'click', event => {
-            let value = -2.51;
-            let prev = -2.52;
-            if (this.btn2.position.z === -2.51) {
-                value = -2.52;
-                prev = -2.51;
-            }
-
-            gsap.to(this.btn2.position, {
-                duration: .2,
-                z: value,
-            })
-            gsap.to(this.btn2.position, {
-                delay: .2,
-                duration: .2,
-                z: prev
-            })
-
+        prev.addEventListener('click', () => {
             this.prevChannel();
-            this.btn2Options.clicked = !this.btn2Options.clicked;
-        })
+        });
 
-        this.sketch.domEvents.addEventListener(this.btn3, 'click', event => {
-            let value = -2.51;
-            let prev = -2.52;
-            if (this.btn3.position.z === -2.51) {
-                value = -2.52;
-                prev = -2.51;
-            }
-
-            gsap.to(this.btn3.position, {
-                duration: .2,
-                z: value,
-            })
-            gsap.to(this.btn3.position, {
-                delay: .2,
-                duration: .2,
-                z: prev
-            })
-
+        next.addEventListener('click', () => {
             this.nextChannel();
-            this.btn3Options.clicked = !this.btn3Options.clicked;
+        });
+
+        expand.addEventListener('click', () => {
+            if (!this.isFullscreen) this.isFullscreen = true;
+
+            if (expand.classList.contains('expand')) {
+                expand.innerHTML = '<i class="fas fa-expand"></i>';
+                expand.classList.remove('expand');
+
+                this.sketch.resetPositions();
+            } else {
+                expand.classList.add('expand')
+                expand.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
+
+                this.expandTv();
+                this.clearControls();
+            }
+        });
+    }
+
+    resetControls() {
+        gsap.to('.btn-set.sanitize', {
+            borderColor: '',
+            background: 'transparent'
         })
     }
 
-    initTvControls() {
-        this.btn1Options = { clicked: true };
-        this.btn2Options = { clicked: false };
-        this.btn3Options = { clicked: false };
+    clearControls() {
+        gsap.to('.btn-set.sanitize', {
+            borderColor: 'transparent',
+            background: 'black'
+        })
+    }
 
-        let power = new THREE.TextureLoader().load('/src/img/power.png'),
-            left = new THREE.TextureLoader().load('/src/img/left.jpg'),
-            right = new THREE.TextureLoader().load('/src/img/right.jpg');
+    expandTv() {
+        gsap.to(this.sketch.controls.target, {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: 'Expo.easeInOut'
+        });
+        gsap.to(this.sketch.camera.position, {
+            x: 0,
+            y: 0,
+            z: 2,
+            ease: 'Expo.easeInOut'
+        });
+        this.sketch.camera.updateProjectionMatrix();
 
-        let geometry1 = new THREE.CylinderGeometry(0.02, 0.02, 0.06, 60),
-            geometry2 = new THREE.CylinderGeometry(0.02, 0.02, 0.06, 60),
-            geometry3 = new THREE.CylinderGeometry(0.02, 0.02, 0.06, 60),
-            material1 = new THREE.MeshBasicMaterial({ color: this.play ? this.sketch.colors.green : this.sketch.colors.red, map: power }),
-            material2 = new THREE.MeshBasicMaterial({ color: this.sketch.colors.white, map: left }),
-            material3 = new THREE.MeshBasicMaterial({ color: this.sketch.colors.white, map: right });
+        gsap.to([this.tv.position, this.tvCover.position], {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: 'Expo.easeInOut'
+        });
+        gsap.to([this.tv.scale, this.tvCover.scale], {
+            x: 1.2,
+            y: 1,
+            z: 1.2,
+            ease: 'Expo.easeInOut'
+        });
+        gsap.to([this.tv.rotation, , this.tvCover.rotation], {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: 'Expo.easeInOut'
+        });
+    }
 
-        this.btn1 = new THREE.Mesh(geometry1, material1);
-        this.btn1.position.set(-0.5, -0.54, this.play ? -2.52 : -2.51);
-        this.btn1.rotation.set(0, 1.4, 1.55);
-        this.sketch.scene.add(this.btn1);
+    resetTv() {
+        const timeline = gsap.timeline();
+        let that = this;
 
-        this.btn2 = new THREE.Mesh(geometry2, material2);
-        this.btn2.position.set(-0.4, -0.54, -2.51);
-        this.btn2.rotation.set(0, 1.4, 1.55);
-        this.sketch.scene.add(this.btn2);
+        gsap.to([this.tv.scale, this.tvCover.scale], {
+            x: 1,
+            y: 1,
+            z: 1,
+            ease: 'Expo.easeInOut',
+        });
+        gsap.to([this.tv.rotation, , this.tvCover.rotation], {
+            x: 0,
+            y: 0.58,
+            z: 0,
+            ease: 'Expo.easeInOut',
+        });
 
-        this.btn3 = new THREE.Mesh(geometry3, material3);
-        this.btn3.position.set(-0.3, -0.54, -2.51);
-        this.btn3.rotation.set(0, 1.4, 1.55);
-        this.sketch.scene.add(this.btn3);
+        timeline.to([this.tv.position, this.tvCover.position], {
+            duration: 1,
+            x: -1.598,
+            y: -1.77,
+            z: -2.65,
+            ease: 'Expo.easeInOut',
+        }).to(this.sketch.camera.position, {
+            duration: 1,
+            x: -1,
+            y: 3,
+            z: 14,
+            ease: 'Expo.easeInOut',
+            onComplete() {
+                that.sketch.camera.updateProjectionMatrix();
+            }
+        }, '-=1');
 
-        this.buttons = [
-            this.btn1,
-            this.btn2,
-            this.btn3,
-        ];
+        this.isFullscreen = false;
+    }
 
-        this.initButtonEvents();
-        Array.prototype.push.apply(this.sketch.objects, this.buttons);
+    isFullScreen() {
+        return this.isFullscreen;
     }
 }
