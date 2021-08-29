@@ -3,6 +3,7 @@ import {
     CHANNEL_ELEMENTS,
     CHANNEL_SOURCES
 } from './constants.js';
+
 export default class Tv {
 
     play = true;
@@ -12,11 +13,11 @@ export default class Tv {
     /**
      * @desc Hanldes all the tv logic
      * 
-     * @param {Class} sketch
+     * @param {Sketch} sketch
      * @constructor
      * @returns {Tv}
      */
-    constructor(sketch, options = { }) {
+    constructor(sketch) {
         this.sketch = sketch;
         this.initTv();
         this.initTvEvents()
@@ -100,6 +101,14 @@ export default class Tv {
         return this;
     }
 
+    pauseChannel() {
+        this.channels[this.previousChannel].opts.pause();
+    }
+
+    resumeChannel() {
+        this.channels[this.previousChannel].opts.play();
+    }
+
     prevChannel() {
         let value = this.previousChannel + 0;
         if (this.previousChannel > 0)
@@ -180,7 +189,7 @@ export default class Tv {
 
                 this.sketch.resetPositions();
             } else {
-                expand.classList.add('expand')
+                expand.classList.add('expand');
                 expand.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
 
                 this.expandTv();

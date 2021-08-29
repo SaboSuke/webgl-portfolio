@@ -1,4 +1,5 @@
-import { RAND } from './constants.js';
+import { RAND, ENV_PATH } from './constants.js';
+
 export default class LightBall {
     /**
      * @desc Creates a light ball
@@ -55,7 +56,7 @@ export default class LightBall {
         let sphere = new THREE.Mesh(geometry, material);
         light.add(sphere);
 
-        const texture = new THREE.TextureLoader().load('/src/maps/RoadMap.png');
+        const texture = new THREE.TextureLoader().load(ENV_PATH + 'maps/RoadMap.png');
         texture.magFilter = THREE.NearestFilter;
         texture.wrapT = THREE.RepeatWrapping;
         texture.wrapS = THREE.RepeatWrapping;

@@ -92,7 +92,7 @@
                         <small></small>
                     </div>
                 </div>
-                <div class="helper-element" id="bed-room">
+                <div class="helper-element second" id="bed-room">
                     <div class="helper-details">
                         <h1>Tip :</h1>
                         <p>Explore the bed room</p>
@@ -114,19 +114,16 @@
 
         <script type="module">
             import { EVENT, Sketch } from './js/main.js';
-            import { animateStageIntro, typeHelperMessage, typeTipMessage } from './js/base.js';
-            import { HELPER_MESSAGES } from './js/constants.js';
+            import DevHelper from './js/dev-hepler.js';
             const sketch = new Sketch();
 
             EVENT.on('loaded', () => {
                 document.body.classList.remove('loading');
 
                 sketch.LOAD();
-                animateStageIntro(1);
 
-                // type stage helpers
-                // typeHelperMessage();
-                typeTipMessage();
+                const helper = new DevHelper(sketch, false, false);
+                // sketch.showPerformance(helper)
             });
 
             const reset = document.querySelector("#reset");
@@ -140,17 +137,6 @@
                     }, 800);
                 }
             })
-
-            function typeStageIntro() {
-                new Typewriter('#stage1-typed', {
-                    strings: [`>> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aperiam quo eos optio. Quibusdam id
-                        ipsam debitis, vitae eligendi magnam iure.`],
-                    autoStart: true,
-                    loop: true,
-                    pauseFor: 10000,
-                    delay: 2
-                });
-            }
         </script>
     </body>
 

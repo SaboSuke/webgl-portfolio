@@ -177,17 +177,7 @@ function hideStageControls() {
  * helpers
  */
 // message helpers
-import { HELPER_MESSAGES, HELPER_TIPS_1, HELPER_TIPS_2 } from './constants.js';
-function typeHelperMessage(currentStage = 1) {
-    new Typewriter('.helper-element.current .helper-details p', {
-        strings: [HELPER_MESSAGES[currentStage - 1]],
-        autoStart: true,
-        pause: 10000,
-        loop: true,
-        delay: 15,
-        deleteSpeed: 30,
-    });
-}
+import { HELPER_TIPS_1, HELPER_TIPS_2 } from './constants.js';
 function typeTipMessage(array = HELPER_TIPS_1) {
     new Typewriter('.helper-element.current .helper-details small', {
         strings: array,
@@ -198,10 +188,14 @@ function typeTipMessage(array = HELPER_TIPS_1) {
         deleteSpeed: 30,
     });
 }
-function shiftHelperMessage(currentStage, action) {
+function shiftHelperMessage(currentStage, action, reset = false) {
     const helpers = document.querySelectorAll('.helper-element'),
         current = helpers[currentStage - 1],
-        prev = helpers[action === 'up' ? currentStage - 2 : currentStage];
+        prev = helpers[
+            reset
+                ? 1
+                : action === 'up' ? currentStage - 2 : currentStage
+        ];
 
     gsap.to(prev, {
         duration: 0.5,
@@ -221,8 +215,6 @@ function shiftHelperMessage(currentStage, action) {
             x: '50%',
             ease: 'Expo.easeInOut',
         });
-
-        // typeHelperMessage(currentStage);
 
         if (currentStage === 1) {
             typeTipMessage(HELPER_TIPS_1);
@@ -264,6 +256,7 @@ function showStageBackButton() {
     gsap.to('.btn-set#back', {
         duration: 0.8,
         opacity: 1,
+        display: 'initial',
         ease: 'Expo.easeInOut',
     });
 
@@ -274,6 +267,7 @@ function hideStageBackButton() {
     gsap.to('.btn-set#back', {
         duration: 0.5,
         opacity: 0,
+        display: 'non',
         ease: 'Expo.easeOut',
     });
 }
@@ -297,7 +291,6 @@ export {
     showDownArrow,
 
     /** helper **/
-    typeHelperMessage,
     typeTipMessage,
     shiftHelperMessage,
     initHelper,

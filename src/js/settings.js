@@ -56,7 +56,7 @@ export default class Settings {
             ] : null,
             socials: that.opts.socials ? that.sketch.socials : null,
             cat: that.opts.cat ? that.sketch.cat : null,
-            initStage2Interface: that.opts.initStage2Interface ? that.sketch.second_stage_objects : null,
+            initStage2Interface: that.opts.initStage2Interface ? that.sketch.stage2.objects : null,
         };
     }
 
