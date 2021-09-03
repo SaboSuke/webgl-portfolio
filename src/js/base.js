@@ -1,4 +1,196 @@
 /**
+ * scene & showcase intro
+ */
+function siteIntro() {
+    const tl = gsap.timeline();
+    tl.to('.load-clip', {
+        duration: 1.2,
+        width: '100%',
+        left: '0%',
+        ease: 'Expo.easeInOut',
+        onComplete: () => {
+            gsap.set('#loading', { display: 'none' });
+        }
+    }).to('.load-clip', {
+        duration: 1,
+        width: '100%',
+        left: '100%',
+        ease: 'Expo.easeInOut',
+        delay: 0.3,
+        onComplete: () => {
+            tl.set('.load-clip', { left: '-100%' });
+        }
+    }).from('#scene-intro', {
+        duration: 0.5,
+        opacity: 0,
+        x: '-10%',
+        onComplete: () => {
+            gsap.to('#scene-intro', {
+                duration: 1,
+                background: 'rgba(0, 0, 0, 0.1)',
+                ease: 'Expo.easeInOut',
+            })
+        }
+    }, '-=.5').from('#scene-intro .top span', {
+        duration: 0.5,
+        opacity: 0,
+        x: '-20%',
+        ease: 'Expo.easeInOut',
+    }, '-=.4').from('#scene-intro .line', {
+        duration: 1,
+        height: 0,
+        ease: 'Expo.easeInOut',
+    }, '-=0.4').from('#scene-intro .dets>*', {
+        duration: .6,
+        opacity: 0,
+        stagger: 0.2,
+        y: '-20%',
+        ease: 'Expo.easeInOut',
+    }, '-=0.6').from('#scene-intro .bottom>*', {
+        duration: .6,
+        opacity: 0,
+        stagger: 0.2,
+        x: '-20%',
+        ease: 'Expo.easeInOut',
+    }, '-=0.5').from('#scene-intro .right #explore', {
+        duration: 1,
+        x: '-20%',
+        opacity: 0,
+    }, '-=0.5');
+}
+
+const showcase = document.querySelector('#scene-intro');
+function siteStartIntro() {
+    const tl = gsap.timeline();
+    showcase.style.display = "flex";
+    tl.to('#scene-intro', {
+        duration: 0.5,
+        x: '0%',
+        opacity: 1,
+        ease: 'Expo.easeInOut',
+    }).to('#scene-intro .top span', {
+        duration: 0.5,
+        opacity: 1,
+        x: '0%',
+        ease: 'Expo.easeInOut',
+    }, '-=.4').to('#scene-intro .line', {
+        duration: 1,
+        height: '260px',
+        ease: 'Expo.easeInOut',
+    }, '-=.5').to('#scene-intro .dets>*', {
+        duration: .6,
+        opacity: 1,
+        stagger: 0.2,
+        y: '0%',
+        ease: 'Expo.easeInOut',
+    }, '-=.8').to('#scene-intro .bottom>*', {
+        duration: .6,
+        opacity: 1,
+        stagger: 0.2,
+        x: '0%',
+        ease: 'Expo.easeInOut',
+    }, '-=.55').to('#scene-intro .right #explore', {
+        duration: 0.5,
+        x: '0%',
+        opacity: 1,
+    }, '-=.55');
+}
+
+function siteEndIntro() {
+    const tl = gsap.timeline();
+    tl.to('#scene-intro .top span', {
+        duration: 0.5,
+        opacity: 0,
+        x: '-20%',
+        ease: 'Expo.easeInOut',
+    }, '-=.5').to('#scene-intro .line', {
+        duration: 1,
+        height: 0,
+        ease: 'Expo.easeInOut',
+    }, '-=.9').to('#scene-intro .dets>*', {
+        duration: .6,
+        opacity: 0,
+        stagger: 0.2,
+        y: '-20%',
+        ease: 'Expo.easeInOut',
+    }, '-=.6').to('#scene-intro .bottom>*', {
+        duration: .6,
+        opacity: 0,
+        stagger: 0.2,
+        x: '-20%',
+        ease: 'Expo.easeInOut',
+    }, '-=.6').to('#scene-intro .right #explore', {
+        duration: 0.5,
+        x: '-20%',
+        opacity: 0,
+    }, '-=.6').to('#scene-intro', {
+        duration: 0.5,
+        x: '-20%',
+        opacity: 0,
+        ease: 'Expo.easeInOut',
+        onComplete: () => {
+            showcase.style.display = "none";
+        }
+    }, '-=.3');
+}
+
+var attempt = 1;
+function switchToShowcaseView() {
+    clearStageIntro(prevStageIntro);
+    hideStageControls();
+
+    gsap.set('#reset', {
+        display: 'none',
+        opacity: 0,
+        scale: 0,
+    });
+
+    attempt > 1 && siteStartIntro();
+    attempt++;
+}
+
+function switchToStageView() {
+    siteEndIntro();
+
+    const tl = gsap.timeline();
+    const st = `.stage-1`;
+    gsap.set(st, {
+        display: 'flex'
+    });
+    tl.to(st + ' h1', {
+        delay: 1,
+        duration: .5,
+        x: '5%',
+        opacity: .8,
+        display: 'initial',
+    }).to(st + ' p', {
+        duration: .5,
+        x: '5%',
+        display: 'initial',
+        opacity: 1,
+    }, '-=.45').to(st + ' small', {
+        duration: .5,
+        x: '5%',
+        display: 'initial',
+        opacity: 1,
+    }, '-=.45').to(st + ' .helper-element', {
+        duration: 0.5,
+        opacity: 1,
+        display: 'initial',
+        x: '0%',
+        ease: 'Expo.easeInOut',
+    }, '-=.4');
+
+    typeTipMessage(HELPER_TIPS_1, 1);
+
+    gsap.to('#reset', {
+        display: 'initial',
+        opacity: 1,
+        scale: 1,
+    });
+}
+
+/**
  * tv
  */
 // tv controls
@@ -44,13 +236,47 @@ function showTvControls() {
 /**
  * Stage
  */
+// message helper
+import { HELPER_TIPS_1, HELPER_TIPS_2 } from './constants.js';
+function typeTipMessage(array = HELPER_TIPS_1, stage) {
+    new Typewriter(`.stage-${stage} .helper-element .helper-details small`, {
+        strings: array,
+        autoStart: true,
+        pause: 10000,
+        loop: true,
+        delay: 15,
+        deleteSpeed: 30,
+    });
+}
+
 // stage intros
-var prevStage = 0;
+var prevStage = 1;
 function clearStageIntro(stage) {
     const tl = gsap.timeline();
     const st = `.stage-${stage}`;
 
-    tl.to(st + ' p', {
+    tl.to(st + ' .helper-element', {
+        duration: 0.5,
+        opacity: 0,
+        x: '-10%',
+        ease: 'Expo.easeInOut',
+        onComplete: () => {
+            gsap.set(st + ' .helper-element', {
+                delay: 0.5,
+                display: 'none',
+            });
+        }
+    }).to(st + ' small', {
+        duration: .5,
+        x: '-5%',
+        opacity: 0,
+        onComplete: () => {
+            gsap.set(st + ' small', {
+                delay: 0.5,
+                display: 'none',
+            });
+        }
+    }, '-=.2').to(st + ' p', {
         duration: .5,
         x: '-5%',
         opacity: 0,
@@ -60,7 +286,7 @@ function clearStageIntro(stage) {
                 display: 'none',
             });
         }
-    }).to(st + ' h1', {
+    }, '-=.45').to(st + ' h1', {
         duration: .5,
         x: '-5%',
         opacity: 0,
@@ -79,6 +305,7 @@ function clearStageIntro(stage) {
     }, '-=.45');
 }
 
+var prevStageIntro = 1;
 function animateStageIntro(stage, cache = null) {
     if (cache === 1)
         return;
@@ -89,8 +316,7 @@ function animateStageIntro(stage, cache = null) {
     if (prevStage > 0) {
         clearStageIntro(prevStage);
     }
-    prevStage = stage;
-
+    prevStage = prevStageIntro = stage;
     //disable to prevent movement
     gsap.set(st, {
         display: 'flex'
@@ -100,14 +326,30 @@ function animateStageIntro(stage, cache = null) {
         delay: 1,
         duration: .5,
         x: '5%',
-        opacity: 1,
+        opacity: .8,
         display: 'initial',
     }).to(st + ' p', {
         duration: .5,
         x: '5%',
         display: 'initial',
         opacity: 1,
-    }, '-=.45');
+    }, '-=.45').to(st + ' small', {
+        duration: .5,
+        x: '5%',
+        display: 'initial',
+        opacity: 1,
+    }, '-=.45').to(st + ' .helper-element', {
+        duration: 0.5,
+        opacity: 1,
+        x: '0%',
+        display: 'initial',
+        ease: 'Expo.easeInOut',
+    }), '-=.5';
+
+    if (stage === 1) {
+        typeTipMessage(HELPER_TIPS_1, stage);
+    } else
+        typeTipMessage(HELPER_TIPS_2, stage);
 }
 
 function hideStageIntros() {
@@ -174,65 +416,6 @@ function hideStageControls() {
 }
 
 /**
- * helpers
- */
-// message helpers
-import { HELPER_TIPS_1, HELPER_TIPS_2 } from './constants.js';
-function typeTipMessage(array = HELPER_TIPS_1) {
-    new Typewriter('.helper-element.current .helper-details small', {
-        strings: array,
-        autoStart: true,
-        pause: 10000,
-        loop: true,
-        delay: 15,
-        deleteSpeed: 30,
-    });
-}
-function shiftHelperMessage(currentStage, action, reset = false) {
-    const helpers = document.querySelectorAll('.helper-element'),
-        current = helpers[currentStage - 1],
-        prev = helpers[
-            reset
-                ? 1
-                : action === 'up' ? currentStage - 2 : currentStage
-        ];
-
-    gsap.to(prev, {
-        duration: 0.5,
-        opacity: 0,
-        x: '-50%',
-        ease: 'Expo.easeInOut',
-        onComplete: () => {
-            prev.classList.remove('current');
-        }
-    });
-
-    setTimeout(() => {
-        current.classList.add('current');
-        gsap.to(current, {
-            duration: 0.5,
-            opacity: 1,
-            x: '50%',
-            ease: 'Expo.easeInOut',
-        });
-
-        if (currentStage === 1) {
-            typeTipMessage(HELPER_TIPS_1);
-        } else
-            typeTipMessage(HELPER_TIPS_2);
-    }, 500);
-}
-
-function initHelper() {
-    gsap.to('.helper-element.current', {
-        duration: 1,
-        opacity: 1,
-        x: '50%',
-        ease: 'Expo.easeInOut',
-    });
-}
-
-/**
  * stage 2
  */
 var pulseTimes = 0;
@@ -273,6 +456,11 @@ function hideStageBackButton() {
 }
 
 export {
+    /** scene **/
+    siteIntro,
+    switchToShowcaseView,
+    switchToStageView,
+
     /** tv **/
     hideTvControls,
     showTvControls,
@@ -292,8 +480,6 @@ export {
 
     /** helper **/
     typeTipMessage,
-    shiftHelperMessage,
-    initHelper,
 
 
     /** stage 2 **/

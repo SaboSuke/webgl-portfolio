@@ -8,6 +8,9 @@ import LightBall from './lightball.js';
 import Stage2 from './stage-2.js';
 
 import {
+    siteIntro,
+    switchToShowcaseView,
+    switchToStageView,
     hideTvControls,
     showTvControls,
     hideStageIntros,
@@ -19,25 +22,22 @@ import {
     hideDownArrow,
     showUpArrow,
     showDownArrow,
-    typeTipMessage,
-    shiftHelperMessage,
-    initHelper,
 } from './base.js';
 import {
-    ENV_PATH, RAND, COLORS,
-    SOCIAL_LINKS, STAGE_1_VEC, STAGE_2_VEC,
+    ENV_PATH, RAND, COLORS, SOCIAL_LINKS,
+    STAGE_0_SHOWCASE, STAGE_1_VEC, STAGE_2_VEC
 } from './constants.js';
 
 import EventEmitter from './event.js';
 export const EVENT = new EventEmitter();
 EVENT.on('loaded', () => {
-    setTimeout(initHelper, 100);
+    // do something 
 });
 
 const NB_STAGES = 2;
 export class Sketch extends Default {
 
-    opts = { };
+    opts = {};
     isLoaded = false;
     time = 0;
     playhead = RAND(0, 1);
@@ -57,56 +57,67 @@ export class Sketch extends Default {
      * @param {Boolean} [options.eDevMod=false] - enable developer mode for movements
      * @constructor
      */
-    constructor(options = { }) {
+    constructor(options = {}) {
         super();
-        this.INIT(options);
+        this.#INIT(options);
 
-        this.initTv();
-        this.initEvents();
-        // this.loadLivingRoom();
+        this.#initTv();
+        this.#initEvents();
 
         this.render();
     }
 
-    INIT(options) {
+    #INIT(options) {
         this.isPlaying = true;
-        this.opts.eDevMod = options.eDevMod || true;
+        this.opts.eDevMod = options.eDevMod || false;
         this.shaders = new Shader();
-        this.initMouse();
-        this.initScene();
+        this.#initMouse();
+        this.#initScene();
         this.domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
 
-        this.initHolder();
-        this.initModels();
+        this.#initHolder();
+        this.#initModels();
         this.stage2 = new Stage2(this);
+    }
+
+    showcaseView() {
+        this.resetPositions(0, STAGE_0_SHOWCASE);
+
+        switchToShowcaseView();
+    }
+
+    fullView() {
+        switchToStageView();
+
+        this.resetPositions(null);
     }
 
     LOAD() {
         this.isLoaded = true;
 
-        animateStageIntro(1);
-        typeTipMessage();
+        this.showcaseView();
+        siteIntro();
     }
 
-    initMouse() {
+    #initMouse() {
         this.mouse.x = (document.scrollingElement.clientHeight / this.sizes.width) * 2 - 1;
         this.mouse.y = -(document.scrollingElement.clientWidth / this.sizes.height) * 2 + 1;
     }
 
-    initScene() {
+    #initScene() {
         this.scene = new THREE.Scene()
         this.scene.fog = new THREE.FogExp2(0x11111f, 0.002);
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setClearColor(this.scene.fog.color)
         document.querySelector('.scene').appendChild(this.renderer.domElement);
 
-        this.initCamera();
-        this.initLights();
+        this.#initCamera();
+        this.#initLights();
     }
 
-    initCamera() {
+    #initCamera() {
         let that = this;
         this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 1, 1000);
         this.camera.position.set(STAGE_1_VEC.position.x, STAGE_1_VEC.position.y, STAGE_1_VEC.position.z);
@@ -135,7 +146,7 @@ export class Sketch extends Default {
         this.controls.update();
     }
 
-    initEvents() {
+    #initEvents() {
         //resize
         let that = this;
         window.addEventListener('resize', () => {
@@ -175,7 +186,7 @@ export class Sketch extends Default {
             this.viewOnTv = true;
             hideStageControls();
             hideStageIntros();
-            if (!that.tv.isFullScreen()) {
+            if (!that.tv.isFullScreen) {
                 showTvControls();
 
                 gsap.to(this.camera.position, {
@@ -201,7 +212,6 @@ export class Sketch extends Default {
         document.querySelector('.scroll-down.up').addEventListener('click', () => {
             this.currentStage++;
             this.changeStage('up');
-            shiftHelperMessage(this.currentStage, 'up');
 
             if (this.currentStage > 1) {
                 showDownArrow();
@@ -209,18 +219,17 @@ export class Sketch extends Default {
 
             if (this.currentStage === NB_STAGES)
                 hideUpArrow();
-        })
+        });
         document.querySelector('.scroll-down.down').addEventListener('click', () => {
             this.currentStage--;
             this.changeStage('down');
-            shiftHelperMessage(this.currentStage, 'down');
 
             if (this.currentStage <= 1)
                 hideDownArrow();
 
             if (this.currentStage < NB_STAGES)
                 showUpArrow();
-        })
+        });
 
         // stage 2 helpers
         this.stage2.objects.forEach(item => {
@@ -232,23 +241,33 @@ export class Sketch extends Default {
                 this.triggerCursor('default');
             });
         });
+
+        // views
+        document.querySelector('#explore').addEventListener('click', this.fullView.bind(this));
+        document.querySelector('#exit').addEventListener('click', this.showcaseView.bind(this));
     }
 
-    resetPositions() {
+    resetPositions(cache = 0, VECTOR = null) {
+        // stage2
+        this.stage2.resetStage();
+        this.stage2.pause();
+        this.models.bedRoomModel.action.stop();
+
         this.resettingStarted = true;
         let that = this;
 
+        let vec = VECTOR ?? STAGE_1_VEC;
         gsap.to(this.controls.target, {
-            x: STAGE_1_VEC.target.x,
-            y: STAGE_1_VEC.target.y,
-            z: STAGE_1_VEC.target.z,
+            x: vec.target.x,
+            y: vec.target.y,
+            z: vec.target.z,
             ease: 'Expo.easeInOut'
         });
 
         gsap.to(this.camera.position, {
-            x: STAGE_1_VEC.position.x,
-            y: STAGE_1_VEC.position.y,
-            z: STAGE_1_VEC.position.z,
+            x: vec.position.x,
+            y: vec.position.y,
+            z: vec.position.z,
             ease: 'Expo.easeInOut',
             onComplete() {
                 setTimeout(() => {
@@ -258,10 +277,10 @@ export class Sketch extends Default {
         });
         this.camera.updateProjectionMatrix();
 
-        this.resetControls();
+        this.#resetControls();
         this.tv.resetTv();
         this.tv.resetControls();
-        this.tv.setFullScreen(false);
+        this.tv.setFullScreen = false;
         const expand = document.querySelector('#expand');
         expand.innerHTML = '<i class="fas fa-expand"></i>';
         expand.classList.remove('expand');
@@ -270,26 +289,29 @@ export class Sketch extends Default {
         gsap.to(this.twitter.position, { y: -1.24 });
         this.viewOnTv = false;
 
-        // stage
+        // stage 1
         showStageControls();
         showStageIntros();
-        animateStageIntro(1, this.currentStage);
+        cache === null ? 0 : animateStageIntro(1, this.currentStage);
+        this.tv.resumeChannel();
+        setTimeout(() => {
+            this.models.catModel.action.play()
+        }, 1000);
 
         this.currentStage = 1;
         this.changeHolderColor();
         this.triggerLights();
-        shiftHelperMessage(this.currentStage, 'up', true);
     }
 
-    resetControls() {
+    #resetControls() {
         hideTvControls();
     }
 
-    initLights() {
+    #initLights() {
         this.lightBalls = [
             new LightBall(this, { x: -3, y: 3, z: 2 }, COLORS.red, 1, 1),
             new LightBall(this, { x: 2, y: 2, z: 3 }, COLORS.orange, 1, 1),
-            new LightBall(this, { x: 3.75, y: 4.9, z: -4.27 }, COLORS.white, 1, 2),
+            new LightBall(this, { x: 3.75, y: 4.9, z: -4.27 }, COLORS.white, .8, 2),
         ];
 
         this.light1 = new THREE.PointLight(COLORS.white, 1);
@@ -347,7 +369,7 @@ export class Sketch extends Default {
         this.camera.updateProjectionMatrix();
     }
 
-    initHolder() {
+    #initHolder() {
         let geometry = new THREE.BoxGeometry(40, 30, 30);
         let material = new THREE.MeshPhongMaterial({
             color: COLORS.bgLight,
@@ -401,7 +423,7 @@ export class Sketch extends Default {
         }
     }
 
-    initSocial() {
+    #initSocial() {
         this.socials = [];
         let that = this;
 
@@ -463,13 +485,13 @@ export class Sketch extends Default {
         }));
     }
 
-    initModels() {
+    #initModels() {
         this.models = new ModelLoader(this);
 
-        this.initSocial();
+        this.#initSocial();
     }
 
-    initTv() {
+    #initTv() {
         this.objects = [];
         this.tv = new Tv(this);
         this.tvScreen = this.tv.initTv();

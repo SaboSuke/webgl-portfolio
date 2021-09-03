@@ -12,21 +12,21 @@ export default class Settings {
      * @constructor
      */
     constructor(sketch, options = { }) {
-        this.INIT(sketch, options);
+        this.#INIT(sketch, options);
 
-        this.opts.camera ? this.camera() : 0;
-        this.opts.lights ? this.lights() : 0;
-        this.opts.lightHelper ? this.lightHelper() : 0;
-        this.opts.livingRoom ? this.livingRoom() : 0;
-        this.opts.bedRoom ? this.bedRoom() : 0;
-        this.opts.planeHolder ? this.planeHolder() : 0;
-        this.opts.tvSettings ? this.tv() : 0;
-        this.opts.socials ? this.socials() : 0;
-        this.opts.cat ? this.cat() : 0;
-        this.opts.initStage2Interface ? this.initStage2Interface() : 0;
+        this.opts.camera ? this.#camera() : 0;
+        this.opts.lights ? this.#lights() : 0;
+        this.opts.lightHelper ? this.#lightHelper() : 0;
+        this.opts.livingRoom ? this.#livingRoom() : 0;
+        this.opts.bedRoom ? this.#bedRoom() : 0;
+        this.opts.planeHolder ? this.#planeHolder() : 0;
+        this.opts.tvSettings ? this.#tv() : 0;
+        this.opts.socials ? this.#socials() : 0;
+        this.opts.cat ? this.#cat() : 0;
+        this.opts.initStage2Interface ? this.#initStage2Interface() : 0;
     }
 
-    INIT(sketch, options) {
+    #INIT(sketch, options) {
         this.opts = {
             livingRoom: options.livingRoom || false,
             bedRoom: options.bedRoom || false,
@@ -60,7 +60,7 @@ export default class Settings {
         };
     }
 
-    initStage2Interface() {
+    #initStage2Interface() {
         this.settings.initStage2Interface.forEach((item, index) => {
             const pos = this.gui.addFolder('stage2 - ' + item.name + ' position');
             pos.add(item.element.position, 'x');
@@ -79,7 +79,7 @@ export default class Settings {
         })
     }
 
-    socials() {
+    #socials() {
         this.settings.socials.forEach((item, index) => {
             const pos = this.gui.addFolder('social ' + (index + 1) + ' position');
             pos.add(item.circle.position, 'x');
@@ -93,14 +93,14 @@ export default class Settings {
         })
     }
 
-    planeHolder() {
+    #planeHolder() {
         const plane = this.gui.addFolder('planeHolder position');
         plane.add(this.settings.planeHolderPos, 'x');
         plane.add(this.settings.planeHolderPos, 'y');
         plane.add(this.settings.planeHolderPos, 'z');
     }
 
-    tv() {
+    #tv() {
         // screen
         const tvScreenPos = this.gui.addFolder('tv screen Position');
         tvScreenPos.add(this.settings.tvScreen[0], 'x');
@@ -113,7 +113,7 @@ export default class Settings {
         tvScreenDeg.add(this.settings.tvScreen[1], 'z');
     }
 
-    bedRoom() {
+    #bedRoom() {
         const bedRoomPos = this.gui.addFolder('bedRoom position');
         bedRoomPos.add(this.settings.bedRoom.position, 'x');
         bedRoomPos.add(this.settings.bedRoom.position, 'y');
@@ -125,7 +125,7 @@ export default class Settings {
         bedRoomDeg.add(this.settings.bedRoom.rotation, 'z');
     }
 
-    livingRoom() {
+    #livingRoom() {
         const livingRoomPos = this.gui.addFolder('isometric-room position');
         livingRoomPos.add(this.settings.livingRoomPos, 'x');
         livingRoomPos.add(this.settings.livingRoomPos, 'y');
@@ -137,7 +137,7 @@ export default class Settings {
         livingRoomDeg.add(this.settings.livingRoomDeg, 'z');
     }
 
-    cat() {
+    #cat() {
         const catPos = this.gui.addFolder('cat position');
         catPos.add(this.settings.cat.position, 'x');
         catPos.add(this.settings.cat.position, 'y');
@@ -149,7 +149,7 @@ export default class Settings {
         catDeg.add(this.settings.cat.rotation, 'z');
     }
 
-    lights() {
+    #lights() {
         this.settings.lightBalls.forEach((item, index) => {
             const light = this.gui.addFolder(`lightball ${index + 1} position`);
             light.add(item.lightBall.position, 'x');
@@ -158,12 +158,12 @@ export default class Settings {
         })
     }
 
-    lightHelper() {
+    #lightHelper() {
         this.lightHelper = new THREE.PointLightHelper(this.sketch.light1, 1);
         this.sketch.scene.add(this.lightHelper);
     }
 
-    camera() {
+    #camera() {
         const cameraPos = this.gui.addFolder('camera position');
         cameraPos.add(this.settings.cameraPos, 'x');
         cameraPos.add(this.settings.cameraPos, 'y');

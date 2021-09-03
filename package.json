@@ -10,12 +10,18 @@
   "keywords": [
     "webgl",
     "threejs",
-    "portfolio"
+    "portfolio",
+    "webgl portfolio"
   ],
   "author": "Essam Abed",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/SaboSuke/webgl-portfolio/issues"
   },
-  "homepage": "https://github.com/SaboSuke/webgl-portfolio#readme"
+  "homepage": "https://github.com/SaboSuke/webgl-portfolio#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0"
+  }
 }

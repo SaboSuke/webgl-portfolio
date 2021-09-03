@@ -20,12 +20,12 @@ export default class Tv {
     constructor(sketch) {
         this.sketch = sketch;
         this.initTv();
-        this.initTvEvents()
+        this.#initTvEvents()
 
         return this;
     }
 
-    initTvCover() {
+    #initTvCover() {
         const geometry = new THREE.PlaneGeometry(1.27, 0.8);
         const material = new THREE.MeshStandardMaterial({
             color: COLORS.black,
@@ -41,8 +41,8 @@ export default class Tv {
     }
 
     initTv() {
-        this.initTvCover();
-        this.channels = this.loadChannels();
+        this.#initTvCover();
+        this.channels = this.#loadChannels();
 
         this.geometry = new THREE.PlaneGeometry(1.25, 0.78);
         this.material = new THREE.MeshBasicMaterial({
@@ -77,7 +77,7 @@ export default class Tv {
         this.play = !this.play;
     }
 
-    loadChannels() {
+    #loadChannels() {
         let channels = [];
 
         for (let i = 0; i < CHANNEL_ELEMENTS.length; i++) {
@@ -109,7 +109,7 @@ export default class Tv {
         this.channels[this.previousChannel].opts.play();
     }
 
-    prevChannel() {
+    #prevChannel() {
         let value = this.previousChannel + 0;
         if (this.previousChannel > 0)
             value--;
@@ -127,7 +127,7 @@ export default class Tv {
         this.previousChannel = value;
     }
 
-    nextChannel() {
+    #nextChannel() {
         let value = this.previousChannel + 0;
         if (this.previousChannel < this.channels.length - 1)
             value++;
@@ -145,39 +145,19 @@ export default class Tv {
         this.previousChannel = value;
     }
 
-    initTvEvents() {
-        const power = document.querySelector('#power'),
-            prev = document.querySelector('#prev'),
+    #initTvEvents() {
+        const prev = document.querySelector('#prev'),
             next = document.querySelector('#next'),
             expand = document.querySelector('#expand');
 
-        power.addEventListener('click', () => {
-            if (power.classList.contains('on')) {
-                power.classList.remove('on');
-                power.classList.add('off');
-
-                prev.classList.add('disabled');
-                next.classList.add('disabled');
-                this.paused = true;
-            } else {
-                power.classList.add('on');
-                power.classList.remove('off');
-
-                prev.classList.remove('disabled');
-                next.classList.remove('disabled');
-                this.paused = false;
-            }
-            this.triggerTv();
-        });
-
         prev.addEventListener('click', () => {
             if (!this.paused)
-                this.prevChannel();
+                this.#prevChannel();
         });
 
         next.addEventListener('click', () => {
             if (!this.paused)
-                this.nextChannel();
+                this.#nextChannel();
         });
 
         expand.addEventListener('click', () => {
@@ -192,8 +172,8 @@ export default class Tv {
                 expand.classList.add('expand');
                 expand.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
 
-                this.expandTv();
-                this.clearControls();
+                this.#expandTv();
+                this.#clearControls();
             }
         });
     }
@@ -205,14 +185,14 @@ export default class Tv {
         })
     }
 
-    clearControls() {
+    #clearControls() {
         gsap.to('.btn-set.sanitize', {
             borderColor: 'transparent',
             background: 'black'
         })
     }
 
-    expandTv() {
+    #expandTv() {
         gsap.to(this.sketch.controls.target, {
             x: 0,
             y: 0,
@@ -284,11 +264,15 @@ export default class Tv {
         this.isFullscreen = false;
     }
 
-    isFullScreen() {
+    get isFullScreen() {
         return this.isFullscreen;
     }
 
-    setFullScreen(value) {
+    set setFullScreen(value) {
         this.isFullscreen = value;
+    }
+
+    get isPaused() {
+        return this.paused;
     }
 }

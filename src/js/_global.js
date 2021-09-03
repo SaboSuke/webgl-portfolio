@@ -1,4 +1,4 @@
-// btn click animation
+// click animation
 // document.querySelectorAll('.btn-set:not(.disabled)').forEach(btn => {
 //     btn.addEventListener('click', () => {
 //         const timeline = gsap.timeline();
@@ -12,3 +12,16 @@
 //         }, '-=.05');
 //     });
 // });
+
+// reset
+const reset = document.querySelector("#reset");
+reset.addEventListener("click", () => {
+    if (reset.classList.contains('load')) reset.classList.remove('load');
+    else {
+        reset.classList.add('load');
+
+        setTimeout(() => {
+            reset.classList.remove('load');
+        }, 800);
+    }
+});

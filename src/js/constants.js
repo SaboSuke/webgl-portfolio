@@ -50,6 +50,19 @@ const CHANNEL_SOURCES = [
     '/sr/vid/webgl-pointlights-animation-LowEnd.mp4',
 ];
 
+const STAGE_0_SHOWCASE = {
+    position: {
+        x: 1,
+        y: -0.5,
+        z: 10,
+    },
+    target: {
+        x: -6.5,
+        y: -2.5,
+        z: -10,
+    }
+};
+
 const STAGE_1_VEC = {
     position: {
         x: -2, //-2.5
@@ -86,6 +99,7 @@ export {
     SOCIAL_LINKS,
     CHANNEL_ELEMENTS,
     CHANNEL_SOURCES,
+    STAGE_0_SHOWCASE,
     STAGE_1_VEC,
     STAGE_2_VEC,
 }

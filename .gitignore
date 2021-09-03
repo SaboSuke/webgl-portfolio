@@ -4,3 +4,6 @@ doc.*
 todo.md
 
 **/backup
+
+**/node_modules
+node_modules

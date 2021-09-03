@@ -26,11 +26,11 @@ export default class LightBall {
         this.isActive = stage > 1 ? false : true;
 
         this.lightBall = null, this.shadowLight = null, this.ballMaterial = null;
-        return this.INIT();
+        return this.#INIT();
     }
 
-    INIT() {
-        this.pointLight = this.createLight(this.color);
+    #INIT() {
+        this.pointLight = this.#createLight(this.color);
         this.pointLight.scale.set(0.5, 0.5, 0.5);
         this.pointLight.position.set(this.positions.x, this.positions.y, this.positions.z);
         this.sketch.scene.add(this.pointLight);
@@ -43,7 +43,7 @@ export default class LightBall {
         };
     }
 
-    createLight(color) {
+    #createLight(color) {
         const light = new THREE.PointLight(color, this.intensity, 20);
         light.castShadow = true;
         light.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects

@@ -31,7 +31,7 @@ export default class Blink {
         this.textRotation = textRotation || { x: 0, y: 0, z: 0 };
         this.text = text || 'Click';
 
-        this.init();
+        this.#INIT();
 
         return {
             self: this,
@@ -39,7 +39,7 @@ export default class Blink {
         };
     }
 
-    init() {
+    #INIT() {
         const geometry = new THREE.IcosahedronGeometry(0.07, 1);
         const material = new THREE.MeshBasicMaterial({
             color: COLORS.white,
@@ -51,7 +51,7 @@ export default class Blink {
         this.shape.position.set(this.position.x, this.position.y, this.position.z);
     }
 
-    initText() {
+    #initText() {
         const loader = new THREE.FontLoader(), that = this;
         // couldn't animte textGeometry outside of the function
         loader.load(ENV_PATH + 'fonts/Poppins_Regular.json', function (font) {

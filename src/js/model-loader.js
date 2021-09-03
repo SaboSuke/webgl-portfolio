@@ -6,10 +6,10 @@ export default class ModelLoader {
         if (!sketch) return;
         this.sketch = sketch;
 
-        this.loadLivingRoom();
+        this.#loadLivingRoom();
     }
 
-    loadBedRoom() {
+    #loadBedRoom() {
         const loader = new THREE.GLTFLoader();
         let that = this;
 
@@ -35,12 +35,12 @@ export default class ModelLoader {
                 // console.log("bedRoom: ", (xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                that.logError();
+                that.#logError();
             }
         );
     }
 
-    loadCat() {
+    #loadCat() {
         const loader = new THREE.GLTFLoader();
         let that = this;
 
@@ -64,12 +64,12 @@ export default class ModelLoader {
                 // console.log("cat: ", (xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                that.logError();
+                that.#logError();
             }
         );
     }
 
-    loadLivingRoom() {
+    #loadLivingRoom() {
         const loader = new THREE.GLTFLoader();
         let that = this;
 
@@ -83,19 +83,19 @@ export default class ModelLoader {
             that.livingRoom.traverse(function (node) { if (node.isMesh) node.castShadow = true; });
             that.sketch.scene.add(that.livingRoom);
 
-            that.loadCat();
-            that.loadBedRoom();
+            that.#loadCat();
+            that.#loadBedRoom();
         },
             function (xhr) {
                 // console.log("livingRoom: ", (xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                that.logError();
+                that.#logError();
             }
         );
     }
 
-    logError() {
+    #logError() {
         console.log('An error happened while loading a model!');
     }
 }

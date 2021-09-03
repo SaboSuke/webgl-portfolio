@@ -1,9 +1,9 @@
-/**
- * @desc Handles emitting custom events
- * 
- * @constructor
- */
 export default class EventEmitter {
+    /**
+     * @desc Handles emitting custom events
+     *
+     * @constructor
+     */
     constructor() { }
 
     dispatch(name, event) {

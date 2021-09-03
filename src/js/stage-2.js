@@ -8,6 +8,7 @@ import { ENV_PATH, COLORS, RAND } from './constants.js';
 export default class Stage2 {
 
     paused = false;
+    closed = true;
     animationOn = null;
     /**
      * @desc Hanldes the second stage logic
@@ -17,11 +18,11 @@ export default class Stage2 {
      */
     constructor(sketch) {
         this.sketch = sketch;
-        this.initStageInterface();
+        this.#initStageInterface();
     }
 
     resetStage() {
-        this.paused = true;
+        this.closed = false;
         let that = this;
         if (this.animationOn) {
             let x = 3, y = 2.7, z = -2.5;
@@ -65,11 +66,11 @@ export default class Stage2 {
         this.sketch.controls.enabled = true;
         hideStageBackButton();
         setTimeout(() => {
-            this.paused = false;
-        }, 500);
+            this.closed = true;
+        }, 800);
     }
 
-    initStageEvents() {
+    #initStageEvents() {
         let that = this;
         this.sketch.domEvents.addEventListener(this.skillsBlinker.object, 'click', () => {
             if (this.paused) return;
@@ -124,18 +125,16 @@ export default class Stage2 {
             .addEventListener('click', this.resetStage.bind(this));
     }
 
-    initStageInterface() {
+    #initStageInterface() {
         this.objects = [];
         let loader = new THREE.TextureLoader();
         let geometry = new THREE.PlaneGeometry(0.35, 0.5, 10, 10);
-        let book = new THREE.PlaneGeometry(10, 10);
 
         // init clipboards
-        this.createSkillsClipboard(loader, geometry);
-        this.createAchievementsClipboard(loader, geometry);
-        // this.createExperienceBook(loader, book);
+        this.#createSkillsClipboard(loader, geometry);
+        this.#createAchievementsClipboard(loader, geometry);
 
-        this.initStageEvents();
+        this.#initStageEvents();
     }
 
     resumeStageBlinkHeplers() {
@@ -150,7 +149,7 @@ export default class Stage2 {
         this.achievementsBlinker.self.togggleBlink(false);
     }
 
-    createSkillsClipboard(loader, geometry) {
+    #createSkillsClipboard(loader, geometry) {
         let material = new THREE.MeshBasicMaterial({
             color: COLORS.white,
             side: THREE.DoubleSide,
@@ -179,7 +178,7 @@ export default class Stage2 {
         });
     }
 
-    createAchievementsClipboard(loader, geometry) {
+    #createAchievementsClipboard(loader, geometry) {
         let material = new THREE.MeshBasicMaterial({
             color: COLORS.white,
             side: THREE.DoubleSide,
@@ -208,41 +207,9 @@ export default class Stage2 {
         });
     }
 
-    createExperienceBook(loader, geometry) {
-        let texture = loader.load(ENV_PATH + 'img/experience.png');
-        texture.anisotropy = this.sketch.renderer.capabilities.getMaxAnisotropy();
-
-        let material = new THREE.MeshBasicMaterial({
-            color: COLORS.white,
-            map: texture,
-            side: THREE.DoubleSide,
-            // transparent: true,
-        });
-
-        this.experienceBook = new THREE.Mesh(geometry, material);
-        // this.achievementsClipboard.position.set(5.6, 3.09, -4.2);
-        // this.achievementsClipboard.rotation.set(-1.55, 0, -1.5);
-        this.sketch.scene.add(this.experienceBook);
-
-        // skill helper
-        // this.achievementsBlinker = new Blink(this.sketch, {
-        //     x: 5.6, y: 3.3, z: -4.2
-        // }, 'Achievements!', null, {
-        //     x: 0, y: -0.6, z: 0
-        // });
-        // this.achievementsBlinker.self.blinkStart(1000);
-        // this.sketch.scene.add(this.achievementsBlinker.object);
-
-        this.objects.push({
-            name: 'experienceBook',
-            element: this.experienceBook,
-            helper: this.achievementsBlinker,
-        });
-    }
-
     animateClipboards() {
         let that = this;
-        if (this.paused) return;
+        if (!this.closed) return;
 
         this.animatedObject = this.animationOn === 's' ? this.skillsClipboard : this.achievementsClipboard;
         let x = RAND(-1, 1);

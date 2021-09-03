@@ -11,11 +11,76 @@
             crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
 
-    <body class="loading single">
+    <body>
+        <div id="loader">
+            <div class="load-clip"></div>
+            <div id="loading" class="loader">
+                <span>{</span>
+                <span>}</span>
+            </div>
+        </div>
         <main>
+            <section class="scene-intro" id="scene-intro">
+                <div class="left">
+                    <div class="custom-shape-divider-top">
+                        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
+                            preserveAspectRatio="none">
+                            <path
+                                d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+                                opacity=".25" class="shape-fill"></path>
+                            <path
+                                d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+                                opacity=".5" class="shape-fill"></path>
+                            <path
+                                d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+                                class="shape-fill"></path>
+                        </svg>
+                    </div>
+                    <div class="top">
+                        <span>E.</span>
+                    </div>
+                    <div class="middle">
+                        <div class="line"></div>
+                        <article class="dets">
+                            <h1>Essam <span>Abed</span></h1>
+                            <h6>Fullstack Developer | Software Developer</h6>
+                            <p> Dedicated developer with years of experience in Web Development and Website
+                                Design. Strong creativity and problem-solving skills. Team player with an eye for
+                                detail.</p>
+                            <div><a target="_blank" href="../resume.pdf" class="btn_primary">
+                                    Resume
+                                </a></div>
+                        </article>
+                    </div>
+                    <div class="bottom">
+                        <div>
+                            <a class="btn-social" href="https://github.com/SaboSuke">
+                                <i class="fab fa-github-alt"></i>
+                            </a>
+                        </div>
+                        <div>
+                            <a class="btn-social" href="https://www.linkedin.com/in/essam-abed-5bb7a3196/">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                        <div>
+                            <a class="btn-social" href="https://twitter.com/SabosukeMe">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="btn_primary" id="explore">
+                        <span id="first"></span>
+                        <i class="fas fa-play"></i>
+                        <span id="second"></span>
+                    </div>
+                </div>
+            </section>
+
             <div class="scene"></div>
             <section class="videos" id="tv">
-                <!-- videos has to be muted for chrome policy -->
                 <video class="vid1 d_none" loop muted src="./vid/Design Agency Webgl LandingPage.mp4">
                     Video not
                     supported!</video>
@@ -30,11 +95,13 @@
             </section>
 
             <section class="controls">
+                <div class="exit_control">
+                    <div class="btn-set" id="exit">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                </div>
                 <div class="wrap_center">
                     <div class="btn-wrap center" id="tv_contrls">
-                        <div class="btn-set on" id="power">
-                            <i class="fas fa-power-off"></i>
-                        </div>
                         <div class="btn-set sanitize" id="prev">
                             <i class="fas fa-chevron-left"></i>
                         </div>
@@ -68,37 +135,44 @@
             </section>
 
             <section class="stage-intro">
-                <div class="stage-1">
+                <article class="stage-1">
                     <h1>About Me</h1>
                     <p id="stage1-typed">
-                        >> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aperiam quo eos optio. Quibusdam id
-                        ipsam debitis, vitae eligendi magnam iure.
+                        >> Hi, I'm Essam and I'm a Fullstack Developer based In Tunisia, Tunis. I have over 4 years of
+                        experience and I specialize in creating web applications and softwares. Strong creativity and
+                        problem-solving skills. Team player with an eye for detail.
                     </p>
-                </div>
-                <div class="stage-2">
-                    <h1>More over</h1>
+                    <small>
+                        I share educational content on
+                        <a target="_blank" href="https://twitter.com/SabosukeMe">Twitter</a>
+                        and
+                        <a target="_blank" href="https://www.linkedin.com/in/essam-abed-5bb7a3196/">LinkedIn</a>.
+                    </small>
+                    <div class="helper-element">
+                        <div class="helper-details">
+                            <h1>Tip :</h1>
+                            <p>Explore the living room</p>
+                            <small></small>
+                        </div>
+                    </div>
+                </article>
+                <article class="stage-2">
+                    <h1>Moreover</h1>
                     <p id="stage2-typed">
-                        >> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aperiam quo eos optio. Quibusdam id
-                        ipsam debitis, vitae eligendi magnam iure.
+                        >> Hi, I'm Essam and I'm a Fullstack Developer based In Tunisia, Tunis. I have over 4 years of
+                        experience and I specialize in creating web applications and softwares. Strong creativity and
+                        problem-solving skills. Team player with an eye for detail.
                     </p>
-                </div>
-            </section>
-
-            <section class="helper">
-                <div class="helper-element current" id="living-room">
-                    <div class="helper-details">
-                        <h1>Tip :</h1>
-                        <p>Explore the living room</p>
-                        <small></small>
+                    <small>Don't forget to checkout my <a target="_blank" href="https://github.com/SaboSuke">Github</a>.
+                    </small>
+                    <div class="helper-element">
+                        <div class="helper-details">
+                            <h1>Tip :</h1>
+                            <p>Explore the bed room</p>
+                            <small></small>
+                        </div>
                     </div>
-                </div>
-                <div class="helper-element second" id="bed-room">
-                    <div class="helper-details">
-                        <h1>Tip :</h1>
-                        <p>Explore the bed room</p>
-                        <small></small>
-                    </div>
-                </div>
+                </article>
             </section>
         </main>
 
@@ -106,37 +180,23 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
         <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 
-
         <script src="../dist/three.js"></script>
         <script src="../dist/GLTFLoader.js"></script>
         <script src="../dist/threex.domevents.js"></script>
-        <script src="./js/animate.js"></script>
+        <script src="./js/_global.js"></script>
 
         <script type="module">
+
             import { EVENT, Sketch } from './js/main.js';
             import DevHelper from './js/dev-hepler.js';
             const sketch = new Sketch();
 
             EVENT.on('loaded', () => {
-                document.body.classList.remove('loading');
-
                 sketch.LOAD();
-
-                const helper = new DevHelper(sketch, false, false);
-                // sketch.showPerformance(helper)
+                // for performance checking and settings
+                // const helper = new DevHelper(sketch, false, false);
             });
 
-            const reset = document.querySelector("#reset");
-            reset.addEventListener("click", () => {
-                if (reset.classList.contains('load')) reset.classList.remove('load');
-                else {
-                    reset.classList.add('load');
-
-                    setTimeout(() => {
-                        reset.classList.remove('load');
-                    }, 800);
-                }
-            })
         </script>
     </body>
 

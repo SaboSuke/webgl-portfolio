@@ -1,15 +1,27 @@
-$primary: #ff2a03
-$secondary: #ff050d
-$teriary: #022d36;
-$green: #0ed105;
-$button_bg: rgba(255, 255, 255, 0.1);
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap')
+// user-select: none
+$primary: rgba(255, 23, 27, 1)
+$primary-hover: rgba(255, 23, 27, 0.3)
+$green: #0ed105
+$button_bg: rgba(255, 255, 255, 0.1)
+$intro_bg: #0c0201
+
+$loader-color: #ffffff
+$loader-size: 10vh
 
 *
     margin: 0
     padding: 0
     box-sizing: border-box
 
+a
+    text-decoration: none
+
+ul li
+    list-style-type: none
+
 body
+    background: transparent
     font-family: 'Poppins', sans-serif
     overflow-x: hidden
 
@@ -17,6 +29,7 @@ body
         overflow: hidden
 
 main
+    background: transparent
     position: relative
     width: 100vw
     height: 100vh
@@ -27,11 +40,126 @@ main
     width: 100vw
     height: 100vh
 
+// scene intro
+.scene-intro
+    background: transparent // rgba(0, 0, 0, 0.1)
+    opacity: 1
+    position: absolute
+    left: 0
+    top: 0
+    z-index: 1000
+    width: 100vw
+    height: 100vh
+    display: flex
+    align-items: center
+    justify-content: center
+    
+    .left
+        position: absolute
+        left: 0
+        background: $intro_bg
+        color: white
+        width: 50vw
+        height: 100vh
+        padding: 40px
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+        align-items: flex-start
+        
+        .top
+            span
+                font-weight: 600
+                font-size: 20px
+                color: white
+
+        .middle
+            position: relative
+            left: 20px
+            top: -80px
+            .dets
+                width: 80%
+                h1
+                    font: 800 normal 34px 'Poppins', sans-serif
+                    margin-bottom: 5px
+                    span
+                        color: $primary
+                h6
+                    font: 300 normal 14px 'Poppins', sans-serif
+                    opacity: .8
+                    margin-bottom: 20px
+                p
+                    font: 400 normal 14px 'Poppins', sans-serif
+                    opacity: .9
+                    margin-bottom: 35px            
+
+            .line
+                position: absolute
+                left: -20px
+                top: -15px
+                width: 1px
+                height: 260px
+                background: white
+
+        .bottom
+            display: inline-flex
+            .btn-social
+                background: transparent
+                border: 1px solid white
+                color: white
+                padding: 5px 9px
+                margin-right: 20px
+                border-radius: 50%
+                transition: .3s background ease-in-out
+
+                &:hover
+                    background: $primary-hover
+
+    .right
+        position: absolute
+        right: 20%
+        #explore
+            position: relative
+            padding: 36px 45px
+            font-size: 30px
+            border-radius: 50%
+            opacity: 1
+
+            span
+                z-index: -1
+                position: absolute
+                height: 150px;
+                width: 120px;
+                border: solid 5px $primary
+                border-color: $primary transparent transparent transparent
+                border-radius: 100%/100px 100px 0 0px
+
+            span
+                transition: .3s all ease-in-out
+                &#first
+                    top: -10px
+                    left: -4px
+                
+                &#second
+                    bottom: -12px;
+                    left: -4px;
+                    transform: rotate(180deg);
+            &:hover
+                color: white
+                background: $primary-hover
+                transform: scale(1.1) !important
+                span
+                    &#first
+                        transform: translate(-3px, -6px) rotate(90deg);
+                    &#second
+                        transform: translate(6px, 5px) rotate(-90deg);
+
+
 // stage intros
 .stage-intro
     font-family: 'Poppins', sans-serif
 
-    &>div
+    &>article
         letter-spacing: 1px;
         word-spacing: 2px;
         line-height: 2rem;
@@ -44,7 +172,7 @@ main
         //disable to prevent movement
         display: none 
 
-    h1, p
+    h1, p, small
         opacity: 0
         display: none
     
@@ -57,7 +185,7 @@ main
 
     .stage-1
         position: absolute
-        top: 30%
+        top: 25%
         padding-left: 50px
         width: 43vw
 
@@ -69,45 +197,45 @@ main
         width: 43vw
 
     p
-        opacity: 1
         color: white
         font-size: 15px
         font-weight: 400
+    
+    small
+        margin-top: 10px
+        font-size: 10px
+        color: white
 
-// stage helpers
-.helper
-    position: absolute
-    bottom: 10px
-    left: 20px;
-
+    a 
+        font-weight: 600
+        color: white
+    
+    // stage helpers
     .helper-element
-        display: none
-        margin-bottom: 10px
         position: relative
+        left: 5%
+        width: fit-content
         font-family: 'Poppins', sans-serif
         font-weight: 400
         background: transparent
         color: white
         border-left: 4px solid white
         padding: 10px 15px
-        border-top-right-radius: 10px
-        border-bottom-right-radius: 10px
-        transform: translateX(-50%)
-        opacity: 0
-
-        &.second
-            border-color: black
-            color: black
+        transform: translateX(-5%)
+        margin-top: 40px
 
         .helper-details
             position: relative
             z-index: 100
+            display: flex
+            flex-direction: column
 
             h1
                 font-size: 18px
                 margin-bottom: 5px
             p
                 font-size: 15px
+                margin-bottom: -15px
             
             small
                 font-size: 12px
@@ -115,10 +243,7 @@ main
             p, small
                 margin-left: 10px
 
-        &.current
-            display: inherit
-
-        &.current:after
+        &:after
             position: absolute
             z-index: 1
             left: 0
@@ -129,10 +254,13 @@ main
             width: 100%
             opacity: 0.32
             transform: rotate(180deg)
-        &.current.second:after
-            background-image: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,1) 100%)
 
 // btn & controls
+.exit_control
+    position: absolute
+    top: 20px
+    left: 20px
+
 .btn-wrap
     position: absolute
     bottom: 20px
@@ -176,21 +304,30 @@ main
     cursor: pointer
     transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out
 
+    &#exit
+        background: $primary !important
+        border-color: $primary !important
+        &:hover
+            background: $primary-hover !important
+
+    &#reset:hover
+        background: $primary-hover !important
+
     &#back
-        background: $green !important
-        border-color: $green
+        background: $primary !important
+        border-color: $primary !important
         opacity: 0
         display: none
         &:hover
-            background: $secondary !important
-            border-color: $secondary
+            background: $primary-hover !important
+            color: white
 
     &.disabled
-        background: $secondary
-        border-color: $secondary
+        background: $primary !important
+        border-color: $primary !important
 
     &:not(.disabled):hover
-        background: rgba(255, 255, 255, 0.1);
+        background: $primary-hover
         color: white
     
     &:last-child
@@ -200,16 +337,8 @@ main
         animation: loadAnimation .3s linear infinite
 
     &.active, &.expand
-        background: $green
-        border: 1px solid $green
-        color: white
-    &.on
-        background: $green
-        border: 1px solid $green
-        color: white
-    &.off
-        background: $secondary
-        border: 1px solid $secondary
+        background: $primary !important
+        border: 1px solid $primary !important
         color: white
 
 .wrap_center
@@ -226,14 +355,17 @@ main
     opacity: 0
     transform: translateY(20%)
     transition: .3s all ease-in-out
-        
-    .btn-set:nth-child(2)
+    
+    .btn-set:hover
+        background: $primary-hover !important
+
+    .btn-set:nth-child(1)
         padding: 5px 10px
 
-    .btn-set:nth-child(3)
+    .btn-set:nth-child(2)
         padding: 4px 12px
 
-    .btn-set:nth-child(4)
+    .btn-set:nth-child(3)
         padding: 4px 9.5px
         margin-right: 0
 
@@ -245,37 +377,6 @@ main
     100%
         transform: rotate(90deg)
         transition: .1s all ease-in-out
-
-// loading animation
-.loading
-    &::before 
-        content: ''
-        position: absolute
-        z-index: 100000
-        top: 0
-        left: 0
-        width: 100%
-        height: 100%
-        background: #EAF0FE
-    &::after 
-        content: ''
-        position: fixed
-        z-index: 100000
-        top: 50%
-        left: 50%
-        width: 60px
-        height: 60px
-        margin: -30px 0 0 -30px
-        pointer-events: none
-        border-radius: 50%
-        opacity: 0.4
-        background: #121212
-        animation: loaderAnimation 0.7s linear infinite alternate forwards
-
-@keyframes loaderAnimation 
-	to 
-		opacity: 1
-		transform: scale3d(0.5,0.5,1)
 
 video
     position: fixed
@@ -358,5 +459,89 @@ video
             animation: pulse 1.5s 0.5s infinite normal ease forwards
 
         &:hover 
-            background-color: rgba(0, 0, 0, 0.3)
+            background-color: $primary-hover
 
+// scene devider
+.custom-shape-divider-top 
+    position: absolute
+    top: 0
+    right: 0
+    width: 100%
+    height: 100%
+    overflow: hidden
+    line-height: 0
+    transform: rotate(-90deg) translateY(100%);
+
+    svg 
+        position: relative
+        display: block
+        width: calc(100% + 150px)
+        height: 143px
+
+    .shape-fill
+        fill: #FFFFFF
+        &:nth-child(3)
+            fill: $intro_bg;
+
+
+// btn
+.btn_primary
+    cursor: pointer
+    font-size: 14px
+    background: $primary
+    color: white
+    border: 1px solid $primary
+    border-radius: 25px
+    padding: 10px 15px
+    transition: .3s color ease-in-out, .3s background ease-in-out, .3s border ease-in-out, .3s transform ease-in-out
+    &:hover
+        color: white
+        background: $primary-hover
+        border: 1px solid $primary
+
+// loader
+#loader
+    .load-clip
+        position: absolute
+        top: 0
+        left: 0
+        z-index: 1000000
+        width: 0
+        height: 100vh
+        background: $primary
+
+    .loader
+        display: flex
+        justify-content: center
+        align-items: center
+        position: fixed
+        z-index: 100000
+        width: 100vw
+        height: 100vh
+        top: 0
+        left: 0
+        color: $loader-color
+        background: $intro_bg
+        
+        font-family: 'Poppins', sans-serif
+        font-weight: bold
+        font-size: $loader-size
+        
+        h1
+            transform: translateY(-5px)
+
+        span 
+            font-size: $loader-size
+            display: inline-block
+            animation: pulseLoad 0.4s alternate infinite ease-in-out
+
+            &:nth-child(odd) 
+                transform: translateX(-50px)
+                animation-delay: 0.4s
+            &:nth-child(even) 
+                transform: translateX(50px)
+
+@keyframes pulseLoad
+    to 
+        transform: scale(1.5)
+        opacity: 0.5

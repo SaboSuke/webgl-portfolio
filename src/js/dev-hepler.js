@@ -16,13 +16,13 @@ export default class DevHelper {
         if (!sketch) return;
         this.sketch = sketch;
 
-        eSettings && this.initSettings();
-        eStats && this.initStats();
+        eSettings && this.#initSettings();
+        eStats && this.#initStats();
 
         return this.stats;
     }
 
-    initSettings() {
+    #initSettings() {
         new Settings(this.sketch, {
             camera: true,
             initStage2Interface: true,
@@ -36,8 +36,10 @@ export default class DevHelper {
         });
     }
 
-    initStats() {
+    #initStats() {
         this.stats = Stats();
         document.body.appendChild(this.stats.dom);
+
+        this.sketch.showPerformance(helper);
     }
 }
