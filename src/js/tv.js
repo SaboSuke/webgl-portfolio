@@ -19,8 +19,12 @@ export default class Tv {
      */
     constructor(sketch) {
         this.sketch = sketch;
+
+        // setInterval(this.#checkCompatibility.bind(this), 5000);
+        this.#checkCompatibility();
+
         this.initTv();
-        this.#initTvEvents()
+        this.#initTvEvents();
 
         return this;
     }
@@ -38,6 +42,25 @@ export default class Tv {
         this.tvCover.position.set(-1.598, -1.77, -2.65);
         this.tvCover.rotation.set(0, 0.58, 0);
         this.sketch.scene.add(this.tvCover);
+    }
+
+    #checkCompatibility() {
+        const isCompatible = window.matchMedia('(min-width:900px)');
+
+        if (!isCompatible.matches) {
+            document.querySelector('#expand').style.display = 'none';
+            document.querySelector('#next').style.marginRight = '0px';
+        } else {
+            document.querySelector('#expand').style.display = 'initial';
+            document.querySelector('#next').style.marginRight = '20px';
+        }
+
+        if (window.mobileAndTabletCheck()) {
+            document.querySelector('#tv_view').style.display = 'initial';
+        } else {
+            console.log("el: ", document.querySelector('#tv_view'))
+            document.querySelector('#tv_view').style.display = 'none';
+        }
     }
 
     initTv() {

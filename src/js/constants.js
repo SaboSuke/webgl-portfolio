@@ -15,7 +15,6 @@ const HELPER_TIPS_1 = [
 
 const HELPER_TIPS_2 = [
     '>> Click on a table!',
-    '>> Hover on a picture frame!'
 ];
 
 const COLORS = {

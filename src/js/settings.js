@@ -1,6 +1,6 @@
 export default class Settings {
 
-    opts = { };
+    opts = {};
     sketch = null;
     gui = null;
 
@@ -11,7 +11,7 @@ export default class Settings {
      * @param {Object} options
      * @constructor
      */
-    constructor(sketch, options = { }) {
+    constructor(sketch, options = {}) {
         this.#INIT(sketch, options);
 
         this.opts.camera ? this.#camera() : 0;
@@ -57,6 +57,7 @@ export default class Settings {
             socials: that.opts.socials ? that.sketch.socials : null,
             cat: that.opts.cat ? that.sketch.cat : null,
             initStage2Interface: that.opts.initStage2Interface ? that.sketch.stage2.objects : null,
+            stage2Gallery: that.opts.initStage2Interface ? that.sketch.stage2.gallery : null,
         };
     }
 
@@ -76,7 +77,7 @@ export default class Settings {
             helper1.add(item.helper.object.position, 'x');
             helper1.add(item.helper.object.position, 'y');
             helper1.add(item.helper.object.position, 'z');
-        })
+        });
     }
 
     #socials() {

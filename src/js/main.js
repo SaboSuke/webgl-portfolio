@@ -1,6 +1,7 @@
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 
 import Default from './default.js';
+import DevHelper from './dev-hepler.js';
 import Shader from './shaders.js';
 import ModelLoader from './model-loader.js';
 import Tv from './tv.js';
@@ -55,6 +56,7 @@ export class Sketch extends Default {
      * 
      * @param {Object} options
      * @param {Boolean} [options.eDevMod=false] - enable developer mode for movements
+     * @param {Boolean} [options.eDevHelper=false] - enable developer helper for performance stats and settings
      * @constructor
      */
     constructor(options = {}) {
@@ -70,6 +72,8 @@ export class Sketch extends Default {
     #INIT(options) {
         this.isPlaying = true;
         this.opts.eDevMod = options.eDevMod || false;
+        this.opts.eDevHelper = options.eDevHelper || false;
+
         this.shaders = new Shader();
         this.#initMouse();
         this.#initScene();
@@ -78,6 +82,10 @@ export class Sketch extends Default {
         this.#initHolder();
         this.#initModels();
         this.stage2 = new Stage2(this);
+
+        this.opts.eDevHelper && setTimeout(() => {
+            new DevHelper(this, true, false);
+        }, 1000);
     }
 
     showcaseView() {
@@ -176,7 +184,7 @@ export class Sketch extends Default {
 
         // camera redirect
         this.viewOnTv = false;
-        this.domEvents.addEventListener(this.tvScreen, 'mouseover', () => {
+        const handleTv = () => {
             if (this.resettingStarted) return;
 
             // icon fix
@@ -206,6 +214,15 @@ export class Sketch extends Default {
 
                 this.camera.updateProjectionMatrix();
             }
+        }
+        this.domEvents.addEventListener(this.tvScreen, 'mouseover', () => {
+            handleTv()
+        });
+        this.domEvents.addEventListener(this.tvScreen, 'click', () => {
+            handleTv();
+        });
+        document.querySelector('#tv_view').addEventListener('click', () => {
+            handleTv();
         });
 
         // stage

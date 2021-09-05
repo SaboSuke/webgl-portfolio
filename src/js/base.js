@@ -63,6 +63,17 @@ const showcase = document.querySelector('#scene-intro');
 function siteStartIntro() {
     const tl = gsap.timeline();
     showcase.style.display = "flex";
+
+    let height = '260px';
+    const large = window.matchMedia('(max-width:1100px)');
+    const medium = window.matchMedia('(max-width:992px)');
+    const small = window.matchMedia('(max-width:768px)');
+    const extraSmall = window.matchMedia('(max-width:670px)');
+    const tiny = window.matchMedia('(max-width:500px)');
+    if (large.matches) height = '280px';
+    else if (medium.matches || small.matches || extraSmall.matches) height = '270px';
+    else if (tiny.matches) height = '300px';
+
     tl.to('#scene-intro', {
         duration: 0.5,
         x: '0%',
@@ -75,7 +86,7 @@ function siteStartIntro() {
         ease: 'Expo.easeInOut',
     }, '-=.4').to('#scene-intro .line', {
         duration: 1,
-        height: '260px',
+        height,
         ease: 'Expo.easeInOut',
     }, '-=.5').to('#scene-intro .dets>*', {
         duration: .6,

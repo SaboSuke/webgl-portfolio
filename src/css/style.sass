@@ -23,7 +23,7 @@ ul li
 body
     background: transparent
     font-family: 'Poppins', sans-serif
-    overflow-x: hidden
+    overflow: hidden
 
     &.single
         overflow: hidden
@@ -66,6 +66,7 @@ main
         flex-direction: column
         justify-content: space-between
         align-items: flex-start
+        transition: .3s width ease-in-out
         
         .top
             span
@@ -128,8 +129,8 @@ main
             span
                 z-index: -1
                 position: absolute
-                height: 150px;
-                width: 120px;
+                height: 150px
+                width: 120px
                 border: solid 5px $primary
                 border-color: $primary transparent transparent transparent
                 border-radius: 100%/100px 100px 0 0px
@@ -137,32 +138,31 @@ main
             span
                 transition: .3s all ease-in-out
                 &#first
-                    top: -10px
-                    left: -4px
+                    top: -13px
+                    left: -3px
                 
                 &#second
-                    bottom: -12px;
-                    left: -4px;
-                    transform: rotate(180deg);
+                    bottom: -12px
+                    left: -4px
+                    transform: rotate(180deg)
             &:hover
                 color: white
                 background: $primary-hover
                 transform: scale(1.1) !important
                 span
                     &#first
-                        transform: translate(-3px, -6px) rotate(90deg);
+                        transform: translate(-3px, -6px) rotate(90deg)
                     &#second
-                        transform: translate(6px, 5px) rotate(-90deg);
-
+                        transform: translate(6px, 5px) rotate(-90deg)
 
 // stage intros
 .stage-intro
     font-family: 'Poppins', sans-serif
 
     &>article
-        letter-spacing: 1px;
-        word-spacing: 2px;
-        line-height: 2rem;
+        letter-spacing: 1px
+        word-spacing: 2px
+        line-height: 2rem
         height: 100vh
         display: flex
         flex-direction: column
@@ -304,12 +304,16 @@ main
     cursor: pointer
     transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out
 
+    &#tv_view
+        padding: 4px 6.5px
+
     &#exit
         background: $primary !important
         border-color: $primary !important
         &:hover
             background: $primary-hover !important
-
+    &#reset 
+        margin-right: 0 !important
     &#reset:hover
         background: $primary-hover !important
 
@@ -380,7 +384,7 @@ main
 
 video
     position: fixed
-    max-width: 100%;
+    max-width: 100%
     height: auto
 
 .d_none
@@ -470,7 +474,7 @@ video
     height: 100%
     overflow: hidden
     line-height: 0
-    transform: rotate(-90deg) translateY(100%);
+    transform: rotate(-90deg) translateY(100%)
 
     svg 
         position: relative
@@ -481,7 +485,7 @@ video
     .shape-fill
         fill: #FFFFFF
         &:nth-child(3)
-            fill: $intro_bg;
+            fill: $intro_bg
 
 
 // btn
@@ -545,3 +549,271 @@ video
     to 
         transform: scale(1.5)
         opacity: 0.5
+
+
+
+// media queries
+
+// Extra large devices 
+@media only screen and (max-width: 1200px) 
+    .stage-intro
+        .stage-1
+            top: 20% !important
+        .stage-2
+            top: 15% !important
+
+        .stage-1, .stage2
+            width: 43vw !important
+
+        h1
+            font-size: 36px !important
+        p
+            font-size: 14px !important
+
+        .helper-element
+            h1
+                font-size: 16px !important
+            p
+                font-size: 14px !important
+                margin-bottom: -15px !important
+            small
+                font-size: 11px !important
+            
+            p, small
+                margin-left: 5px !important
+
+// Large devices 
+@media only screen and (max-width: 1100px) 
+    .stage-intro
+        .stage-1
+            top: 20% !important
+        .stage-2
+            top: 15% !important
+        
+        .stage-1, .stage2
+            width: 43vw !important
+
+        h1
+            font-size: 30px !important
+        p
+            font-size: 12px !important
+            letter-spacing: 0 !important
+
+        .helper-element
+            h1
+                font-size: 14px !important
+            p
+                font-size: 12px !important
+            small
+                font-size: 10px !important
+            
+            p, small
+                margin-left: 5px !important
+
+    .scene-intro
+        .left
+            width: 50%
+            .top
+                margin-bottom: 50px !important
+            
+            .middle
+                h1
+                    font-size: 32px !important
+                h6
+                    font-size: 13px !important
+                p
+                    font-size: 13px !important
+                .line
+                    height: 280px !important // implement in js too
+
+// Medium devices
+@media only screen and (max-width: 992px) 
+    .stage-intro
+        article
+            line-height: 25px !important
+            width: 50vw !important
+
+        .stage-1, .stage2
+            width: 43vw !important
+
+        .stage-1
+            top: 20% !important
+        
+        .stage-1 
+            padding-left: 20px !important
+        .stage-2
+            padding-right: 20px !important
+
+        h1
+            font-size: 28px !important
+        p
+            font-size: 12px !important
+            letter-spacing: 0 !important
+
+        .helper-element
+            line-height: 30px !important
+            h1
+                font-size: 14px !important
+            p
+                font-size: 12px !important
+            small
+                font-size: 10px !important
+            
+            p, small
+                margin-left: 5px  !important
+
+    .scene-intro
+        .left
+            width: 70%
+            .top
+                margin-bottom: 40px !important
+            
+            .middle
+                h1
+                    font-size: 30px !important
+                h6
+                    font-size: 12px !important
+                p
+                    font-size: 12px !important
+                .line
+                    height: 270px !important // implement in js too
+
+// Small devices
+@media only screen and (max-width: 768px)
+    .stage-intro
+        article
+            line-height: 25px !important
+            width: 50vw !important
+
+        .stage-1
+            top: 15% !important
+
+        .stage-1 
+            padding-left: 20px !important
+        .stage-2
+            padding-right: 20px !important
+
+        h1
+            font-size: 26px !important
+        p
+            font-size: 11px !important
+            letter-spacing: 0 !important
+            margin-bottom: 10px !important
+
+        .helper-element
+            line-height: 26px !important
+            h1
+                font-size: 13px !important
+            p
+                font-size: 11px !important
+            small
+                font-size: 10px !important
+            
+            p, small
+                margin-left: 5px !important
+
+    .scene-intro
+        .left
+            width: 70% !important
+            .top
+                margin-bottom: 40px !important
+            
+            .middle
+                h1
+                    font-size: 28px !important
+                h6
+                    font-size: 12px !important
+                p
+                    font-size: 12px !important
+                .line
+                    height: 270px !important // implement in js too
+
+// Extra small devices
+@media only screen and (max-width: 670px) 
+    .stage-intro
+        article
+            line-height: 23px !important
+            width: 50vw !important
+
+        .stage-1, .stage-2
+            top: 15% !important
+
+        .stage-1 
+            padding-left: 20px !important
+        .stage-2
+            padding-right: 20px !important
+
+        h1
+            font-size: 20px !important
+        p
+            font-size: 10px !important
+            letter-spacing: 0 !important
+            margin-bottom: 10px !important
+        small 
+            font-size: 9px !important
+
+        .helper-element
+            line-height: 20px !important
+            h1
+                font-size: 12px !important
+            p
+                font-size: 10px !important
+            small
+                font-size: 9px !important
+            
+            p, small
+                margin-left: 5px !important
+
+    .scene-intro
+        .left
+            width: 90% !important
+            .top
+                margin-bottom: 40px !important
+            
+            .middle
+                h1
+                    font-size: 28px !important
+                h6
+                    font-size: 12px !important
+                p
+                    font-size: 12px !important
+                .line
+                    height: 270px !important // implement in js too
+
+        .right
+            right: 20px !important
+            bottom: 20px !important
+            #explore
+                padding: 12px 20px !important
+                font-size: 26px !important
+                border-radius: 50% !important
+                span
+                    width: 80px !important
+                    border-radius: 100%/75px 75px 0 0px !important
+                    &#first 
+                        top: -13px !important
+                        left: -8px !important
+                    &#second 
+                        bottom: -13px !important
+                        left: -8px !important
+                &:hover span#first
+                    transform: translate(-32px, -31px) rotate(90deg) !important
+                &:hover span#second
+                    transform: translate(30px, 30px) rotate(-90deg) !important
+
+// Extra Small Fixes
+@media only screen and (max-width: 500px)
+    .scene-intro
+        .left
+            .top
+                margin-bottom: 40px !important
+            
+            .middle
+                h1
+                    font-size: 26px !important
+                h6
+                    font-size: 11px !important
+                p
+                    font-size: 11px !important
+                .line
+                    height: 300px !important // implement in js too

@@ -17,7 +17,7 @@ ul li {
 body {
   background: transparent;
   font-family: 'Poppins', sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 body.single {
@@ -79,6 +79,8 @@ main {
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
+  -webkit-transition: .3s width ease-in-out;
+  transition: .3s width ease-in-out;
 }
 
 .scene-intro .left .top span {
@@ -177,8 +179,8 @@ main {
 }
 
 .scene-intro .right #explore span#first {
-  top: -10px;
-  left: -4px;
+  top: -13px;
+  left: -3px;
 }
 
 .scene-intro .right #explore span#second {
@@ -399,6 +401,10 @@ main {
   transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out;
 }
 
+.btn-set#tv_view {
+  padding: 4px 6.5px;
+}
+
 .btn-set#exit {
   background: #ff171b !important;
   border-color: #ff171b !important;
@@ -406,6 +412,10 @@ main {
 
 .btn-set#exit:hover {
   background: rgba(255, 23, 27, 0.3) !important;
+}
+
+.btn-set#reset {
+  margin-right: 0 !important;
 }
 
 .btn-set#reset:hover {
@@ -760,6 +770,309 @@ video {
     -webkit-transform: scale(1.5);
             transform: scale(1.5);
     opacity: 0.5;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .stage-intro .stage-1 {
+    top: 20% !important;
+  }
+  .stage-intro .stage-2 {
+    top: 15% !important;
+  }
+  .stage-intro .stage-1, .stage-intro .stage2 {
+    width: 43vw !important;
+  }
+  .stage-intro h1 {
+    font-size: 36px !important;
+  }
+  .stage-intro p {
+    font-size: 14px !important;
+  }
+  .stage-intro .helper-element h1 {
+    font-size: 16px !important;
+  }
+  .stage-intro .helper-element p {
+    font-size: 14px !important;
+    margin-bottom: -15px !important;
+  }
+  .stage-intro .helper-element small {
+    font-size: 11px !important;
+  }
+  .stage-intro .helper-element p, .stage-intro .helper-element small {
+    margin-left: 5px !important;
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  .stage-intro .stage-1 {
+    top: 20% !important;
+  }
+  .stage-intro .stage-2 {
+    top: 15% !important;
+  }
+  .stage-intro .stage-1, .stage-intro .stage2 {
+    width: 43vw !important;
+  }
+  .stage-intro h1 {
+    font-size: 30px !important;
+  }
+  .stage-intro p {
+    font-size: 12px !important;
+    letter-spacing: 0 !important;
+  }
+  .stage-intro .helper-element h1 {
+    font-size: 14px !important;
+  }
+  .stage-intro .helper-element p {
+    font-size: 12px !important;
+  }
+  .stage-intro .helper-element small {
+    font-size: 10px !important;
+  }
+  .stage-intro .helper-element p, .stage-intro .helper-element small {
+    margin-left: 5px !important;
+  }
+  .scene-intro .left {
+    width: 50%;
+  }
+  .scene-intro .left .top {
+    margin-bottom: 50px !important;
+  }
+  .scene-intro .left .middle h1 {
+    font-size: 32px !important;
+  }
+  .scene-intro .left .middle h6 {
+    font-size: 13px !important;
+  }
+  .scene-intro .left .middle p {
+    font-size: 13px !important;
+  }
+  .scene-intro .left .middle .line {
+    height: 280px !important;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .stage-intro article {
+    line-height: 25px !important;
+    width: 50vw !important;
+  }
+  .stage-intro .stage-1, .stage-intro .stage2 {
+    width: 43vw !important;
+  }
+  .stage-intro .stage-1 {
+    top: 20% !important;
+  }
+  .stage-intro .stage-1 {
+    padding-left: 20px !important;
+  }
+  .stage-intro .stage-2 {
+    padding-right: 20px !important;
+  }
+  .stage-intro h1 {
+    font-size: 28px !important;
+  }
+  .stage-intro p {
+    font-size: 12px !important;
+    letter-spacing: 0 !important;
+  }
+  .stage-intro .helper-element {
+    line-height: 30px !important;
+  }
+  .stage-intro .helper-element h1 {
+    font-size: 14px !important;
+  }
+  .stage-intro .helper-element p {
+    font-size: 12px !important;
+  }
+  .stage-intro .helper-element small {
+    font-size: 10px !important;
+  }
+  .stage-intro .helper-element p, .stage-intro .helper-element small {
+    margin-left: 5px  !important;
+  }
+  .scene-intro .left {
+    width: 70%;
+  }
+  .scene-intro .left .top {
+    margin-bottom: 40px !important;
+  }
+  .scene-intro .left .middle h1 {
+    font-size: 30px !important;
+  }
+  .scene-intro .left .middle h6 {
+    font-size: 12px !important;
+  }
+  .scene-intro .left .middle p {
+    font-size: 12px !important;
+  }
+  .scene-intro .left .middle .line {
+    height: 270px !important;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .stage-intro article {
+    line-height: 25px !important;
+    width: 50vw !important;
+  }
+  .stage-intro .stage-1 {
+    top: 15% !important;
+  }
+  .stage-intro .stage-1 {
+    padding-left: 20px !important;
+  }
+  .stage-intro .stage-2 {
+    padding-right: 20px !important;
+  }
+  .stage-intro h1 {
+    font-size: 26px !important;
+  }
+  .stage-intro p {
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+    margin-bottom: 10px !important;
+  }
+  .stage-intro .helper-element {
+    line-height: 26px !important;
+  }
+  .stage-intro .helper-element h1 {
+    font-size: 13px !important;
+  }
+  .stage-intro .helper-element p {
+    font-size: 11px !important;
+  }
+  .stage-intro .helper-element small {
+    font-size: 10px !important;
+  }
+  .stage-intro .helper-element p, .stage-intro .helper-element small {
+    margin-left: 5px !important;
+  }
+  .scene-intro .left {
+    width: 70% !important;
+  }
+  .scene-intro .left .top {
+    margin-bottom: 40px !important;
+  }
+  .scene-intro .left .middle h1 {
+    font-size: 28px !important;
+  }
+  .scene-intro .left .middle h6 {
+    font-size: 12px !important;
+  }
+  .scene-intro .left .middle p {
+    font-size: 12px !important;
+  }
+  .scene-intro .left .middle .line {
+    height: 270px !important;
+  }
+}
+
+@media only screen and (max-width: 670px) {
+  .stage-intro article {
+    line-height: 23px !important;
+    width: 50vw !important;
+  }
+  .stage-intro .stage-1, .stage-intro .stage-2 {
+    top: 15% !important;
+  }
+  .stage-intro .stage-1 {
+    padding-left: 20px !important;
+  }
+  .stage-intro .stage-2 {
+    padding-right: 20px !important;
+  }
+  .stage-intro h1 {
+    font-size: 20px !important;
+  }
+  .stage-intro p {
+    font-size: 10px !important;
+    letter-spacing: 0 !important;
+    margin-bottom: 10px !important;
+  }
+  .stage-intro small {
+    font-size: 9px !important;
+  }
+  .stage-intro .helper-element {
+    line-height: 20px !important;
+  }
+  .stage-intro .helper-element h1 {
+    font-size: 12px !important;
+  }
+  .stage-intro .helper-element p {
+    font-size: 10px !important;
+  }
+  .stage-intro .helper-element small {
+    font-size: 9px !important;
+  }
+  .stage-intro .helper-element p, .stage-intro .helper-element small {
+    margin-left: 5px !important;
+  }
+  .scene-intro .left {
+    width: 90% !important;
+  }
+  .scene-intro .left .top {
+    margin-bottom: 40px !important;
+  }
+  .scene-intro .left .middle h1 {
+    font-size: 28px !important;
+  }
+  .scene-intro .left .middle h6 {
+    font-size: 12px !important;
+  }
+  .scene-intro .left .middle p {
+    font-size: 12px !important;
+  }
+  .scene-intro .left .middle .line {
+    height: 270px !important;
+  }
+  .scene-intro .right {
+    right: 20px !important;
+    bottom: 20px !important;
+  }
+  .scene-intro .right #explore {
+    padding: 12px 20px !important;
+    font-size: 26px !important;
+    border-radius: 50% !important;
+  }
+  .scene-intro .right #explore span {
+    width: 80px !important;
+    border-radius: 100%/75px 75px 0 0px !important;
+  }
+  .scene-intro .right #explore span#first {
+    top: -13px !important;
+    left: -8px !important;
+  }
+  .scene-intro .right #explore span#second {
+    bottom: -13px !important;
+    left: -8px !important;
+  }
+  .scene-intro .right #explore:hover span#first {
+    -webkit-transform: translate(-32px, -31px) rotate(90deg) !important;
+            transform: translate(-32px, -31px) rotate(90deg) !important;
+  }
+  .scene-intro .right #explore:hover span#second {
+    -webkit-transform: translate(30px, 30px) rotate(-90deg) !important;
+            transform: translate(30px, 30px) rotate(-90deg) !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .scene-intro .left .top {
+    margin-bottom: 40px !important;
+  }
+  .scene-intro .left .middle h1 {
+    font-size: 26px !important;
+  }
+  .scene-intro .left .middle h6 {
+    font-size: 11px !important;
+  }
+  .scene-intro .left .middle p {
+    font-size: 11px !important;
+  }
+  .scene-intro .left .middle .line {
+    height: 300px !important;
   }
 }
 /*# sourceMappingURL=style.css.map */
