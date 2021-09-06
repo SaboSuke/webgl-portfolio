@@ -7,7 +7,7 @@
     "type": "git",
     "url": "git+https://github.com/SaboSuke/webgl-portfolio.git"
   },
-  "keywords": [
+  "keywords": [ 
     "webgl",
     "threejs",
     "portfolio",
