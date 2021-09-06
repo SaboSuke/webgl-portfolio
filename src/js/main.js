@@ -1,12 +1,11 @@
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 
-import Default from './default.js';
-import DevHelper from './dev-hepler.js';
-import Shader from './shaders.js';
-import ModelLoader from './model-loader.js';
-import Tv from './tv.js';
-import LightBall from './lightball.js';
-import Stage2 from './stage-2.js';
+import Default from '../classes/default.js';
+import DevHelper from '../classes/dev-hepler.js';
+import ModelLoader from '../classes/model-loader.js';
+import Tv from '../classes/tv.js';
+import LightBall from '../classes/lightball.js';
+import Stage2 from '../classes/stage-2.js';
 
 import {
     siteIntro,
@@ -23,19 +22,17 @@ import {
     hideDownArrow,
     showUpArrow,
     showDownArrow,
-} from './base.js';
+} from './_animation.js';
 import {
     ENV_PATH, RAND, COLORS, SOCIAL_LINKS,
     STAGE_0_SHOWCASE, STAGE_1_VEC, STAGE_2_VEC
-} from './constants.js';
+} from './_constants.js';
 
-import EventEmitter from './event.js';
+import EventEmitter from '../classes/event.js';
 export const EVENT = new EventEmitter();
-EVENT.on('loaded', () => {
-    // do something 
-});
 
 const NB_STAGES = 2;
+
 export class Sketch extends Default {
 
     opts = {};
@@ -74,7 +71,6 @@ export class Sketch extends Default {
         this.opts.eDevMod = options.eDevMod || false;
         this.opts.eDevHelper = options.eDevHelper || false;
 
-        this.shaders = new Shader();
         this.#initMouse();
         this.#initScene();
         this.domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
@@ -481,7 +477,7 @@ export class Sketch extends Default {
             window.open(item.link);
         }));
         this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseover', () => {
-            document.body.style.cursor = "pointer";
+            this.triggerCursor('pointer');
             gsap.to(item.circle.scale, {
                 duration: 1,
                 x: 1.3,
@@ -491,7 +487,7 @@ export class Sketch extends Default {
             })
         }));
         this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseout', () => {
-            document.body.style.cursor = "inherit";
+            this.triggerCursor('default');
             gsap.to(item.circle.scale, {
                 duration: 1,
                 x: 1,

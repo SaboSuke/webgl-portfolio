@@ -1,4 +1,4 @@
-import { COLORS, ENV_PATH } from './constants.js';
+import { COLORS, ENV_PATH } from '../js/_constants.js';
 
 export default class Blink {
     prevCol = 'b';
@@ -57,9 +57,9 @@ export default class Blink {
         loader.load(ENV_PATH + 'fonts/Poppins_Regular.json', function (font) {
             that.textGeometry = new THREE.TextGeometry(that.text, {
                 font: font,
-                size: 2,//80
-                height: 0.5, //5
-                curveSegments: 5, //12
+                size: 2,
+                height: 0.5,
+                curveSegments: 5,
             });
             that.textMaterial = new THREE.MeshStandardMaterial({
                 color: COLORS.black,

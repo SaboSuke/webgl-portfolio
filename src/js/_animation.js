@@ -248,7 +248,7 @@ function showTvControls() {
  * Stage
  */
 // message helper
-import { HELPER_TIPS_1, HELPER_TIPS_2 } from './constants.js';
+import { HELPER_TIPS_1, HELPER_TIPS_2 } from './_constants.js';
 function typeTipMessage(array = HELPER_TIPS_1, stage) {
     new Typewriter(`.stage-${stage} .helper-element .helper-details small`, {
         strings: array,

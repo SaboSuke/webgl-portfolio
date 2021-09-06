@@ -2,8 +2,8 @@ import Blink from './blink.js';
 import {
     showStageBackButton,
     hideStageBackButton,
-} from './base.js';
-import { ENV_PATH, COLORS, RAND } from './constants.js';
+} from '../js/_animation.js';
+import { ENV_PATH, COLORS, RAND } from '../js/_constants.js';
 
 export default class Stage2 {
 

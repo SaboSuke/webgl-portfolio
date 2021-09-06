@@ -2,7 +2,7 @@ import {
     COLORS,
     CHANNEL_ELEMENTS,
     CHANNEL_SOURCES
-} from './constants.js';
+} from '../js/_constants.js';
 
 export default class Tv {
 
@@ -58,7 +58,6 @@ export default class Tv {
         if (window.mobileAndTabletCheck()) {
             document.querySelector('#tv_view').style.display = 'initial';
         } else {
-            console.log("el: ", document.querySelector('#tv_view'))
             document.querySelector('#tv_view').style.display = 'none';
         }
     }

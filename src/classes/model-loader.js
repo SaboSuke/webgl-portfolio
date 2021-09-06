@@ -1,5 +1,5 @@
-import { ENV_PATH } from './constants.js';
-import { EVENT } from './main.js';
+import { ENV_PATH } from '../js/_constants.js';
+import { EVENT } from '../js/main.js';
 
 export default class ModelLoader {
     constructor(sketch) {
@@ -96,6 +96,6 @@ export default class ModelLoader {
     }
 
     #logError() {
-        console.log('An error happened while loading a model!');
+        console.log('An error occured while loading a model!');
     }
 }

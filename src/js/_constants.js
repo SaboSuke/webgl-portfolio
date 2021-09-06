@@ -64,12 +64,12 @@ const STAGE_0_SHOWCASE = {
 
 const STAGE_1_VEC = {
     position: {
-        x: -2, //-2.5
-        y: 2.5, //3
+        x: -2,
+        y: 2.5,
         z: 14,
     },
     target: {
-        x: -2.5, //-2
+        x: -2.5,
         y: 0,
         z: 0,
     }
@@ -82,8 +82,8 @@ const STAGE_2_VEC = {
         z: 14,
     },
     target: {
-        x: 7.5, //7
-        y: 3, //2.5
+        x: 7.5,
+        y: 3,
         z: -5,
     }
 };

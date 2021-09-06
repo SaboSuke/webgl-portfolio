@@ -1,6 +1,6 @@
 export default class EventEmitter {
     /**
-     * @desc Handles emitting custom events
+     * @desc emits a custom event
      *
      * @constructor
      */
