@@ -2,7 +2,7 @@ import {
     COLORS,
     CHANNEL_ELEMENTS,
     CHANNEL_SOURCES
-} from '../js/_constants.js';
+} from '../js/_config.js';
 
 export default class Tv {
 
@@ -11,7 +11,7 @@ export default class Tv {
     isFullscreen = false;
 
     /**
-     * @desc Hanldes all the tv logic
+     * @desc Handles all the tv logic
      * 
      * @param {Sketch} sketch
      * @constructor
@@ -53,12 +53,6 @@ export default class Tv {
         } else {
             document.querySelector('#expand').style.display = 'initial';
             document.querySelector('#next').style.marginRight = '20px';
-        }
-
-        if (window.mobileAndTabletCheck()) {
-            document.querySelector('#tv_view').style.display = 'initial';
-        } else {
-            document.querySelector('#tv_view').style.display = 'none';
         }
     }
 

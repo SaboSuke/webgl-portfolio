@@ -24,6 +24,10 @@ body.single {
   overflow: hidden;
 }
 
+.hide {
+  display: none;
+}
+
 main {
   background: transparent;
   position: relative;
@@ -129,13 +133,13 @@ main {
   background: white;
 }
 
-.scene-intro .left .bottom {
+.scene-intro .left .bottom .socials {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
 }
 
-.scene-intro .left .bottom .btn-social {
+.scene-intro .left .bottom .socials .btn-social {
   background: transparent;
   border: 1px solid white;
   color: white;
@@ -146,8 +150,18 @@ main {
   transition: .3s background ease-in-out;
 }
 
-.scene-intro .left .bottom .btn-social:hover {
+.scene-intro .left .bottom .socials .btn-social:hover {
   background: rgba(255, 23, 27, 0.3);
+}
+
+.scene-intro .left .bottom footer {
+  position: absolute;
+  bottom: 5px;
+}
+
+.scene-intro .left .bottom footer span {
+  font-size: 10px !important;
+  font-style: italic !important;
 }
 
 .scene-intro .right {
@@ -399,10 +413,6 @@ main {
   cursor: pointer;
   -webkit-transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out;
   transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out;
-}
-
-.btn-set#tv_view {
-  padding: 4px 6.5px;
 }
 
 .btn-set#exit {
@@ -1121,6 +1131,59 @@ video {
   }
   .scene-intro .left .middle .line {
     height: 300px !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .stage-intro .stage > h1,
+  .stage-intro .stage > p,
+  .stage-intro .stage > small {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+  }
+  .stage-intro .stage .helper-element {
+    position: absolute;
+    bottom: 18%;
+    left: 30px !important;
+  }
+  .stage {
+    position: absolute;
+    top: 25% !important;
+    padding-left: 0px !important;
+    width: 100% !important;
+  }
+  .stage .helper-element {
+    width: 80vw !important;
+  }
+  .stage .helper-element > * {
+    width: 100% !important;
+  }
+  .stage-1 .helper-element {
+    padding: 10px 0px !important;
+  }
+  .stage-2 {
+    left: 0% !important;
+  }
+  .stage-2 .helper-element {
+    padding: 10px 20px !important;
+    border-left: 4px solid #ff171b;
+  }
+  .stage-2 .helper-element .helper-details > * {
+    color: black;
+  }
+  .stage-2 .helper-element:after {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    bottom: 0;
+    content: '';
+    height: 100%;
+    width: 100%;
+    opacity: 0.32;
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, #ff171b 100%) !important;
   }
 }
 /*# sourceMappingURL=style.css.map */

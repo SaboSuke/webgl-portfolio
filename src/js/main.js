@@ -25,8 +25,8 @@ import {
 } from './_animation.js';
 import {
     ENV_PATH, RAND, COLORS, SOCIAL_LINKS,
-    STAGE_0_SHOWCASE, STAGE_1_VEC, STAGE_2_VEC
-} from './_constants.js';
+    STAGE_0_SHOWCASE, STAGE_1_VEC, STAGE_2_VEC, TV_VIEW
+} from './_config.js';
 
 import EventEmitter from '../classes/event.js';
 export const EVENT = new EventEmitter();
@@ -104,8 +104,50 @@ export class Sketch extends Default {
     }
 
     #initMouse() {
+        let that = this;
+        let onPointerDownPointerX;
+        let onPointerDownPointerY;
+        let onPointerDownLon;
+        let onPointerDownLat;
+        let isUserInteracting;
+        let lon;
+        let lat;
+
         this.mouse.x = (document.scrollingElement.clientHeight / this.sizes.width) * 2 - 1;
         this.mouse.y = -(document.scrollingElement.clientWidth / this.sizes.height) * 2 + 1;
+
+        document.addEventListener('touchstart', onDocumentTouchStart);
+        document.addEventListener('touchmove', onDocumentTouchMove);
+        document.addEventListener('mousemove', onDocumentMouseMove);
+        document.addEventListener('mousedown', onDocumentMouseDown);
+
+        function onDocumentTouchStart(event) {
+            event.clientX = event.touches[0].pageX;
+            event.clientY = event.touches[0].pageY;
+
+            onDocumentMouseDown(event);
+        }
+
+        function onDocumentTouchMove(event) {
+            if (event.touches.length == 1) {
+                lon = (onPointerDownPointerX - event.touches[0].pageX) * 0.1 + onPointerDownLon;
+                lat = (event.touches[0].pageY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+            }
+        }
+
+        function onDocumentMouseMove(event) {
+            if (isUserInteracting === true) {
+                lon = (onPointerDownPointerX - event.clientX) * 0.1 + onPointerDownLon;
+                lat = (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+            }
+        }
+
+        function onDocumentMouseDown(event) {
+            that.mouse.x = (event.clientX / that.renderer.domElement.clientWidth) * 2 - 1;
+            that.mouse.y = - (event.clientY / that.renderer.domElement.clientHeight) * 2 + 1;
+
+            EVENT.dispatch('touch');
+        }
     }
 
     #initScene() {
@@ -195,29 +237,38 @@ export class Sketch extends Default {
 
                 gsap.to(this.camera.position, {
                     duration: 1,
-                    x: 0.6,
-                    y: -1.5,
-                    z: 1,
+                    x: TV_VIEW.position.x,
+                    y: TV_VIEW.position.y,
+                    z: TV_VIEW.position.z,
                     ease: 'Expo.easeInOut'
                 });
                 gsap.to(this.controls.target, {
                     duration: 1,
-                    x: -0.3,
-                    y: -1.6,
-                    z: -0.5,
+                    x: TV_VIEW.target.x,
+                    y: TV_VIEW.target.y,
+                    z: TV_VIEW.target.z,
                     ease: 'Expo.easeInOut'
                 });
 
                 this.camera.updateProjectionMatrix();
             }
         }
+        const mobileHandler = function () {
+            EVENT.on('touch', () => {
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(that.mouse, that.camera);
+                var intersects = raycaster.intersectObjects([that.tvScreen]);
+
+                for (let i = 0; i < intersects.length; i++) {
+                    if (intersects[i].object === that.tvScreen) 
+                        handleTv();
+                }
+            });
+        }();
         this.domEvents.addEventListener(this.tvScreen, 'mouseover', () => {
-            handleTv()
-        });
-        this.domEvents.addEventListener(this.tvScreen, 'click', () => {
             handleTv();
         });
-        document.querySelector('#tv_view').addEventListener('click', () => {
+        this.domEvents.addEventListener(this.tvScreen, 'click', () => {
             handleTv();
         });
 
@@ -484,7 +535,7 @@ export class Sketch extends Default {
                 y: 1.3,
                 z: 1.3,
                 ease: 'Expo.easeOut'
-            })
+            });
         }));
         this.socials.forEach(item => this.domEvents.addEventListener(item.circle, 'mouseout', () => {
             this.triggerCursor('default');
@@ -494,7 +545,7 @@ export class Sketch extends Default {
                 y: 1,
                 z: 1,
                 ease: 'Expo.easeOut'
-            })
+            });
         }));
     }
 
@@ -525,8 +576,8 @@ export class Sketch extends Default {
                 time += time;
             });
 
-            this.controls ? this.controls.update() : 0;
-            this.stats ? this.stats.update() : 0;
+            this.controls && this.controls.update();
+            this.stats && this.stats.update();
         }
 
         this.renderer.render(this.scene, this.camera);
@@ -535,7 +586,7 @@ export class Sketch extends Default {
 
     play() {
         if (!this.isPlaying) {
-            this.render()
+            this.render();
             this.isPlaying = true;
         }
     }

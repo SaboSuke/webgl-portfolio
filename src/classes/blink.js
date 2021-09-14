@@ -1,10 +1,12 @@
-import { COLORS, ENV_PATH } from '../js/_constants.js';
+import { COLORS, ENV_PATH } from '../js/_config.js';
 
 export default class Blink {
     prevCol = 'b';
     isPlaying = false;
 
     /**
+     * @desc Creates a rounded blinker circle effect
+     * 
      * @param {Sketch} sketch
      * @param {Object} position - Vec3 - default (0, 2, 0)
      * @param {String} text - default 'Click'
@@ -53,7 +55,7 @@ export default class Blink {
 
     #initText() {
         const loader = new THREE.FontLoader(), that = this;
-        // couldn't animte textGeometry outside of the function
+        // couldn't animate textGeometry outside of the function
         loader.load(ENV_PATH + 'fonts/Poppins_Regular.json', function (font) {
             that.textGeometry = new THREE.TextGeometry(that.text, {
                 font: font,
@@ -108,7 +110,7 @@ export default class Blink {
         }, delay);
     }
 
-    togggleBlink(value) {
+    toggleBlink(value) {
         this.isPlaying = value;
     }
 }

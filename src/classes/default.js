@@ -1,7 +1,7 @@
 export default class Default {
 
     /**
-     * @desc Hanldes shared methods
+     * @desc Handles shared methods
      * 
      * @constructor
      */

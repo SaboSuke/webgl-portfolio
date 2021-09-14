@@ -1,4 +1,4 @@
-import { RAND, ENV_PATH } from '../js/_constants.js';
+import { RAND, ENV_PATH } from '../js/_config.js';
 
 export default class LightBall {
     /**
@@ -6,7 +6,8 @@ export default class LightBall {
      * 
      * @param {Sketch} sketch
      * @param {Object} positions - lightBall position(default: { x: 0, y: 0, z: 0 })
-     * @param {String} color - lightball color
+     * @param {String} color - lightBall color
+     * @constructor
      * @return {Object} - { lightBall, shadowLight, ballMaterial }
      */
     constructor(sketch, positions = {}, color = 0xffffff, intensity = 1, stage = 1, textureRepeat = {

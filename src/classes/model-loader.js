@@ -1,7 +1,15 @@
-import { ENV_PATH } from '../js/_constants.js';
+import { ENV_PATH } from '../js/_config.js';
 import { EVENT } from '../js/main.js';
 
 export default class ModelLoader {
+
+    /**
+     * @desc Loads all models
+     * 
+     * @param {Sketch} sketch 
+     * @constructor
+     * @returns 
+     */
     constructor(sketch) {
         if (!sketch) return;
         this.sketch = sketch;

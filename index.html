@@ -13,6 +13,7 @@
         <meta property="og:site_name" content="Essam Abed" />
 
         <title>E. | Essam Abed</title>
+        <link rel="shortcut icon" href="logo.ico" type="image/x-icon">
         <link rel="stylesheet" href="src/css/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
             integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
@@ -69,22 +70,26 @@
                         </article>
                     </div>
                     <div class="bottom">
-                        <div>
-                            <a class="btn-social" target="_blank" href="https://github.com/SaboSuke">
-                                <i class="fab fa-github-alt"></i>
-                            </a>
+                        <div class="socials">
+                            <div>
+                                <a class="btn-social" target="_blank" href="https://github.com/SaboSuke">
+                                    <i class="fab fa-github-alt"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a class="btn-social" target="_blank" href="https://www.linkedin.com/in/essam-abed-5bb7a3196/">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a class="btn-social" target="_blank" href="https://twitter.com/SabosukeMe">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div>
-                            <a class="btn-social" target="_blank"
-                                href="https://www.linkedin.com/in/essam-abed-5bb7a3196/">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                        </div>
-                        <div>
-                            <a class="btn-social" target="_blank" href="https://twitter.com/SabosukeMe">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </div>
+                        <footer class="hide">
+                            <small></small>
+                        </footer>
                     </div>
                 </div>
                 <div class="right">
@@ -145,9 +150,6 @@
                     <div class="btn-set sanitize" id="back">
                         <i class="fas fa-long-arrow-alt-left"></i>
                     </div>
-                    <div class="btn-set sanitize" id="tv_view">
-                        <i class="fas fa-tv"></i>
-                    </div>
                     <div class="btn-set sanitize" id="reset">
                         <i class="fas fa-sync-alt"></i>
                     </div>
@@ -155,7 +157,7 @@
             </section>
 
             <section class="stage-intro">
-                <article class="stage-1">
+                <article class="stage stage-1">
                     <h1>About Me</h1>
                     <p id="stage1-typed">
                         >> Hi, I'm Essam and I'm a Fullstack Developer based In Tunisia, Tunis. I have over 4 years of
@@ -176,7 +178,7 @@
                         </div>
                     </div>
                 </article>
-                <article class="stage-2">
+                <article class="stage stage-2">
                     <h1>Moreover</h1>
                     <p id="stage2-typed">
                         >> Hi, I'm Essam and I'm a Fullstack Developer based In Tunisia, Tunis. I have over 4 years of
@@ -213,6 +215,10 @@
             EVENT.on('loaded', () => {
                 sketch.LOAD();
             });
+
+            if(window.mobileAndTabletCheck()){
+                document.querySelector('.scene-intro .bottom footer').classList.remove('hide');
+            }
 
         </script>
     </body>

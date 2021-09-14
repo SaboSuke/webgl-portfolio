@@ -1,3 +1,15 @@
+import { INTRO_FOOTER_STRINGS } from './_config.js';
+
+// helper fixes
+const isSmall = window.matchMedia('(max-width: 500px)').matches;
+if (isSmall) {
+    gsap.set('.stage-intro .stage-2 .helper-details>*', {
+        display: 'initial',
+        opacity: 1,
+        visibility: 'visible',
+    });
+}
+
 /**
  * scene & showcase intro
  */
@@ -46,12 +58,22 @@ function siteIntro() {
         stagger: 0.2,
         y: '-20%',
         ease: 'Expo.easeInOut',
-    }, '-=0.6').from('#scene-intro .bottom>*', {
+    }, '-=0.6').from('#scene-intro .bottom .socials>*', {
         duration: .6,
         opacity: 0,
         stagger: 0.2,
         x: '-20%',
         ease: 'Expo.easeInOut',
+        onComplete: () => {
+            new Typewriter(`.scene-intro .bottom footer`, {
+                strings: [window.mobileAndTabletCheck ? INTRO_FOOTER_STRINGS.compatible : INTRO_FOOTER_STRINGS.meet],
+                autoStart: true,
+                pause: 10000,
+                loop: true,
+                delay: 15,
+                deleteSpeed: 30,
+            });
+        }
     }, '-=0.5').from('#scene-intro .right #explore', {
         duration: 1,
         x: '-20%',
@@ -94,7 +116,7 @@ function siteStartIntro() {
         stagger: 0.2,
         y: '0%',
         ease: 'Expo.easeInOut',
-    }, '-=.8').to('#scene-intro .bottom>*', {
+    }, '-=.8').to('#scene-intro .bottom .socials>*', {
         duration: .6,
         opacity: 1,
         stagger: 0.2,
@@ -124,7 +146,7 @@ function siteEndIntro() {
         stagger: 0.2,
         y: '-20%',
         ease: 'Expo.easeInOut',
-    }, '-=.6').to('#scene-intro .bottom>*', {
+    }, '-=.6').to('#scene-intro .bottom .socials>*', {
         duration: .6,
         opacity: 0,
         stagger: 0.2,
@@ -248,7 +270,7 @@ function showTvControls() {
  * Stage
  */
 // message helper
-import { HELPER_TIPS_1, HELPER_TIPS_2 } from './_constants.js';
+import { HELPER_TIPS_1, HELPER_TIPS_2 } from './_config.js';
 function typeTipMessage(array = HELPER_TIPS_1, stage) {
     new Typewriter(`.stage-${stage} .helper-element .helper-details small`, {
         strings: array,
@@ -266,54 +288,68 @@ function clearStageIntro(stage) {
     const tl = gsap.timeline();
     const st = `.stage-${stage}`;
 
-    tl.to(st + ' .helper-element', {
-        duration: 0.5,
-        opacity: 0,
-        x: '-10%',
-        ease: 'Expo.easeInOut',
-        onComplete: () => {
-            gsap.set(st + ' .helper-element', {
-                delay: 0.5,
-                display: 'none',
-            });
-        }
-    }).to(st + ' small', {
-        duration: .5,
-        x: '-5%',
-        opacity: 0,
-        onComplete: () => {
-            gsap.set(st + ' small', {
-                delay: 0.5,
-                display: 'none',
-            });
-        }
-    }, '-=.2').to(st + ' p', {
-        duration: .5,
-        x: '-5%',
-        opacity: 0,
-        onComplete: () => {
-            gsap.set(st + ' p', {
-                delay: 0.5,
-                display: 'none',
-            });
-        }
-    }, '-=.45').to(st + ' h1', {
-        duration: .5,
-        x: '-5%',
-        opacity: 0,
-        onComplete: () => {
-            gsap.set(st + ' h1', {
-                delay: 0.5,
-                display: 'none',
-            });
+    if (!isSmall)
+        tl.to(st + ' .helper-element', {
+            duration: 0.5,
+            opacity: 0,
+            x: '-10%',
+            ease: 'Expo.easeInOut',
+            onComplete: () => {
+                gsap.set(st + ' .helper-element', {
+                    delay: 0.5,
+                    display: 'none',
+                });
+            }
+        }).to(st + ' small', {
+            duration: .5,
+            x: '-5%',
+            opacity: 0,
+            onComplete: () => {
+                gsap.set(st + ' small', {
+                    delay: 0.5,
+                    display: 'none',
+                });
+            }
+        }, '-=.2').to(st + ' p', {
+            duration: .5,
+            x: '-5%',
+            opacity: 0,
+            onComplete: () => {
+                gsap.set(st + ' p', {
+                    delay: 0.5,
+                    display: 'none',
+                });
+            }
+        }, '-=.45').to(st + ' h1', {
+            duration: .5,
+            x: '-5%',
+            opacity: 0,
+            onComplete: () => {
+                gsap.set(st + ' h1', {
+                    delay: 0.5,
+                    display: 'none',
+                });
 
-            //disable to prevent movement
-            gsap.set(st, {
-                delay: 0.5,
-                display: 'none'
-            });
-        }
-    }, '-=.45');
+                //disable to prevent movement
+                gsap.set(st, {
+                    delay: 0.5,
+                    display: 'none'
+                });
+            }
+        }, '-=.45');
+    else
+        tl.to(st + ' .helper-element', {
+            duration: 0.5,
+            opacity: 0,
+            x: '-10%',
+            ease: 'Expo.easeInOut',
+            onComplete: () => {
+                gsap.set(st + ' .helper-element', {
+                    delay: 0.5,
+                    display: 'none',
+                });
+            }
+        });
 }
 
 var prevStageIntro = 1;
@@ -333,29 +369,39 @@ function animateStageIntro(stage, cache = null) {
         display: 'flex'
     });
 
-    tl.to(st + ' h1', {
-        delay: 1,
-        duration: .5,
-        x: '5%',
-        opacity: .8,
-        display: 'initial',
-    }).to(st + ' p', {
-        duration: .5,
-        x: '5%',
-        display: 'initial',
-        opacity: 1,
-    }, '-=.45').to(st + ' small', {
-        duration: .5,
-        x: '5%',
-        display: 'initial',
-        opacity: 1,
-    }, '-=.45').to(st + ' .helper-element', {
-        duration: 0.5,
-        opacity: 1,
-        x: '0%',
-        display: 'initial',
-        ease: 'Expo.easeInOut',
-    }), '-=.5';
+    if (!isSmall)
+        tl.to(st + ' h1', {
+            delay: 1,
+            duration: .5,
+            x: '5%',
+            opacity: .8,
+            display: 'initial',
+        }).to(st + ' p', {
+            duration: .5,
+            x: '5%',
+            display: 'initial',
+            opacity: 1,
+        }, '-=.45').to(st + ' small', {
+            duration: .5,
+            x: '5%',
+            display: 'initial',
+            opacity: 1,
+        }, '-=.45').to(st + ' .helper-element', {
+            duration: 0.5,
+            opacity: 1,
+            x: '0%',
+            display: 'initial',
+            ease: 'Expo.easeInOut',
+        }), '-=.5';
+    else
+        tl.to(st + ' .helper-element', {
+            duration: 0.5,
+            opacity: 1,
+            x: '0%',
+            display: 'initial',
+            visibility: 'visible',
+            ease: 'Expo.easeInOut',
+        }), '-=.5';
 
     if (stage === 1) {
         typeTipMessage(HELPER_TIPS_1, stage);

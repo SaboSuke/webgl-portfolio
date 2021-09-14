@@ -3,15 +3,17 @@ import {
     showStageBackButton,
     hideStageBackButton,
 } from '../js/_animation.js';
-import { ENV_PATH, COLORS, RAND } from '../js/_constants.js';
+import { ENV_PATH, COLORS, STAGE_2_VEC, CLIPBOARD_VEC } from '../js/_config.js';
+import { EVENT } from '../js/main.js';
 
 export default class Stage2 {
 
     paused = false;
     closed = true;
     animationOn = null;
+    boards = [];
     /**
-     * @desc Hanldes the second stage logic
+     * @desc Handles the second stage logic
      * 
      * @param {Sketch} sketch 
      * @constructor
@@ -19,6 +21,7 @@ export default class Stage2 {
     constructor(sketch) {
         this.sketch = sketch;
         this.#initStageInterface();
+        this.#mobileHandler();
     }
 
     resetStage() {
@@ -70,55 +73,79 @@ export default class Stage2 {
         }, 800);
     }
 
-    #initStageEvents() {
-        let that = this;
-        this.sketch.domEvents.addEventListener(this.skillsBlinker.object, 'click', () => {
-            if (this.paused) return;
+    positionCamera() {
+        gsap.to(this.sketch.camera.position, {
+            x: STAGE_2_VEC.position.x,
+            y: STAGE_2_VEC.position.y,
+            z: STAGE_2_VEC.position.z,
+        });
+        gsap.to(this.sketch.camera.target, {
+            x: STAGE_2_VEC.target.x,
+            y: STAGE_2_VEC.target.y,
+            z: STAGE_2_VEC.target.z,
+        });
+    }
 
-            this.animationOn = 's';
-            this.paused = false;
+    #mobileHandler() {
+        EVENT.on('touch', () => {
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(this.sketch.mouse, this.sketch.camera);
+            var intersects = raycaster.intersectObjects([this.skillsBlinker.object, this.achievementsBlinker.object]);
+
+            for (let i = 0; i < intersects.length; i++) {
+                if (intersects[i].object === this.skillsBlinker.object) {
+                    this.#handleClick('skills');
+                } else {
+                    this.#handleClick('achievements');
+                }
+            }
+        });
+    }
+
+    #handleClick(type = null) {
+        if (type === 'skills') {
             this.sketch.controls.enabled = false;
             showStageBackButton();
+            this.positionCamera();
 
-            gsap.to(that.skillsClipboard.position, {
+            gsap.to(this.skillsClipboard.position, {
                 duration: 0.6,
-                x: -1.15, y: 5.8, z: 12.9,
+                x: CLIPBOARD_VEC.position.x, y: CLIPBOARD_VEC.position.y, z: CLIPBOARD_VEC.position.z,
                 ease: Back.easeOut.config(0.1),
             });
-            gsap.to(that.skillsClipboard.rotation, {
+            gsap.to(this.skillsClipboard.rotation, {
                 duration: 0.6,
-                x: -0.3, y: -0.2, z: 0,
+                x: CLIPBOARD_VEC.rotation.x, y: CLIPBOARD_VEC.rotation.y, z: CLIPBOARD_VEC.rotation.z,
                 ease: Back.easeOut.config(0.1),
-                onComplete: () => {
-                    that.animateClipboards();
-                }
             });
+        } else {
+            this.sketch.controls.enabled = false;
+            showStageBackButton();
+            this.positionCamera();
+
+            gsap.to(this.achievementsClipboard.position, {
+                duration: 0.6,
+                x: CLIPBOARD_VEC.position.x, y: CLIPBOARD_VEC.position.y, z: CLIPBOARD_VEC.position.z,
+                ease: Back.easeOut.config(0.1),
+            });
+            gsap.to(this.achievementsClipboard.rotation, {
+                duration: 0.6,
+                x: CLIPBOARD_VEC.rotation.x, y: CLIPBOARD_VEC.rotation.y, z: CLIPBOARD_VEC.rotation.z,
+                ease: Back.easeOut.config(0.1),
+            });
+        }
+    }
+
+    #initStageEvents() {
+        this.sketch.domEvents.addEventListener(this.skillsBlinker.object, 'click', () => {
+            this.#handleClick('skills');
         });
 
         document.querySelector('.btn-set#back')
             .addEventListener('click', this.resetStage.bind(this));
 
         this.sketch.domEvents.addEventListener(this.achievementsBlinker.object, 'click', () => {
-            if (this.paused) return;
-
-            this.animationOn = 'a';
-            this.paused = false;
-            this.sketch.controls.enabled = false;
-            showStageBackButton();
-
-            gsap.to(that.achievementsClipboard.position, {
-                duration: 0.6,
-                x: -1.15, y: 5.8, z: 12.9,
-                ease: Back.easeOut.config(0.1),
-            });
-            gsap.to(that.achievementsClipboard.rotation, {
-                duration: 0.6,
-                x: -0.3, y: -0.2, z: 0,
-                ease: Back.easeOut.config(0.1),
-                onComplete: () => {
-                    that.animateClipboards();
-                }
-            });
+            this.#handleClick('achievements');
         });
 
         document.querySelector('.btn-set#back')
@@ -137,16 +164,16 @@ export default class Stage2 {
         this.#initStageEvents();
     }
 
-    resumeStageBlinkHeplers() {
-        this.skillsBlinker.self.togggleBlink(true);
-        this.achievementsBlinker.self.togggleBlink(true);
+    resumeStageBlinkHelpers() {
+        this.skillsBlinker.self.toggleBlink(true);
+        this.achievementsBlinker.self.toggleBlink(true);
         this.skillsBlinker.self.blinkStart();
         this.achievementsBlinker.self.blinkStart(1200);
     }
 
-    pauseStageBlinkHeplers() {
-        this.skillsBlinker.self.togggleBlink(false);
-        this.achievementsBlinker.self.togggleBlink(false);
+    pauseStageBlinkHelpers() {
+        this.skillsBlinker.self.toggleBlink(false);
+        this.achievementsBlinker.self.toggleBlink(false);
     }
 
     #createSkillsClipboard(loader, geometry) {
@@ -176,6 +203,7 @@ export default class Stage2 {
             element: this.skillsClipboard,
             helper: this.skillsBlinker,
         });
+        this.boards.push(this.skillsBlinker.object);
     }
 
     #createAchievementsClipboard(loader, geometry) {
@@ -205,35 +233,16 @@ export default class Stage2 {
             element: this.achievementsClipboard,
             helper: this.achievementsBlinker,
         });
-    }
-
-    animateClipboards() {
-        let that = this;
-        if (!this.closed) return;
-
-        this.animatedObject = this.animationOn === 's' ? this.skillsClipboard : this.achievementsClipboard;
-        let x = RAND(-1, 1);
-        let y = RAND(-1, 1);
-        let z = RAND(-1, 1);
-        gsap.to(this.animatedObject.rotation, {
-            duration: 1.2,
-            x: Math.sin(2) * (x ?? 1) * 0.05,
-            y: Math.sin(2) * (y ?? 1) * 0.05,
-            z: Math.sin(2) * (z ?? -1) * 0.05,
-            ease: Back.easeOut.config(4),
-            onComplete: () => {
-                that.animateClipboards();
-            }
-        });
+        this.boards.push(this.achievementsBlinker.object);
     }
 
     pause() {
-        this.pauseStageBlinkHeplers();
+        this.pauseStageBlinkHelpers();
         this.paused = true;
     }
 
     resume() {
-        this.resumeStageBlinkHeplers();
+        this.resumeStageBlinkHelpers();
         this.paused = false;
     }
 }

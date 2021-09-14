@@ -4,7 +4,7 @@ export default class EventEmitter {
      *
      * @constructor
      */
-    constructor() { }
+    constructor() { return this; }
 
     dispatch(name, event) {
         let callbacks = this[name];

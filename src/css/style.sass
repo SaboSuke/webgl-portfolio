@@ -24,9 +24,13 @@ body
     background: transparent
     font-family: 'Poppins', sans-serif
     overflow: hidden
-
+    
     &.single
         overflow: hidden
+
+.hide
+    display: none
+
 
 main
     background: transparent
@@ -103,18 +107,25 @@ main
                 background: white
 
         .bottom
-            display: inline-flex
-            .btn-social
-                background: transparent
-                border: 1px solid white
-                color: white
-                padding: 5px 9px
-                margin-right: 20px
-                border-radius: 50%
-                transition: .3s background ease-in-out
+            .socials
+                display: inline-flex
+                .btn-social
+                    background: transparent
+                    border: 1px solid white
+                    color: white
+                    padding: 5px 9px
+                    margin-right: 20px
+                    border-radius: 50%
+                    transition: .3s background ease-in-out
 
-                &:hover
-                    background: $primary-hover
+                    &:hover
+                        background: $primary-hover
+            footer
+                position: absolute
+                bottom: 5px
+                span
+                    font-size: 10px !important
+                    font-style: italic !important
 
     .right
         position: absolute
@@ -303,9 +314,6 @@ main
     color: white
     cursor: pointer
     transition: .3s color ease-in-out, .3s background ease-in-out, .3s transform ease-in-out, .3s border ease-in-out
-
-    &#tv_view
-        padding: 4px 6.5px
 
     &#exit
         background: $primary !important
@@ -835,3 +843,52 @@ video
                     font-size: 11px !important
                 .line
                     height: 300px !important // implement in js too
+
+
+@media only screen and (max-width: 500px)
+    .stage-intro .stage>h1,
+    .stage-intro .stage>p,
+    .stage-intro .stage>small
+        display: none
+        visibility: hidden
+        opacity: 0
+
+    .stage-intro .stage .helper-element
+        position: absolute
+        bottom: 18%
+        left: 30px !important
+
+    .stage
+        position: absolute
+        top: 25% !important
+        padding-left: 0px !important
+        width: 100% !important
+
+        .helper-element
+            width: 80vw !important
+            &>*
+                width: 100% !important
+
+    .stage-1 .helper-element
+        padding: 10px 0px !important
+
+    .stage-2
+        left: 0% !important;
+        & .helper-element
+            padding: 10px 20px !important
+            border-left: 4px solid $primary
+
+            .helper-details>*
+                color: black
+        
+        & .helper-element:after 
+            position: absolute
+            z-index: 1
+            left: 0
+            bottom: 0
+            content: ''
+            height: 100%
+            width: 100%
+            opacity: 0.32
+            transform: rotate(180deg)
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, $primary 100%) !important

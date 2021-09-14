@@ -5,7 +5,7 @@ export default class Settings {
     gui = null;
 
     /**
-     * @desc Hanlders the gui controls settings
+     * @desc Handles the gui controls settings
      * 
      * @param {Sketch} sketch
      * @param {Object} options
