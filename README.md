@@ -1,3 +1,3 @@
-# webgl-portfolio
+# WebGL Portfolio
 
-WebGL and Three.js portfolio
+My WebGL/ThreeJS portfolio.

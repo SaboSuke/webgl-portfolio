@@ -831,6 +831,23 @@ video {
   }
 }
 
+@media only screen and (min-width: 1600px) {
+  .scene-intro .left .middle h1 {
+    font-size: 38px !important;
+  }
+  .scene-intro .left .middle h6 {
+    font-size: 14px !important;
+  }
+  .scene-intro .left .middle p {
+    font-size: 16px !important;
+  }
+  .scene-intro .left .middle a {
+    font-size: 16px !important;
+    border-radius: 30px;
+    padding: 10px 15px;
+  }
+}
+
 @media only screen and (max-width: 1200px) {
   .stage-intro .stage-1 {
     top: 20% !important;
